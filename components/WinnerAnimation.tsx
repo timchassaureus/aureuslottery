@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { Trophy, Sparkles, Crown } from 'lucide-react';
 
