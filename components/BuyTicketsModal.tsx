@@ -98,8 +98,9 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-gradient-to-br from-purple-900 to-purple-800 border border-purple-500/30 rounded-3xl p-6 md:p-8 max-w-md w-full relative my-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 p-3 md:p-4 flex items-start md:items-center justify-center">
+      <div className="modal w-full max-w-md bg-gradient-to-br from-purple-900 to-purple-800 border border-purple-500/30 rounded-3xl relative">
+        <div className="modal-content p-6 md:p-8">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
@@ -327,6 +328,27 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
             </div>
           </div>
 
+          <button
+            onClick={handleBuy}
+            disabled={processing || !user}
+            className="w-full py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 rounded-xl font-bold text-lg transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {processing ? (
+              <>
+                <Coins className="w-5 h-5 animate-pulse" />
+                {paymentMethod === 'card' ? 'Processing card...' : 'Processing...'}
+              </>
+            ) : (
+              <>
+                {paymentMethod === 'card' ? '💳' : '🔷'}
+                <span className="ml-2">
+                  Buy {count} Ticket{count > 1 ? 's' : ''} {paymentMethod === 'card' ? 'with Card' : 'with USDC'}
+                </span>
+              </>
+            )}
+          </button>
+        </div>
+        <div className="modal-footer">
           <button
             onClick={handleBuy}
             disabled={processing || !user}

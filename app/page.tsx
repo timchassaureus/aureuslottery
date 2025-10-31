@@ -10,6 +10,7 @@ import PreDrawCountdown from '@/components/PreDrawCountdown';
 import UserProfile from '@/components/UserProfile';
 import WinnerAnimation from '@/components/WinnerAnimation';
 import WheelAnimation from '@/components/WheelAnimation';
+import MobileHome from '@/components/MobileHome';
 import Leaderboard from '@/components/Leaderboard';
 import EnhancedWinnersHistory from '@/components/EnhancedWinnersHistory';
 import DisclaimerModal from '@/components/DisclaimerModal';
@@ -46,6 +47,16 @@ export default function Home() {
   const [preDrawType, setPreDrawType] = useState<'8pm' | '10pm' | null>(null);
   const [hasTriggered8PM, setHasTriggered8PM] = useState(false);
   const [hasTriggered10PM, setHasTriggered10PM] = useState(false);
+
+  // Emergency: force-accept disclaimer for all users to unblock access
+  useEffect(() => {
+    try {
+      localStorage.setItem('aureus_disclaimer_accepted', 'true');
+      if (typeof document !== 'undefined') {
+        document.cookie = 'aureus_disclaimer_accepted=true; Path=/; Max-Age=31536000; SameSite=Lax';
+      }
+    } catch {}
+  }, []);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -179,20 +190,23 @@ export default function Home() {
 
   return (
     <>
-      {/* Disclaimer Modal - appears first time only */}
       <DisclaimerModal />
       
-      <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 via-blue-950 to-slate-900 text-white relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 via-blue-950 to-slate-900 text-white relative overflow-x-hidden">
+      {/* Mobile-first simplified UI */}
+      <div className="md:hidden">
+        <MobileHome />
+      </div>
         {/* Animated gradient background */}
-      <div className="fixed inset-0 bg-gradient-to-r from-violet-500/10 via-blue-500/10 to-indigo-500/10 animate-pulse opacity-50" style={{
+      <div className="fixed inset-0 bg-gradient-to-r from-violet-500/10 via-blue-500/10 to-indigo-500/10 animate-pulse opacity-50 pointer-events-none" style={{
         backgroundSize: '400% 400%',
         animation: 'gradient 20s ease infinite'
       }} />
-      <header className="border-b border-indigo-700/30 backdrop-blur-sm bg-slate-900/50">
+      <header className="hidden md:block border-b border-indigo-700/30 backdrop-blur-sm bg-slate-900/50">
         <div className="container mx-auto px-4 py-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Trophy className="w-10 h-10 text-primary-400" />
-            <h1 className="text-4xl font-black bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent">
               AUREUS
             </h1>
           </div>
@@ -227,15 +241,17 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Urgency Banner - Shows in last 30 minutes */}
-      <UrgencyBanner timeLeft={timeLeft} />
+      {/* Urgency Banner - desktop only */}
+      <div className="hidden md:block">
+        <UrgencyBanner timeLeft={timeLeft} />
+      </div>
 
-      <main className="container mx-auto px-4 py-8 pb-32">
+      <main className="hidden md:block container mx-auto px-4 py-8 pb-32">
         <div className="max-w-6xl mx-auto">
           {/* JACKPOT ÉNORME ET VISIBLE */}
           <div className="relative mb-8">
             <div className="absolute inset-0 bg-primary-500/40 blur-3xl rounded-full animate-pulse"></div>
-            <div className="relative bg-gradient-to-br from-indigo-950/90 via-purple-950/90 via-blue-950/90 to-slate-950/90 backdrop-blur-2xl border-4 border-white/20 rounded-3xl p-16 shadow-2xl shadow-white/10">
+            <div className="relative bg-gradient-to-br from-indigo-950/90 via-purple-950/90 via-blue-950/90 to-slate-950/90 backdrop-blur-2xl border-4 border-white/20 rounded-3xl p-6 md:p-16 shadow-2xl shadow-white/10">
               <div className="text-center">
                 {/* Mini Countdown */}
                 <div className="flex items-center justify-center gap-2 mb-4">
@@ -255,7 +271,7 @@ export default function Home() {
                 </p>
                 
                 {/* Montant ENORME */}
-                <div className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black bg-gradient-to-r from-amber-400 from-5% via-yellow-300 via-30% via-yellow-300 via-70% to-amber-400 to-95% bg-clip-text text-transparent mb-4 leading-none drop-shadow-2xl break-all">
+                <div className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-amber-400 from-5% via-yellow-300 via-30% via-yellow-300 via-70% to-amber-400 to-95% bg-clip-text text-transparent mb-4 leading-tight drop-shadow-2xl break-all">
                   ${jackpot.toLocaleString('en-US')}
                 </div>
 
@@ -367,6 +383,7 @@ export default function Home() {
         </div>
       </main>
 
+      <div className="hidden md:block">
       <BuyTicketsModal 
         isOpen={buyModalOpen} 
         onClose={() => {
@@ -387,11 +404,15 @@ export default function Home() {
       <HowItWorksModal isOpen={howItWorksOpen} onClose={() => setHowItWorksOpen(false)} />
       <PremiumChat />
       
-      {/* Invite & Viral Bar */}
-      <InviteBar />
+      {/* Invite & Viral Bar - desktop only to avoid overlap on phones */}
+      <div className="hidden md:block">
+        <InviteBar />
+      </div>
 
-      {/* Live Stats Bar - Bottom */}
-      <LiveStats />
+      {/* Live Stats Bar - desktop only */}
+      <div className="hidden md:block">
+        <LiveStats />
+      </div>
       
       {/* Sticky Buy Button removed per request */}
       
@@ -428,6 +449,9 @@ export default function Home() {
       )}
 
       </div>
+      </div>
+
+      {/* Legal banner temporarily disabled to unblock mobile */}
 
       {/* Pre-Draw Countdown - Shows 2 minutes before draw */}
       {showPreDrawCountdown && (

@@ -52,16 +52,16 @@ export default function WinnerAnimation({ winner, winners, prize, drawType, onCl
         </div>
 
         {/* Main Content */}
-        <div className="relative bg-gradient-to-br from-purple-900 to-black border-4 border-primary-500 rounded-3xl p-12 shadow-2xl">
+        <div className="relative bg-gradient-to-br from-purple-900 to-black border-4 border-primary-500 rounded-3xl p-6 md:p-12 shadow-2xl">
           {/* Trophy Icon */}
-          <div className="mb-8 animate-bounce">
-            <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full border-4 border-white/20 shadow-2xl">
-              <Crown className="w-16 h-16 text-white" />
+          <div className="mb-6 md:mb-8 animate-bounce">
+            <div className="inline-flex items-center justify-center w-20 h-20 md:w-32 md:h-32 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full border-4 border-white/20 shadow-2xl">
+              <Crown className="w-10 h-10 md:w-16 md:h-16 text-white" />
             </div>
           </div>
 
           {/* Winner Text */}
-          <h2 className="text-6xl md:text-8xl font-black mb-4 bg-gradient-to-r from-yellow-400 via-amber-300 via-yellow-200 via-amber-300 to-yellow-400 bg-clip-text text-transparent animate-pulse">
+          <h2 className="text-4xl md:text-8xl font-black mb-4 bg-gradient-to-r from-yellow-400 via-amber-300 via-yellow-200 via-amber-300 to-yellow-400 bg-clip-text text-transparent animate-pulse">
             {is10PMDraw ? '50 WINNERS!' : 'WINNER!'}
           </h2>
 
@@ -114,17 +114,17 @@ export default function WinnerAnimation({ winner, winners, prize, drawType, onCl
           ) : (
             /* 8PM Draw - Single Winner */
             <>
-              <div className="mb-8">
-                <p className="text-3xl text-yellow-300 font-bold mb-2">🏆 Main Jackpot 🏆</p>
-                <div className="text-7xl md:text-9xl font-black text-yellow-400 animate-pulse drop-shadow-2xl">
+              <div className="mb-6 md:mb-8">
+                <p className="text-2xl md:text-3xl text-yellow-300 font-bold mb-2">🏆 Main Jackpot 🏆</p>
+                <div className="text-5xl md:text-9xl font-black text-yellow-400 animate-pulse drop-shadow-2xl">
                   ${prize?.toLocaleString('en-US')}
                 </div>
               </div>
 
               {/* Winner Address */}
-              <div className="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 rounded-2xl p-6 mb-8 border-2 border-yellow-500/50">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 rounded-2xl p-4 md:p-6 mb-6 md:mb-8 border-2 border-yellow-500/50">
                 <p className="text-xl text-yellow-300 mb-2">Won by</p>
-                <p className="text-3xl font-mono font-bold text-yellow-400 break-all">
+                <p className="text-2xl md:text-3xl font-mono font-bold text-yellow-400 break-all">
                   {winner}
                 </p>
               </div>
@@ -132,15 +132,15 @@ export default function WinnerAnimation({ winner, winners, prize, drawType, onCl
           )}
 
           {/* Sparkles */}
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <Sparkles className="w-8 h-8 text-yellow-400 animate-pulse" />
-            <p className="text-2xl font-bold text-yellow-400">CONGRATULATIONS!</p>
-            <Sparkles className="w-8 h-8 text-yellow-400 animate-pulse" />
+          <div className="flex items-center justify-center gap-3 md:gap-4 mb-6 md:mb-8">
+            <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-yellow-400 animate-pulse" />
+            <p className="text-xl md:text-2xl font-bold text-yellow-400">CONGRATULATIONS!</p>
+            <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-yellow-400 animate-pulse" />
           </div>
 
           {/* Action Buttons for 8PM Draw */}
           {!is10PMDraw && prize && (
-            <div className="space-y-4 mb-8">
+            <div className="space-y-4 mb-6 md:mb-8">
               {/* Important Notice for Large Wins */}
               {prize >= 10000 && (
                 <div className="bg-gradient-to-r from-amber-900/40 to-orange-900/40 border-2 border-yellow-500/50 rounded-xl p-4 mb-4">
@@ -165,11 +165,11 @@ export default function WinnerAnimation({ winner, winners, prize, drawType, onCl
                 </div>
                 
                 {/* Button content */}
-                <div className="relative py-4 px-8 rounded-xl border-2 border-white/40 backdrop-blur-sm">
+                <div className="relative py-3 md:py-4 px-6 md:px-8 rounded-xl border-2 border-white/40 backdrop-blur-sm">
                   <div className="flex items-center justify-center gap-3">
-                    <span className="text-3xl">📺</span>
+                    <span className="text-2xl md:text-3xl">📺</span>
                     <div className="text-left">
-                      <div className="font-bold text-white text-lg">How to Cash Out</div>
+                      <div className="font-bold text-white text-base md:text-lg">How to Cash Out</div>
                       <div className="text-green-200 text-xs">Watch 5-min tutorial →</div>
                     </div>
                   </div>
@@ -186,7 +186,7 @@ export default function WinnerAnimation({ winner, winners, prize, drawType, onCl
                   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
                   window.open(tweetUrl, '_blank');
                 }}
-                className="group relative w-full max-w-md mx-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-black hover:bg-gray-900 rounded-xl transition-all border-2 border-white/30 hover:border-white/50 overflow-hidden"
+                className="group relative w-full max-w-md mx-auto inline-flex items-center justify-center gap-3 px-6 md:px-8 py-3 md:py-4 bg-black hover:bg-gray-900 rounded-xl transition-all border-2 border-white/30 hover:border-white/50 overflow-hidden"
               >
                 {/* Animated background */}
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -207,7 +207,7 @@ export default function WinnerAnimation({ winner, winners, prize, drawType, onCl
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="px-8 py-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 rounded-xl font-bold text-xl transition-all hover:scale-105 shadow-2xl border-2 border-white/30"
+            className="px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 rounded-xl font-bold text-lg md:text-xl transition-all hover:scale-105 shadow-2xl border-2 border-white/30"
           >
             Continue
           </button>

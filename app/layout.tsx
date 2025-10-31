@@ -18,6 +18,13 @@ export const metadata: Metadata = {
   description: "Daily crypto lottery on Base. Buy tickets for $1 USDC, win big jackpots every day at 9PM UTC!",
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 0.85,
+  maximumScale: 5,
+  userScalable: true,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
