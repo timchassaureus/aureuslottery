@@ -30,14 +30,34 @@ export default function DisclaimerModal() {
   };
 
   return (
-    <div className="fixed bottom-4 inset-x-4 z-[10000] pointer-events-none">
-      <div className="pointer-events-auto mx-auto max-w-md rounded-xl border border-white/15 bg-slate-950/90 backdrop-blur p-3 text-white shadow-xl">
-        <div className="text-xs leading-relaxed">
-          <span className="font-bold">Notice:</span> By using Aureus you confirm you are 18+, that online lottery is legal in your location, and that you understand this is a Web3 app.
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+      <div className="mx-auto w-full max-w-md rounded-xl border border-white/15 bg-slate-950 p-4 text-white shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div className="text-sm leading-relaxed mb-4">
+          <span className="font-bold text-yellow-400">⚠️ Notice:</span>
+          <p className="mt-2">
+            By using Aureus you confirm that:
+          </p>
+          <ul className="mt-2 space-y-1 text-xs text-gray-300">
+            <li>• You are 18 years or older</li>
+            <li>• Online lottery is legal in your jurisdiction</li>
+            <li>• You understand this is a Web3 application</li>
+            <li>• You are responsible for your own funds</li>
+          </ul>
         </div>
-        <div className="mt-2 flex gap-2">
-          <button onClick={accept} className="flex-1 py-2 rounded-lg text-xs font-bold bg-gradient-to-r from-yellow-400 to-orange-500 text-black">I Accept</button>
-          <a href="/disclaimer" className="px-3 py-2 rounded-lg text-xs border border-white/20">Learn more</a>
+        
+        <div className="flex flex-col gap-2">
+          <button 
+            onClick={accept} 
+            className="w-full py-3 rounded-lg text-sm font-bold bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:scale-105 transition-transform active:scale-95"
+          >
+            I Accept & Continue
+          </button>
+          <a 
+            href="/disclaimer" 
+            className="w-full py-3 text-center rounded-lg text-sm border border-white/20 hover:bg-white/5 transition-colors"
+          >
+            Read Full Disclaimer
+          </a>
         </div>
       </div>
     </div>
