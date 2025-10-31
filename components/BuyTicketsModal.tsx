@@ -328,26 +328,11 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
             </div>
           </div>
 
-          <button
-            onClick={handleBuy}
-            disabled={processing || !user}
-            className="w-full py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 rounded-xl font-bold text-lg transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {processing ? (
-              <>
-                <Coins className="w-5 h-5 animate-pulse" />
-                {paymentMethod === 'card' ? 'Processing card...' : 'Processing...'}
-              </>
-            ) : (
-              <>
-                {paymentMethod === 'card' ? '💳' : '🔷'}
-                <span className="ml-2">
-                  Buy {count} Ticket{count > 1 ? 's' : ''} {paymentMethod === 'card' ? 'with Card' : 'with USDC'}
-                </span>
-              </>
-            )}
-          </button>
+          {/* Action button moved to sticky footer below */}
         </div>
+        </div>  {/* Ferme modal-content */}
+        
+        {/* Modal Footer - Sticky button */}
         <div className="modal-footer">
           <button
             onClick={handleBuy}
