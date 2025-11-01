@@ -93,19 +93,19 @@ export default function PremiumChat() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all z-40 hover:shadow-purple-500/50"
+        className="fixed bottom-24 md:bottom-6 right-4 md:right-6 w-14 h-14 md:w-16 md:h-16 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all z-[60] hover:shadow-purple-500/50"
       >
-        <MessageCircle className="w-7 h-7" />
+        <MessageCircle className="w-6 h-6 md:w-7 md:h-7" />
         {messages.length > 2 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold animate-pulse">
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 md:w-6 md:h-6 flex items-center justify-center font-bold animate-pulse text-[10px] md:text-xs">
             {messages.length - 2}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900 border-2 border-purple-500/30 rounded-3xl p-6 w-full max-w-2xl h-[700px] flex flex-col relative shadow-2xl">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[70] p-3 md:p-4">
+          <div className="bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900 border-2 border-purple-500/30 rounded-3xl p-4 md:p-6 w-full max-w-2xl h-[85vh] md:h-[700px] flex flex-col relative shadow-2xl">
             <button
               onClick={() => setIsOpen(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10 text-2xl"
