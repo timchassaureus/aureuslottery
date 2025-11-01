@@ -235,7 +235,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     console.log(`🎰 9PM Draw #${currentDrawNumber} performed! Winner: ${winningTicket.owner.slice(0, 8)}...`);
     console.log(`💰 Prize: $${prize.toLocaleString()} USDC (85% of total)`);
     console.log(`👨‍💼 Owner fee (${ownerWallet.slice(0, 8)}...): $${ownerFee.toLocaleString()} USDC (10%)`);
-    console.log(`🎁 Secondary pot for 11PM draw: Will be distributed to 50 winners`);
+    console.log(`🎁 Secondary pot for 11PM draw: Will be distributed to 25 winners`);
     
     const draw: Draw = {
       id: currentDrawNumber,
@@ -277,8 +277,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     // Import VRF dynamically
     const { randomSelection } = await import('./vrf');
     
-    // Select 50 unique winners
-    const numberOfWinners = Math.min(50, ticketsInCurrentDraw.length);
+    // Select 25 unique winners
+    const numberOfWinners = Math.min(25, ticketsInCurrentDraw.length);
     const prizePerWinner = Math.floor(secondaryPot / numberOfWinners);
     const winners = [];
     const selectedTickets = new Set();

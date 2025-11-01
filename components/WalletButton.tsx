@@ -61,10 +61,10 @@ export default function WalletButton() {
         {showDropdown && (
           <>
             <div 
-              className="fixed inset-0 z-10" 
+              className="fixed inset-0 z-[80]" 
               onClick={() => setShowDropdown(false)}
             />
-            <div className="absolute right-0 mt-2 w-64 bg-purple-900 border border-purple-600/50 rounded-xl shadow-2xl z-20 overflow-hidden">
+            <div className="absolute md:absolute right-0 top-full mt-2 w-64 md:w-64 max-w-[calc(100vw-2rem)] bg-purple-900 border border-purple-600/50 rounded-xl shadow-2xl z-[90] overflow-hidden">
               <div className="p-4 border-b border-purple-600/30">
                 <p className="text-xs text-purple-300 mb-1">Wallet Address</p>
                 <p className="font-mono text-sm">{user.address}</p>

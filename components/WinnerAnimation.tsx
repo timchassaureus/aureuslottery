@@ -62,7 +62,7 @@ export default function WinnerAnimation({ winner, winners, prize, drawType, onCl
 
           {/* Winner Text */}
           <h2 className="text-4xl md:text-8xl font-black mb-4 bg-gradient-to-r from-yellow-400 via-amber-300 via-yellow-200 via-amber-300 to-yellow-400 bg-clip-text text-transparent animate-pulse">
-            {is10PMDraw ? '50 WINNERS!' : 'WINNER!'}
+            {is10PMDraw ? '25 WINNERS!' : 'WINNER!'}
           </h2>
 
           {is10PMDraw && winners ? (

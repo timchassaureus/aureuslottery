@@ -154,10 +154,10 @@ export default function Home() {
       
       // Show animation with mock data (will be real with smart contract)
       const ticketsInDraw = tickets.filter(t => t.drawNumber === currentDrawNumber);
-      const prizePerWinner = secondaryPot / Math.min(50, ticketsInDraw.length);
+      const prizePerWinner = secondaryPot / Math.min(25, ticketsInDraw.length);
       
-      // Select 50 random winners (or less if not enough tickets)
-      const numWinners = Math.min(50, ticketsInDraw.length);
+      // Select 25 random winners (or less if not enough tickets)
+      const numWinners = Math.min(25, ticketsInDraw.length);
       const winners = ticketsInDraw
         .sort(() => Math.random() - 0.5)
         .slice(0, numWinners)
@@ -320,7 +320,7 @@ export default function Home() {
                   <p className="text-3xl font-black text-white mb-1">
                     ${secondaryPot.toLocaleString('en-US')}
                   </p>
-                  <p className="text-sm text-slate-300">🕚 11PM UTC • 50 Winners</p>
+                  <p className="text-sm text-slate-300">🕚 11PM UTC • 25 Winners</p>
                 </div>
               </div>
 

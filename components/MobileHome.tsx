@@ -167,7 +167,7 @@ export default function MobileHome() {
                 <p className="text-2xl font-black text-white mb-1">
                   ${secondaryPot.toLocaleString('en-US')}
                 </p>
-                <p className="text-xs text-slate-300">🕚 11PM UTC • 50 Winners</p>
+                <p className="text-xs text-slate-300">🕚 11PM UTC • 25 Winners</p>
               </div>
             </div>
 

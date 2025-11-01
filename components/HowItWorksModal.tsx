@@ -94,7 +94,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
                   </li>
                   <li className="bg-violet-500/10 rounded-lg p-3 border-2 border-violet-400/50">
                     <strong className="text-violet-300 text-xl">💎 11PM UTC - BONUS BLITZ</strong>
-                    <p className="text-white mt-1 font-semibold"><strong className="text-yellow-300">50 WINNERS</strong> share the bonus pot! More chances = More wins! 🎉</p>
+                    <p className="text-white mt-1 font-semibold"><strong className="text-yellow-300">25 WINNERS</strong> share the bonus pot! Bigger prizes for each winner! 🎉</p>
                   </li>
                   <li className="bg-blue-900/30 rounded-lg p-3 border border-cyan-500/50">
                     <p className="text-cyan-300 text-base font-bold">

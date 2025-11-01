@@ -21,7 +21,7 @@ export default function PoolVisualization() {
   }, [jackpot, previousJackpot]);
 
   const totalPot = jackpot + secondaryPot;
-  const secondaryWinnerPrize = Math.floor(secondaryPot / 50);
+  const secondaryWinnerPrize = Math.floor(secondaryPot / 25);
 
   return (
     <div className="bg-gradient-to-br from-indigo-950/50 via-purple-950/50 to-blue-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl p-6 hover:border-white/30 transition-all">
@@ -66,7 +66,7 @@ export default function PoolVisualization() {
             <p className="text-3xl font-black text-violet-400 mb-1">
               ${secondaryPot.toLocaleString('en-US')}
             </p>
-            <p className="text-xs text-violet-600">50 Winners • ${secondaryWinnerPrize} each</p>
+            <p className="text-xs text-violet-600">25 Winners • ${secondaryWinnerPrize} each</p>
           </div>
         </div>
 

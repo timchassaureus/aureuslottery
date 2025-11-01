@@ -1,0 +1,27 @@
+{
+  "name": "aureus-telegram-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot for AUREUS lottery platform",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "lottery",
+    "aureus"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "telegraf": "^4.16.3",
+    "dotenv": "^16.4.5",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
+
