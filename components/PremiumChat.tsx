@@ -45,7 +45,7 @@ export default function PremiumChat() {
         id: '1',
         author: 'LotteryBot',
         address: '0xBot',
-        text: 'Bienvenue sur AUREUS! 🎰 Le jackpot d\'aujourd\'hui est incroyable!',
+        text: 'Welcome to AUREUS! 🎰 Today\'s jackpot is incredible!',
         timestamp: Date.now() - 30000,
         level: 'expert',
       },
@@ -53,7 +53,7 @@ export default function PremiumChat() {
         id: '2',
         author: '0x742d35',
         address: '0x742d35Cc6634C0532925a3b8D8F3DFE6F3A9a1b9',
-        text: 'Merci à tous les participants! 🔥',
+        text: 'Thanks to all participants! 🔥',
         timestamp: Date.now() - 20000,
         level: 'legend',
       },
@@ -124,7 +124,7 @@ export default function PremiumChat() {
                   <div className="flex items-center gap-2 mt-1">
                     <Users className="w-4 h-4 text-purple-300" />
                     <span className="text-sm text-purple-300">
-                      {messages.length + 156} connectés
+                      {messages.length + 156} connected
                     </span>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ export default function PremiumChat() {
             {!hasTickets && (
               <div className="mb-4 p-4 bg-yellow-900/20 border border-yellow-700/50 rounded-xl">
                 <p className="text-sm text-yellow-300 text-center">
-                  💡 Achetez un ticket pour participer au chat!
+                  💡 Buy a ticket to participate in the chat!
                 </p>
               </div>
             )}
@@ -183,7 +183,7 @@ export default function PremiumChat() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder={connected && hasTickets ? "Écrire un message..." : "Connectez-vous et achetez un ticket pour chatter"}
+                placeholder={connected && hasTickets ? "Write a message..." : "Connect and buy a ticket to chat"}
                 disabled={!connected || !hasTickets}
                 className="flex-1 px-4 py-3 bg-purple-950/70 border border-purple-700/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 disabled:opacity-50"
               />

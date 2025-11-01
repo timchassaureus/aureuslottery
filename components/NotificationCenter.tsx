@@ -20,21 +20,21 @@ export default function NotificationCenter() {
       const currentHour = now.getUTCHours();
       const currentMinute = now.getUTCMinutes();
 
-      // Notification à 12h UTC
+      // Notification at 12PM UTC
       if (currentHour === 12 && currentMinute === 0) {
         addNotification({
           id: Date.now().toString(),
-          message: '✨ Bonne chance pour le tirage de ce soir à 20h UTC!',
+          message: '✨ Good luck for tonight\'s draw at 9PM UTC!',
           time: now.toLocaleTimeString(),
           type: 'reminder',
         });
       }
 
-      // Notification à 19h UTC (1h avant le tirage)
-      if (currentHour === 19 && currentMinute === 0) {
+      // Notification at 8PM UTC (1 hour before the draw)
+      if (currentHour === 20 && currentMinute === 0) {
         addNotification({
           id: (Date.now() + 1).toString(),
-          message: '🔥 Il reste 1 heure! Le jackpot de ce soir tire à 20h UTC!',
+          message: '🔥 1 hour left! Tonight\'s jackpot draws at 9PM UTC!',
           time: now.toLocaleTimeString(),
           type: 'jackpot',
         });
@@ -47,7 +47,7 @@ export default function NotificationCenter() {
     // Add demo notification
     addNotification({
       id: 'demo-1',
-      message: '👋 Bienvenue sur AUREUS!',
+      message: '👋 Welcome to AUREUS!',
       time: new Date().toLocaleTimeString(),
       type: 'reminder',
     });
@@ -99,7 +99,7 @@ export default function NotificationCenter() {
 
           <div className="space-y-3">
             {notifications.length === 0 ? (
-              <p className="text-purple-300 text-center py-8">Aucune notification</p>
+              <p className="text-purple-300 text-center py-8">No notifications</p>
             ) : (
               notifications.map((notification) => (
                 <div

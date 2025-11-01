@@ -182,7 +182,7 @@ export default function WinnerAnimation({ winner, winners, prize, drawType, onCl
               {/* Share on X Button */}
               <button
                 onClick={() => {
-                  const tweetText = `🚨 INCROYABLE ! 🚨\n\nUne nouvelle appli crypto vient de sortir et j'ai gagné $${prize?.toLocaleString('en-US')} ! 🤯💰\n\n@AureusLottery c'est de la FOLIE ! Tirage quotidien à 21h UTC, tickets à $1 seulement !\n\nMerci Aureus ! 🙏✨\n\n#CryptoLottery #Web3 #Aureus`;
+                  const tweetText = `🚨 INCREDIBLE! 🚨\n\nA new crypto app just launched and I won $${prize?.toLocaleString('en-US')}! 🤯💰\n\n@AureusLottery this is INSANE! Daily draw at 9PM UTC, tickets only $1!\n\nThank you Aureus! 🙏✨\n\n#CryptoLottery #Web3 #Aureus`;
                   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
                   window.open(tweetUrl, '_blank');
                 }}
