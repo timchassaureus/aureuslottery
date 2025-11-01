@@ -15,6 +15,7 @@ import Leaderboard from '@/components/Leaderboard';
 import EnhancedWinnersHistory from '@/components/EnhancedWinnersHistory';
 import DisclaimerModal from '@/components/DisclaimerModal';
 import HowItWorksModal from '@/components/HowItWorksModal';
+import UsernameModal from '@/components/UsernameModal';
 import LiveStats from '@/components/LiveStats';
 import UrgencyBanner from '@/components/UrgencyBanner';
 // import StickyBuyButton from '@/components/StickyBuyButton';
@@ -191,6 +192,7 @@ export default function Home() {
   return (
     <>
       <DisclaimerModal />
+      <UsernameModal />
       
       <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 via-blue-950 to-slate-900 text-white relative overflow-x-hidden">
       {/* Mobile-first simplified UI */}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Wallet, Loader } from 'lucide-react';
 import { connectWallet, disconnectWallet } from '@/lib/web3';
 import { useAppStore } from '@/lib/store';
+import { getDisplayName } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 export default function WalletButton() {
@@ -53,7 +54,7 @@ export default function WalletButton() {
             </span>
           </div>
           <span className="hidden lg:inline text-sm">
-            {`${user.address.slice(0, 6)}...${user.address.slice(-4)}`}
+            {getDisplayName(user.address, user.username, user.telegramUsername)}
           </span>
         </button>
 

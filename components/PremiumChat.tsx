@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send, MessageCircle, Users, Crown, Sparkles } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
+import { getDisplayName, getShortAddress } from '@/lib/utils';
 
 interface Message {
   id: string;
@@ -69,7 +70,7 @@ export default function PremiumChat() {
 
     const message: Message = {
       id: Date.now().toString(),
-      author: user.address.slice(0, 8),
+      author: getDisplayName(user.address, user.username, user.telegramUsername),
       address: user.address,
       text: input,
       timestamp: Date.now(),

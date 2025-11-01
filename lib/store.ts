@@ -32,6 +32,8 @@ export interface SecondaryDraw {
 
 export interface User {
   address: string;
+  username?: string; // Optional username/pseudonyme
+  telegramUsername?: string; // Future: Telegram integration
   tickets: Ticket[];
   totalSpent: number;
   totalWon: number;
@@ -57,6 +59,7 @@ interface AppState {
   buyMultipleTickets: (owner: string, count: number) => void;
   connectWallet: (address: string) => void;
   disconnectWallet: () => void;
+  setUsername: (address: string, username: string) => void;
   performDraw: () => Promise<{ winner: string; prize: number } | undefined>;
   performSecondaryDraw: () => Promise<void>;
   addDraw: (draw: Draw) => void;
@@ -154,8 +157,20 @@ export const useAppStore = create<AppState>((set, get) => ({
     // Count total lifetime tickets
     const lifetimeTickets = tickets.filter(t => t.owner === address).length;
     
+    // Try to load username from localStorage
+    const savedUsername = typeof window !== 'undefined' 
+      ? localStorage.getItem(`aureus_username_${address.toLowerCase()}`) || undefined
+      : undefined;
+    
+    // Try to load Telegram username (future integration)
+    const telegramUsername = typeof window !== 'undefined'
+      ? localStorage.getItem(`aureus_telegram_${address.toLowerCase()}`) || undefined
+      : undefined;
+    
     const user: User = {
       address,
+      username: savedUsername,
+      telegramUsername: telegramUsername || undefined,
       tickets: tickets.filter(t => t.owner === address && t.drawNumber === get().currentDrawNumber),
       totalSpent: lifetimeTickets * TICKET_PRICE,
       totalWon: 0,
@@ -177,6 +192,23 @@ export const useAppStore = create<AppState>((set, get) => ({
       connected: false,
       user: null,
     });
+  },
+
+  setUsername: (address, username) => {
+    const { user } = get();
+    if (!user || user.address.toLowerCase() !== address.toLowerCase()) return;
+    
+    // Save to localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(`aureus_username_${address.toLowerCase()}`, username);
+    }
+    
+    const updatedUser = {
+      ...user,
+      username,
+    };
+    
+    set({ user: updatedUser });
   },
 
   performDraw: async () => {
