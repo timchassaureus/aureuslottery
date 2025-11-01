@@ -221,7 +221,20 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
               type="number"
               min="1"
               value={count}
-              onChange={(e) => setCount(parseInt(e.target.value) || 1)}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === '') {
+                  setCount(0);
+                } else {
+                  const num = parseInt(val);
+                  if (!isNaN(num) && num > 0) {
+                    setCount(num);
+                  }
+                }
+              }}
+              onBlur={(e) => {
+                if (count < 1) setCount(1);
+              }}
               className="w-full px-4 py-3 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white text-center text-2xl font-bold focus:outline-none focus:border-primary-500"
             />
             <div className="flex justify-center items-center mt-2 text-sm">
