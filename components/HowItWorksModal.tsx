@@ -45,7 +45,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-6 h-6 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong className="text-violet-300">2 CHANCES TO WIN</strong> every day - Main jackpot at <strong>9PM</strong> + Bonus draw at <strong>11PM</strong>! 💎</span>
+                    <span><strong className="text-violet-300">2 CHANCES TO WIN</strong> every day - Main jackpot at <strong>9PM</strong> + Bonus draw at <strong>9:30PM</strong>! 💎</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-6 h-6 text-green-400 mt-0.5 flex-shrink-0" />
@@ -93,7 +93,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
                     <p className="text-white mt-1 font-semibold">ONE lucky winner takes <strong className="text-green-300">THE ENTIRE POT!</strong> Could be $10K, $50K, $100K+! 💰💰💰</p>
                   </li>
                   <li className="bg-violet-500/10 rounded-lg p-3 border-2 border-violet-400/50">
-                    <strong className="text-violet-300 text-xl">💎 11PM UTC - BONUS BLITZ</strong>
+                    <strong className="text-violet-300 text-xl">💎 9:30PM UTC - BONUS BLITZ</strong>
                     <p className="text-white mt-1 font-semibold"><strong className="text-yellow-300">25 WINNERS</strong> share the bonus pot! Bigger prizes for each winner! 🎉</p>
                   </li>
                   <li className="bg-blue-900/30 rounded-lg p-3 border border-cyan-500/50">

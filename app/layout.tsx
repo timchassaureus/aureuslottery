@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Aureus | Crypto Lottery",
-  description: "Daily crypto lottery on Base. Buy tickets for $1 USDC, win big jackpots every day at 9PM UTC!",
+  description: "Daily crypto lottery on Base. Buy tickets for $1 USDC, win big jackpots every day at 9PM & 9:30PM UTC!",
 };
 
 export const viewport = {

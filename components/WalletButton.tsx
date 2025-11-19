@@ -5,10 +5,11 @@ import { Wallet, Loader } from 'lucide-react';
 import { connectWallet, disconnectWallet } from '@/lib/web3';
 import { useAppStore } from '@/lib/store';
 import { getDisplayName } from '@/lib/utils';
+import NetworkStatus from './NetworkStatus';
 import toast from 'react-hot-toast';
 
 export default function WalletButton() {
-  const { connected, user, connectWallet: connectStore, disconnectWallet: disconnectStore } = useAppStore();
+  const { connected, user, connectWallet: connectStore, disconnectWallet: disconnectStore, mode, syncOnChainData } = useAppStore();
   const [connecting, setConnecting] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -17,10 +18,31 @@ export default function WalletButton() {
     try {
       const address = await connectWallet();
       connectStore(address);
+      if (mode === 'live') {
+        await syncOnChainData(address);
+      }
       toast.success('Wallet connected successfully! 🎉');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to connect wallet:', error);
-      toast.error('Failed to connect wallet');
+      
+      // Provide specific error messages
+      let errorMessage = 'Failed to connect wallet';
+      
+      if (error?.message) {
+        if (error.message.includes('MetaMask') || error.message.includes('wallet')) {
+          errorMessage = error.message;
+        } else if (error.message.includes('network') || error.message.includes('Chain ID')) {
+          errorMessage = error.message;
+        } else if (error.code === 4001) {
+          errorMessage = 'Connection rejected. Please approve the connection request.';
+        } else if (error.code === -32002) {
+          errorMessage = 'Connection request already pending. Please check your wallet.';
+        } else {
+          errorMessage = `Connection failed: ${error.message}`;
+        }
+      }
+      
+      toast.error(errorMessage, { duration: 5000 });
     } finally {
       setConnecting(false);
     }
@@ -35,8 +57,8 @@ export default function WalletButton() {
 
   if (connected && user) {
     // Mock balance for now - will be real when connected to blockchain
-    const mockBalance = 47.50;
-    const userTicketsCount = user.tickets.length;
+    const balance = typeof user.usdcBalance === 'number' ? user.usdcBalance : 47.5;
+    const userTicketsCount = user.ticketCount ?? user.tickets.length;
 
     return (
       <div className="relative">
@@ -47,7 +69,7 @@ export default function WalletButton() {
           <Wallet className="w-5 h-5" />
           <div className="hidden md:flex flex-col items-start text-left">
             <span className="text-xs text-green-200">
-              {mockBalance.toFixed(2)} USDC
+              {balance.toFixed(2)} USDC
             </span>
             <span className="text-xs text-green-200">
               {userTicketsCount} ticket{userTicketsCount !== 1 ? 's' : ''}
@@ -72,7 +94,7 @@ export default function WalletButton() {
               <div className="p-4 border-b border-purple-600/30">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-purple-300">Balance:</span>
-                  <span className="font-bold">{mockBalance.toFixed(2)} USDC</span>
+                  <span className="font-bold">{balance.toFixed(2)} USDC</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-purple-300">Tickets:</span>
@@ -93,18 +115,21 @@ export default function WalletButton() {
   }
 
   return (
-    <button
-      onClick={handleConnect}
-      disabled={connecting}
-      className="flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50"
-    >
-      {connecting ? (
-        <Loader className="w-5 h-5 animate-spin" />
-      ) : (
-        <Wallet className="w-5 h-5" />
-      )}
-      {connecting ? 'Connecting...' : 'Connect Wallet'}
-    </button>
+    <div className="flex items-center gap-2">
+      {typeof window !== 'undefined' && window.ethereum && <NetworkStatus />}
+      <button
+        onClick={handleConnect}
+        disabled={connecting}
+        className="flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50"
+      >
+        {connecting ? (
+          <Loader className="w-5 h-5 animate-spin" />
+        ) : (
+          <Wallet className="w-5 h-5" />
+        )}
+        {connecting ? 'Connecting...' : 'Connect Wallet'}
+      </button>
+    </div>
   );
 }
 

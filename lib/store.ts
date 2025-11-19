@@ -1,6 +1,8 @@
 'use client';
 
 import { create } from 'zustand';
+import { DEFAULT_MODE, FORCED_MODE } from './config';
+import { fetchLotteryState, fetchUserState } from './blockchain';
 
 export interface Ticket {
   id: string;
@@ -38,6 +40,9 @@ export interface User {
   totalSpent: number;
   totalWon: number;
   lifetimeTickets: number;
+  ticketCount?: number;
+  usdcBalance?: number;
+  pendingClaim?: number;
 }
 
 interface AppState {
@@ -52,6 +57,9 @@ interface AppState {
   currentDrawNumber: number;
   ownerWallet: string;
   totalTicketsSold: number; // Track total for probability display
+  mode: 'demo' | 'live';
+  isSyncing: boolean;
+  lastSynced?: number;
   
   // Actions
   setJackpot: (amount: number) => void;
@@ -65,6 +73,9 @@ interface AppState {
   addDraw: (draw: Draw) => void;
   ride: (owner: string, amount: number) => { win: boolean; amount: number };
   giveShareBonus: (owner: string) => void;
+  initDemo: () => void;
+  setMode: (mode: 'demo' | 'live') => void;
+  syncOnChainData: (address?: string) => Promise<void>;
 }
 
 const TICKET_PRICE = 1; // 1 USDC
@@ -97,6 +108,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   currentDrawNumber: 1,
   ownerWallet: '0x742d35Cc6634C0532925a3b8D8F3DFE6F3A9a1b9', // Owner's wallet
   totalTicketsSold: 0,
+  mode: FORCED_MODE ?? DEFAULT_MODE,
+  isSyncing: false,
 
   setJackpot: (amount) => set({ jackpot: amount }),
 
@@ -167,11 +180,13 @@ export const useAppStore = create<AppState>((set, get) => ({
       ? localStorage.getItem(`aureus_telegram_${address.toLowerCase()}`) || undefined
       : undefined;
     
+    const ticketsInDraw = tickets.filter(t => t.owner === address && t.drawNumber === get().currentDrawNumber);
     const user: User = {
       address,
       username: savedUsername,
       telegramUsername: telegramUsername || undefined,
-      tickets: tickets.filter(t => t.owner === address && t.drawNumber === get().currentDrawNumber),
+      tickets: ticketsInDraw,
+      ticketCount: ticketsInDraw.length,
       totalSpent: lifetimeTickets * TICKET_PRICE,
       totalWon: 0,
       lifetimeTickets,
@@ -212,7 +227,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   performDraw: async () => {
-    const { tickets, jackpot, currentDrawNumber, ownerWallet, totalTicketsSold } = get();
+    const { tickets, jackpot, currentDrawNumber, ownerWallet } = get();
     const ticketsInCurrentDraw = tickets.filter(t => t.drawNumber === currentDrawNumber);
     
     if (ticketsInCurrentDraw.length === 0) {
@@ -373,6 +388,134 @@ export const useAppStore = create<AppState>((set, get) => ({
       });
       
       console.log(`🎁 Share bonus: ${owner.slice(0, 8)}... received +1 FREE ticket!`);
+    }
+  },
+
+  initDemo: () => {
+    const now = Date.now();
+    const demoTickets: Ticket[] = Array.from({ length: 500 }, (_, index) => ({
+      id: `demo-${index}`,
+      owner: `0xdemo${(Math.random() * 1e16).toString(16).padStart(16, '0')}`,
+      timestamp: now - Math.floor(Math.random() * 86400000),
+      drawNumber: 1,
+    }));
+
+    const demoDraws: Draw[] = [
+      {
+        id: 1,
+        timestamp: now - 3600 * 1000 * 24,
+        winner: demoTickets[0]?.owner || '0x0000',
+        winningTicket: demoTickets[0]?.id || 'demo-0',
+        prize: 42000,
+        totalTickets: demoTickets.length,
+      },
+    ];
+
+    const demoSecondary: SecondaryDraw[] = [
+      {
+        id: 1,
+        timestamp: now - 3600 * 1000 * 23,
+        totalPot: 2500,
+        totalTickets: demoTickets.length,
+        winners: demoTickets.slice(0, 25).map((ticket) => ({
+          address: ticket.owner,
+          ticketId: ticket.id,
+          prize: 100,
+        })),
+      },
+    ];
+
+    set({
+      mode: 'demo',
+      jackpot: 42500,
+      secondaryPot: 2500,
+      tickets: demoTickets,
+      draws: demoDraws,
+      secondaryDraws: demoSecondary,
+      totalTicketsSold: demoTickets.length,
+      currentDrawNumber: 2,
+      connected: false,
+    });
+  },
+
+  setMode: (mode) => {
+    // Always enforce FORCED_MODE if set (defaults to 'live')
+    if (FORCED_MODE) {
+      const forcedMode = FORCED_MODE;
+      set({ mode: forcedMode });
+      if (typeof window !== 'undefined') {
+        // Aggressively clear any demo mode traces
+        localStorage.removeItem('aureus_mode');
+        localStorage.removeItem('aureus_demo_initialized');
+        // Set live mode explicitly
+        if (forcedMode === 'live') {
+          localStorage.setItem('aureus_mode', 'live');
+        }
+      }
+      if (forcedMode === 'live') {
+        get().syncOnChainData();
+      }
+      return;
+    }
+    set({ mode });
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('aureus_mode', mode);
+    }
+    if (mode === 'live') {
+      get().syncOnChainData();
+    }
+  },
+
+  syncOnChainData: async (address) => {
+    if (get().mode !== 'live') return;
+    set({ isSyncing: true });
+    try {
+      const chain = await fetchLotteryState();
+      set({
+        jackpot: chain.mainPot,
+        secondaryPot: chain.bonusPot,
+        currentDrawNumber: chain.currentDrawId,
+        draws: chain.draws,
+        secondaryDraws: chain.secondaryDraws,
+        totalTicketsSold: chain.totalTickets,
+        lastSynced: Date.now(),
+      });
+
+      const targetAddress = address || get().user?.address;
+      if (targetAddress) {
+        const userData = await fetchUserState(targetAddress, chain.currentDrawId);
+        if (userData) {
+          const placeholderTickets =
+            userData.ticketCount > 0
+              ? Array.from({ length: userData.ticketCount }, (_, index) => ({
+                  id: `onchain-${chain.currentDrawId}-${index}`,
+                  owner: targetAddress,
+                  timestamp: Date.now(),
+                  drawNumber: chain.currentDrawId,
+                }))
+              : [];
+
+          set((state) => ({
+            connected: true,
+            user: {
+              address: targetAddress,
+              username: state.user?.username,
+              telegramUsername: state.user?.telegramUsername,
+              tickets: placeholderTickets,
+              ticketCount: userData.ticketCount,
+              totalSpent: userData.lifetimeTickets * TICKET_PRICE,
+              totalWon: state.user?.totalWon || 0,
+              lifetimeTickets: userData.lifetimeTickets,
+              usdcBalance: userData.usdcBalance,
+              pendingClaim: userData.pendingClaim,
+            },
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to sync on-chain data', error);
+    } finally {
+      set({ isSyncing: false });
     }
   },
 }));

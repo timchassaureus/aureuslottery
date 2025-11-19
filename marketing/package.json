@@ -1,0 +1,14 @@
+{
+  "name": "aureus-video-generator",
+  "version": "1.0.0",
+  "description": "Generate viral marketing videos for AUREUS",
+  "scripts": {
+    "generate": "node video-generator.js"
+  },
+  "keywords": ["video", "marketing", "aureus"],
+  "author": "",
+  "license": "MIT"
+}
+
+
+

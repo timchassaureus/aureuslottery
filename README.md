@@ -74,6 +74,21 @@ npm run build
 npm start
 ```
 
+## 🔧 Environment Variables
+
+Create a `.env.local` (or export variables in your shell) before running the app:
+
+- `NEXT_PUBLIC_CHAIN_ID` – Base network chain id (default: `84532` for Base Sepolia)
+- `NEXT_PUBLIC_RPC_URL` – JSON-RPC endpoint that serves the smart contract data
+- `NEXT_PUBLIC_LOTTERY_ADDRESS` – Address of the deployed `AureusLottery` contract
+- `NEXT_PUBLIC_USDC_ADDRESS` – Address of the USDC contract you want to spend
+- `NEXT_PUBLIC_OWNER_ADDRESS` – Address that can trigger on-chain draws from the UI
+- `NEXT_PUBLIC_DEFAULT_MODE` – Starting mode (`live` or `demo`)
+- `NEXT_PUBLIC_FORCE_MODE` – Set to `live` to lock the interface in on-chain mode
+- `NEXT_PUBLIC_BASESCAN_TX_URL` – Explorer base URL (ex: `https://sepolia.basescan.org/tx/`)
+
+Setting `NEXT_PUBLIC_FORCE_MODE=live` makes the UI load directly in operational mode and prevents users from switching back to demo, which is recommended for production deployments.
+
 ## 🏗️ Architecture
 
 ### Technologies

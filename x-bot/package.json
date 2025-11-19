@@ -1,0 +1,28 @@
+{
+  "name": "aureus-x-bot",
+  "version": "1.0.0",
+  "description": "AUREUS Twitter/X Bot - Automated posting and engagement",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "twitter",
+    "x",
+    "bot",
+    "aureus",
+    "lottery"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "twitter-api-v2": "^2.0.3",
+    "dotenv": "^16.4.5",
+    "node-cron": "^3.0.3"
+  }
+}
+
+
+

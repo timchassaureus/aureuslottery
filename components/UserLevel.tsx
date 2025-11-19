@@ -49,7 +49,7 @@ export default function UserLevel() {
 
   if (!user) return null;
 
-  const ticketCount = user.tickets.length;
+  const ticketCount = user.ticketCount ?? user.tickets.length;
   const currentLevel = getLevel(ticketCount);
   const nextLevel = LEVELS.find(l => l.min > ticketCount) || LEVELS[LEVELS.length - 1];
   const progress = nextLevel ? ((ticketCount / nextLevel.min) * 100) : 100;

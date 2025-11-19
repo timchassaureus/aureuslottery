@@ -11,7 +11,7 @@ export default function InviteBar() {
   let siteUrl = envUrl || rawOrigin || 'https://aureus.app';
   if (siteUrl.startsWith('http://')) siteUrl = siteUrl.replace('http://', 'https://');
   if (siteUrl.includes('localhost')) siteUrl = envUrl || 'https://aureus.app';
-  const shareMessage = `Join me on Aureus! $1 tickets • Draw 9PM UTC + bonus 11PM. Let’s push the pot to millions! #Aureus`;
+  const shareMessage = `Join me on Aureus! $1 tickets • Draw 9PM UTC + bonus 9:30PM. Let's push the pot to millions! #Aureus`;
 
   const shareOnX = () => {
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}&url=${encodeURIComponent(siteUrl)}`;

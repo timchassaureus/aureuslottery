@@ -15,7 +15,7 @@ interface Achievement {
 
 export default function AchievementSystem() {
   const { user } = useAppStore();
-  const ticketCount = user?.tickets.length || 0;
+  const ticketCount = user?.ticketCount ?? user?.tickets.length ?? 0;
 
   // ALL achievements organized by level tiers
   const allAchievements: Achievement[] = [

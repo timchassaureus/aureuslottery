@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X, Ticket, Coins } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import toast from 'react-hot-toast';
+import { buyTicketsOnChain } from '@/lib/blockchain';
+import { BASESCAN_TX_URL, DEFAULT_CHAIN_ID } from '@/lib/config';
 
 interface Props {
   isOpen: boolean;
@@ -30,8 +32,17 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
   const [count, setCount] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState<'crypto' | 'card'>('crypto');
   const [cardProvider, setCardProvider] = useState<'moonpay' | 'ramp'>('moonpay');
-  const { jackpot, ticketPrice, user, buyMultipleTickets, setJackpot } = useAppStore();
+  const { jackpot, ticketPrice, user, buyMultipleTickets, setJackpot, mode, syncOnChainData } = useAppStore();
   const [processing, setProcessing] = useState(false);
+  const [txHash, setTxHash] = useState<string | null>(null);
+  const isLive = mode === 'live';
+
+  useEffect(() => {
+    if (!isOpen) {
+      setTxHash(null);
+      setProcessing(false);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -44,7 +55,7 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
   const savings = count * ticketPrice * discount;
   
   // Only 85% of what they pay goes to the jackpot (winner's share)
-  const newJackpot = jackpot + (count * pricePerTicket * 0.85);
+  const newJackpot = isLive ? jackpot : jackpot + (count * pricePerTicket * 0.85);
 
   const handleBuy = async () => {
     if (!user) {
@@ -57,41 +68,71 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
       return;
     }
 
-    // Mock balance check (will be real with blockchain)
-    const mockBalance = 47.50;
-    if (totalCost > mockBalance) {
-      toast.error(`Insufficient USDC balance! You need $${totalCost.toFixed(2)} but have $${mockBalance.toFixed(2)}`);
+    if (isLive && paymentMethod === 'card') {
+      toast.error('Card payments are coming soon. Please use USDC for live draws.');
       return;
     }
     
     setProcessing(true);
     
-    // Show loading toast
     const loadingToast = toast.loading(
-      paymentMethod === 'card' 
-        ? 'Processing card payment...' 
-        : 'Processing transaction...'
+      isLive
+        ? 'Submitting transaction...'
+        : paymentMethod === 'card'
+          ? 'Processing card payment...'
+          : 'Processing transaction...'
     );
     
     try {
-      // Simulate transaction delay (longer for card payments)
-      const delay = paymentMethod === 'card' ? 3000 : 1500;
-      await new Promise(resolve => setTimeout(resolve, delay));
-      
-      buyMultipleTickets(user.address, count);
-      setJackpot(newJackpot);
-      
-      // Success!
-      toast.success(
-        `🎉 Successfully purchased ${count} ticket${count > 1 ? 's' : ''}!`,
-        { id: loadingToast }
-      );
+      if (isLive) {
+        const receipt = await buyTicketsOnChain(count);
+        setTxHash(receipt.hash);
+        await syncOnChainData(user.address);
+        const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
+        toast.success(
+          `🎉 Purchased ${count} ticket${count > 1 ? 's' : ''} on ${networkName}!`,
+          { id: loadingToast }
+        );
+      } else {
+        const delay = paymentMethod === 'card' ? 3000 : 1500;
+        await new Promise(resolve => setTimeout(resolve, delay));
+        buyMultipleTickets(user.address, count);
+        setJackpot(newJackpot);
+        toast.success(
+          `🎉 Successfully purchased ${count} ticket${count > 1 ? 's' : ''}!`,
+          { id: loadingToast }
+        );
+      }
       
       onClose();
       setCount(1);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Purchase failed:', error);
-      toast.error('Transaction failed! Please try again.', { id: loadingToast });
+      
+      let errorMessage = 'Transaction failed! Please try again.';
+      
+      if (error?.message || error?.shortMessage) {
+        const msg = error.message || error.shortMessage || '';
+        
+        if (msg.includes('insufficient funds') || msg.includes('balance')) {
+          errorMessage = 'Insufficient USDC balance. Please add more USDC to your wallet.';
+        } else if (msg.includes('user rejected') || msg.includes('User denied')) {
+          errorMessage = 'Transaction cancelled.';
+        } else if (msg.includes('network') || msg.includes('Chain ID')) {
+          const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
+          errorMessage = `Wrong network. Please switch to ${networkName}.`;
+        } else if (msg.includes('allowance') || msg.includes('approve')) {
+          errorMessage = 'Please approve USDC spending first, then try again.';
+        } else if (msg.includes('gas')) {
+          errorMessage = 'Transaction failed due to gas estimation. Please try again.';
+        } else {
+          errorMessage = msg.length > 100 ? 'Transaction failed. Please check your wallet and try again.' : msg;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage, { id: loadingToast, duration: 6000 });
     } finally {
       setProcessing(false);
     }
@@ -173,6 +214,11 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
                   💡 <strong>Card payment:</strong> Your payment will be converted to USDC via our payment partner. 
                   Supports Visa, Mastercard, Amex.
                 </p>
+                {isLive && (
+                  <p className="text-yellow-300 text-xs mt-2">
+                    ⚠️ Card checkout is available in demo mode. Use USDC wallet for live draws.
+                  </p>
+                )}
                 {/* Provider choice */}
                 <div className="mt-3 grid grid-cols-2 gap-2 max-w-xs mx-auto">
                   <button
@@ -221,18 +267,18 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
               type="number"
               min="1"
               value={count}
-              onChange={(e) => {
-                const val = e.target.value;
+              onChange={(event) => {
+                const val = event.target.value;
                 if (val === '') {
                   setCount(0);
                 } else {
-                  const num = parseInt(val);
-                  if (!isNaN(num) && num > 0) {
+                  const num = parseInt(val, 10);
+                  if (!Number.isNaN(num) && num > 0) {
                     setCount(num);
                   }
                 }
               }}
-              onBlur={(e) => {
+              onBlur={() => {
                 if (count < 1) setCount(1);
               }}
               className="w-full px-4 py-3 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white text-center text-2xl font-bold focus:outline-none focus:border-primary-500"
@@ -339,6 +385,20 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
             <div className="text-xs text-purple-400 text-center mt-2">
               This is the amount the winner will receive (100%)
             </div>
+            {isLive && txHash && (
+              <div className="text-xs text-green-300 text-center mt-2">
+                Tx confirmed —
+                {' '}
+                <a
+                  href={`${BASESCAN_TX_URL}${txHash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline"
+                >
+                  view on BaseScan
+                </a>
+              </div>
+            )}
           </div>
 
           {/* Action button moved to sticky footer below */}

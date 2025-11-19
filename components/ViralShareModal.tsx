@@ -23,7 +23,7 @@ export default function ViralShareModal({ isOpen, onClose, ticketCount, jackpot 
 
   const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://example.com';
 
-  const viralTweetMessage = `I just bought ${ticketCount} ticket${ticketCount > 1 ? 's' : ''} for the $${jackpot.toLocaleString()} Aureus jackpot!\nDraw 9PM UTC + bonus 11PM. $1/ticket. #Aureus`;
+  const viralTweetMessage = `I just bought ${ticketCount} ticket${ticketCount > 1 ? 's' : ''} for the $${jackpot.toLocaleString()} Aureus jackpot!\nDraw 9PM UTC + bonus 9:30PM. $1/ticket. #Aureus`;
 
   const handleShareOnX = () => {
     const envUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -76,8 +76,8 @@ export default function ViralShareModal({ isOpen, onClose, ticketCount, jackpot 
 
   const handleShare = (platform: 'telegram' | 'whatsapp') => {
     const messages = {
-      telegram: `🎰 I just entered the $${jackpot.toLocaleString()} jackpot draw!\n\nAureus Lottery - Daily crypto draws at 9PM UTC 🔥\nTickets $1 only!\n\nJoin: ${siteUrl}`,
-      whatsapp: `🎰 Check this out! $${jackpot.toLocaleString()} jackpot TODAY!\n\nAureus - Daily crypto lottery\n✅ Fair & transparent\n✅ $1 tickets\n✅ Draw at 9PM UTC\n\n${siteUrl}`
+      telegram: `🎰 I just entered the $${jackpot.toLocaleString()} jackpot draw!\n\nAureus Lottery - Daily crypto draws at 9PM & 9:30PM UTC 🔥\nTickets $1 only!\n\nJoin: ${siteUrl}`,
+      whatsapp: `🎰 Check this out! $${jackpot.toLocaleString()} jackpot TODAY!\n\nAureus - Daily crypto lottery\n✅ Fair & transparent\n✅ $1 tickets\n✅ Draws at 9PM & 9:30PM UTC\n\n${siteUrl}`
     };
 
     const urls = {

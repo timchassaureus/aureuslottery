@@ -21,10 +21,26 @@ import UrgencyBanner from '@/components/UrgencyBanner';
 // import StickyBuyButton from '@/components/StickyBuyButton';
 import ViralShareModal from '@/components/ViralShareModal';
 import InviteBar from '@/components/InviteBar';
+import AdminControls from '@/components/AdminControls';
+import WalletInstallPrompt from '@/components/WalletInstallPrompt';
 import { useAppStore } from '@/lib/store';
+import { FORCED_MODE, DEFAULT_CHAIN_ID } from '@/lib/config';
 
 export default function Home() {
-  const { jackpot, secondaryPot, user, tickets, currentDrawNumber, performDraw, performSecondaryDraw } = useAppStore();
+  const { 
+    jackpot, 
+    secondaryPot, 
+    user, 
+    tickets, 
+    currentDrawNumber, 
+    performDraw, 
+    performSecondaryDraw, 
+    initDemo,
+    mode,
+    setMode,
+    syncOnChainData,
+    isSyncing,
+  } = useAppStore();
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [buyModalOpen, setBuyModalOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -48,6 +64,53 @@ export default function Home() {
   const [preDrawType, setPreDrawType] = useState<'8pm' | '10pm' | null>(null);
   const [hasTriggered8PM, setHasTriggered8PM] = useState(false);
   const [hasTriggered10PM, setHasTriggered10PM] = useState(false);
+  const isLive = mode === 'live';
+
+  // Force live mode if FORCED_MODE is set, and clear localStorage
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Always force live mode (FORCED_MODE defaults to 'live')
+    if (FORCED_MODE === 'live') {
+      // Clear any stored demo mode immediately
+      localStorage.removeItem('aureus_mode');
+      localStorage.removeItem('aureus_demo_initialized');
+      
+      // Force live mode immediately
+      if (mode !== 'live') {
+        setMode('live');
+      }
+      
+      // Double-check: if localStorage still has demo, clear it again
+      const checkInterval = setInterval(() => {
+        const stored = localStorage.getItem('aureus_mode');
+        if (stored === 'demo') {
+          localStorage.removeItem('aureus_mode');
+          localStorage.removeItem('aureus_demo_initialized');
+          if (mode !== 'live') {
+            setMode('live');
+          }
+        }
+      }, 1000);
+      
+      return () => clearInterval(checkInterval);
+    }
+    
+    // Only restore from localStorage if not forced to live
+    if (FORCED_MODE === 'demo') {
+      const storedMode = localStorage.getItem('aureus_mode') as 'demo' | 'live' | null;
+      if (storedMode && storedMode !== mode) {
+        setMode(storedMode);
+      }
+    }
+  }, [mode, setMode]);
+
+  useEffect(() => {
+    if (!isLive) return;
+    syncOnChainData(user?.address);
+    const interval = setInterval(() => syncOnChainData(user?.address), 30000);
+    return () => clearInterval(interval);
+  }, [isLive, user?.address, syncOnChainData]);
 
   // Emergency: force-accept disclaimer for all users to unblock access
   useEffect(() => {
@@ -58,6 +121,24 @@ export default function Home() {
       }
     } catch {}
   }, []);
+
+  // Auto-initialize demo mode on first load (if no data exists)
+  // Skip if FORCED_MODE is set (we're in live mode)
+  useEffect(() => {
+    if (FORCED_MODE) return; // Don't auto-init demo if forced to live
+    if (mode !== 'demo') return;
+    const hasData = tickets.length > 0 || jackpot > 100;
+    const demoInitialized = typeof window !== 'undefined' && localStorage.getItem('aureus_demo_initialized');
+    
+    // Auto-init demo if no data and not already initialized
+    if (!hasData && !demoInitialized) {
+      initDemo();
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('aureus_demo_initialized', 'true');
+      }
+      toast.success('🎮 Demo mode loaded!', { duration: 3000 });
+    }
+  }, [tickets.length, jackpot, initDemo, mode]);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -87,7 +168,8 @@ export default function Home() {
 
     // Auto-trigger draws (DEMO - simule le comportement avec smart contract)
     useEffect(() => {
-      const totalSeconds = timeLeft.hours * 3600 + timeLeft.minutes * 60 + timeLeft.seconds;
+    if (isLive) return;
+    const totalSeconds = timeLeft.hours * 3600 + timeLeft.minutes * 60 + timeLeft.seconds;
       
       // Trigger 9PM draw countdown (2 minutes before)
       if (totalSeconds <= 120 && totalSeconds > 0 && !hasTriggered8PM && !showPreDrawCountdown) {
@@ -96,21 +178,25 @@ export default function Home() {
         toast('🎰 Main Draw Starting!', { duration: 5000 });
       }
       
-      // Check for 11PM draw (2 hours after 9PM)
+      // Check for 9:30PM draw (30 minutes after 9PM)
     const now = new Date();
     const currentHour = now.getUTCHours();
     const currentMinute = now.getUTCMinutes();
     
-    // 11PM draw logic (23h UTC)
-    if (currentHour === 23 && currentMinute >= 58 && !hasTriggered10PM && !showPreDrawCountdown) {
+    // 9:30PM draw logic (21:30 UTC)
+    if (currentHour === 21 && currentMinute >= 28 && currentMinute <= 32 && !hasTriggered10PM && !showPreDrawCountdown) {
       setPreDrawType('10pm');
       setShowPreDrawCountdown(true);
-      toast('💎 Secondary Draw Starting!', { duration: 5000 });
+      toast('💎 Bonus Draw Starting!', { duration: 5000 });
     }
-  }, [timeLeft, hasTriggered8PM, hasTriggered10PM, showPreDrawCountdown]);
+  }, [timeLeft, hasTriggered8PM, hasTriggered10PM, showPreDrawCountdown, isLive]);
 
   // Handle countdown complete -> trigger draw
   const handleCountdownComplete = async () => {
+    if (isLive) {
+      setShowPreDrawCountdown(false);
+      return;
+    }
     setShowPreDrawCountdown(false);
     
     if (preDrawType === '8pm') {
@@ -180,17 +266,19 @@ export default function Home() {
 
   // Reset triggers at midnight UTC
   useEffect(() => {
+    if (isLive) return;
     const now = new Date();
     if (now.getUTCHours() === 0 && now.getUTCMinutes() === 0) {
       setHasTriggered8PM(false);
       setHasTriggered10PM(false);
     }
-  }, [timeLeft]);
+  }, [timeLeft, isLive]);
 
-  const userTicketsCount = user ? user.tickets.length : 0;
+  const userTicketsCount = user ? user.ticketCount ?? user.tickets.length : 0;
 
   return (
     <>
+      <WalletInstallPrompt />
       <DisclaimerModal />
       <UsernameModal />
       
@@ -211,8 +299,61 @@ export default function Home() {
             <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent">
               AUREUS
             </h1>
+            <span
+              className={`text-xs px-3 py-1 rounded-full border ${
+                isLive
+                  ? 'bg-green-600/30 border-green-400/40 text-green-200'
+                  : 'bg-slate-800/60 border-white/20 text-white/80'
+              }`}
+            >
+              {isLive ? (isSyncing ? 'Syncing…' : `Live • ${DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia'}`) : 'Demo'}
+            </span>
           </div>
           <div className="flex items-center gap-3">
+            {FORCED_MODE ? (
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-green-500/40 bg-green-700/60 font-semibold">
+                <span className="text-lg">🟢</span>
+                <span className="hidden md:inline">
+                  {isSyncing ? 'Syncing…' : `Live • ${DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia'}`}
+                </span>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  if (isLive) {
+                    setMode('demo');
+                    toast.success('Demo mode enabled');
+                  } else {
+                    setMode('live');
+                    syncOnChainData(user?.address);
+                    toast.success('Live mode enabled (Base Sepolia)');
+                  }
+                }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition-all hover:scale-105 border ${
+                  isLive
+                    ? 'bg-green-700/60 border-green-500/40 hover:bg-green-700/80'
+                    : 'bg-slate-800/60 border-slate-500/40 hover:bg-slate-700/70'
+                }`}
+              >
+                <span className="text-lg">{isLive ? '🟢' : '🛰️'}</span>
+                <span className="hidden md:inline">
+                  {isLive ? (isSyncing ? 'Syncing…' : `Live • ${DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia'}`) : 'Go Live'}
+                </span>
+              </button>
+            )}
+            {!isLive && !FORCED_MODE && (
+              <button
+                onClick={() => {
+                  initDemo();
+                  toast.success('🎮 Demo mode initialized!', { duration: 3000 });
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-green-700/50 hover:bg-green-700/70 rounded-xl font-semibold transition-all hover:scale-105 border border-green-600/30"
+                title="Initialize demo with realistic data"
+              >
+                <span className="text-lg">🎮</span>
+                <span className="hidden md:inline">Demo Data</span>
+              </button>
+            )}
             <button
               onClick={() => setHowItWorksOpen(true)}
               className="flex items-center gap-2 px-4 py-2 bg-violet-700/50 hover:bg-violet-700/70 rounded-xl font-semibold transition-all hover:scale-105 border border-violet-600/30"
@@ -242,6 +383,12 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {isLive && (
+        <div className="hidden md:block container mx-auto px-4 mt-4">
+          <AdminControls />
+        </div>
+      )}
 
       {/* Urgency Banner - desktop only */}
       <div className="hidden md:block">
@@ -278,7 +425,7 @@ export default function Home() {
                 </div>
 
                 <p className="text-xl md:text-2xl text-primary-400 font-bold mt-6">
-                  🎯 Daily Draw at 9PM UTC
+                  🎯 Daily Draws
                 </p>
 
                 {userTicketsCount > 0 && (
@@ -305,7 +452,7 @@ export default function Home() {
                   <p className="text-3xl font-black text-white mb-1">
                     ${jackpot.toLocaleString('en-US')}
                   </p>
-                  <p className="text-sm text-slate-300">🕘 9PM UTC • 1 Winner</p>
+                  <p className="text-sm text-slate-300">Main Jackpot</p>
                 </div>
 
                 {/* Divider */}
@@ -320,7 +467,7 @@ export default function Home() {
                   <p className="text-3xl font-black text-white mb-1">
                     ${secondaryPot.toLocaleString('en-US')}
                   </p>
-                  <p className="text-sm text-slate-300">🕚 11PM UTC • 25 Winners</p>
+                  <p className="text-sm text-slate-300">25 Winners</p>
                 </div>
               </div>
 
@@ -328,7 +475,7 @@ export default function Home() {
               <div className="mt-4 bg-gradient-to-r from-violet-500/10 to-blue-500/10 border border-violet-500/30 rounded-lg p-3">
                 <div className="text-center space-y-1">
                   <p className="text-xs text-violet-200">
-                    💡 <strong>Every ticket enters BOTH draws!</strong> Win big at 9PM or share the bonus pot at 11PM 🎉
+                    💡 <strong>Every ticket enters BOTH draws!</strong> Win big or share the bonus pot 🎉
                   </p>
                   <p className="text-xs text-yellow-300 font-bold">
                     📣 Invite your friends — more players = a BIGGER pot. Let’s push the jackpot to <span className="text-white">MILLIONS daily</span>! 🚀

@@ -88,7 +88,8 @@ export default function PremiumChat() {
     }
   };
 
-  const hasTickets = user && user.tickets.length > 0;
+  const userTickets = user?.ticketCount ?? user?.tickets.length ?? 0;
+  const hasTickets = userTickets > 0;
 
   return (
     <>

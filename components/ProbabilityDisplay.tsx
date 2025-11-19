@@ -8,7 +8,9 @@ export default function ProbabilityDisplay() {
 
   if (!user || totalTicketsSold === 0) return null;
 
-  const userTickets = user.tickets.filter(t => t.drawNumber === currentDrawNumber).length;
+  const userTickets =
+    user.ticketCount ??
+    user.tickets.filter(t => t.drawNumber === currentDrawNumber).length;
   const probability = (userTickets / totalTicketsSold) * 100;
   const needForOnePercent = Math.ceil(totalTicketsSold * 0.01) - userTickets;
 

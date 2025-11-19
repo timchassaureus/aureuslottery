@@ -6,11 +6,11 @@ import { useAppStore } from '@/lib/store';
 export default function EnhancedWinnersHistory() {
   const { draws, secondaryDraws } = useAppStore();
   
-  // Get last 5 main draws
-  const recentDraws = [...draws].reverse().slice(0, 5);
+  // Get last 5 main draws (most recent first)
+  const recentDraws = [...draws].slice(-5).reverse();
   
-  // Get last 3 secondary draws
-  const recentSecondaryDraws = [...secondaryDraws].reverse().slice(0, 3);
+  // Get last 3 secondary draws (most recent first)
+  const recentSecondaryDraws = [...secondaryDraws].slice(-3).reverse();
 
   return (
     <div className="bg-gradient-to-br from-indigo-950/30 via-blue-950/30 to-slate-950/30 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:border-white/20 transition-all">
@@ -47,7 +47,7 @@ export default function EnhancedWinnersHistory() {
                         </p>
                       </div>
                       <p className="text-xs text-slate-400">
-                        {new Date(draw.timestamp).toLocaleDateString()} • {new Date(draw.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(draw.timestamp).toLocaleDateString()}
                       </p>
                     </div>
                     
@@ -87,7 +87,7 @@ export default function EnhancedWinnersHistory() {
                         {draw.winners.length} winners • ${prizePerWinner.toLocaleString('en-US')} each
                       </p>
                       <p className="text-xs text-slate-400">
-                        {new Date(draw.timestamp).toLocaleDateString()} • {new Date(draw.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(draw.timestamp).toLocaleDateString()}
                       </p>
                     </div>
                     

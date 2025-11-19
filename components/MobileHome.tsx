@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Trophy, Timer, User, Award } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
+import { FORCED_MODE } from '@/lib/config';
 import WalletButton from '@/components/WalletButton';
 import BuyTicketsModal from '@/components/BuyTicketsModal';
 import EnhancedWinnersHistory from '@/components/EnhancedWinnersHistory';
@@ -16,7 +17,32 @@ import InviteBar from '@/components/InviteBar';
 import toast from 'react-hot-toast';
 
 export default function MobileHome() {
-  const { jackpot, secondaryPot, user } = useAppStore();
+  const { jackpot, secondaryPot, user, initDemo, mode, setMode, syncOnChainData } = useAppStore();
+  
+  // Force live mode on mobile too
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    if (FORCED_MODE === 'live') {
+      localStorage.removeItem('aureus_mode');
+      localStorage.removeItem('aureus_demo_initialized');
+      if (mode !== 'live') {
+        setMode('live');
+      }
+      
+      // Continuous check to prevent demo mode
+      const checkInterval = setInterval(() => {
+        const stored = localStorage.getItem('aureus_mode');
+        if (stored === 'demo' || mode !== 'live') {
+          localStorage.removeItem('aureus_mode');
+          localStorage.removeItem('aureus_demo_initialized');
+          setMode('live');
+        }
+      }, 1000);
+      
+      return () => clearInterval(checkInterval);
+    }
+  }, [mode, setMode]);
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [buyOpen, setBuyOpen] = useState(false);
   const [howItWorksOpen, setHowItWorksOpen] = useState(false);
@@ -45,7 +71,24 @@ export default function MobileHome() {
     return () => clearInterval(timer);
   }, []);
 
-  const userTicketsCount = user ? user.tickets.length : 0;
+  const userTicketsCount = user ? user.ticketCount ?? user.tickets.length : 0;
+  const isLive = mode === 'live';
+
+  // Auto-initialize demo mode on first load (if no data exists)
+  useEffect(() => {
+    if (mode !== 'demo') return;
+    const hasData = jackpot > 100;
+    const demoInitialized = typeof window !== 'undefined' && localStorage.getItem('aureus_demo_initialized');
+    
+    // Auto-init demo if no data and not already initialized
+    if (!hasData && !demoInitialized) {
+      initDemo();
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('aureus_demo_initialized', 'true');
+      }
+      toast.success('🎮 Demo loaded!', { duration: 2000 });
+    }
+  }, [jackpot, initDemo, mode]);
 
   return (
     <div className="md:hidden min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 via-purple-950 to-slate-900 text-white relative">
@@ -63,8 +106,49 @@ export default function MobileHome() {
             <h1 className="text-2xl font-black bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent">
               AUREUS
             </h1>
+            <span
+              className={`text-[10px] px-2 py-0.5 rounded-full border ${
+                isLive
+                  ? 'bg-green-600/30 border-green-400/40 text-green-200'
+                  : 'bg-slate-800/60 border-white/20 text-white/80'
+              }`}
+            >
+              {isLive ? 'Live' : 'Demo'}
+            </span>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                if (isLive) {
+                  setMode('demo');
+                  toast.success('Demo mode enabled');
+                } else {
+                  setMode('live');
+                  syncOnChainData(user?.address);
+                  toast.success('Live mode enabled');
+                }
+              }}
+              className={`p-2 rounded-xl transition-all border ${
+                isLive
+                  ? 'bg-green-700/50 border-green-500/40'
+                  : 'bg-slate-800/60 border-slate-500/40'
+              }`}
+              title={isLive ? 'Live on Base Sepolia' : 'Activate live mode'}
+            >
+              <span className="text-lg">{isLive ? '🟢' : '🛰️'}</span>
+            </button>
+            {!isLive && (
+              <button
+                onClick={() => {
+                  initDemo();
+                  toast.success('🎮 Demo loaded!', { duration: 2000 });
+                }}
+                className="p-2 bg-green-700/50 hover:bg-green-700/70 rounded-xl transition-all border border-green-600/30"
+                title="Demo"
+              >
+                <span className="text-lg">🎮</span>
+              </button>
+            )}
             <button
               onClick={() => setHowItWorksOpen(true)}
               className="p-2 bg-violet-700/50 hover:bg-violet-700/70 rounded-xl transition-all border border-violet-600/30"
@@ -125,7 +209,7 @@ export default function MobileHome() {
               </div>
 
               <p className="text-lg text-primary-400 font-bold mt-4">
-                🎯 Daily Draw at 9PM UTC
+                🎯 Daily Draws
               </p>
 
               {userTicketsCount > 0 && (
@@ -152,7 +236,7 @@ export default function MobileHome() {
                 <p className="text-2xl font-black text-white mb-1">
                   ${jackpot.toLocaleString('en-US')}
                 </p>
-                <p className="text-xs text-slate-300">🕘 9PM UTC • 1 Winner</p>
+                <p className="text-xs text-slate-300">Main Jackpot</p>
               </div>
 
               {/* Divider */}
@@ -167,7 +251,7 @@ export default function MobileHome() {
                 <p className="text-2xl font-black text-white mb-1">
                   ${secondaryPot.toLocaleString('en-US')}
                 </p>
-                <p className="text-xs text-slate-300">🕚 11PM UTC • 25 Winners</p>
+                <p className="text-xs text-slate-300">25 Winners</p>
               </div>
             </div>
 
@@ -175,7 +259,7 @@ export default function MobileHome() {
             <div className="mt-3 bg-gradient-to-r from-violet-500/10 to-blue-500/10 border border-violet-500/30 rounded-lg p-2">
               <div className="text-center space-y-1">
                 <p className="text-xs text-violet-200">
-                  💡 <strong>Every ticket enters BOTH draws!</strong> Win big at 9PM or share the bonus pot at 11PM 🎉
+                  💡 <strong>Every ticket enters BOTH draws!</strong> Win big or share the bonus pot 🎉
                 </p>
                 <p className="text-xs text-yellow-300 font-bold">
                   📣 Invite your friends — more players = a BIGGER pot. Let's push the jackpot to <span className="text-white">MILLIONS daily</span>! 🚀

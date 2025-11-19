@@ -1,0 +1,23 @@
+{
+  "name": "aureus-contracts",
+  "version": "1.0.0",
+  "description": "AUREUS Lottery Smart Contracts",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:base": "hardhat run scripts/deploy.js --network base",
+    "deploy:base-sepolia": "hardhat run scripts/deploy.js --network baseSepolia",
+    "deploy:testnet": "hardhat run scripts/quick-testnet-deploy.js --network baseSepolia",
+    "setup": "bash scripts/setup-testnet.sh",
+    "auto-setup": "node scripts/auto-setup-testnet.js",
+    "verify": "hardhat verify --network base"
+  },
+  "devDependencies": {
+    "@chainlink/contracts": "^0.8.0",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "hardhat": "^2.22.0",
+    "dotenv": "^16.4.5"
+  }
+}
+
