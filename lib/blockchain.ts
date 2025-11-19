@@ -123,6 +123,10 @@ export async function ensureWalletProvider() {
 export async function connectWallet() {
   try {
     console.log('🔌 Starting wallet connection...');
+    console.log('🔍 Checking environment...', { 
+      hasWindow: typeof window !== 'undefined',
+      hasEthereum: typeof window !== 'undefined' && !!window.ethereum 
+    });
     
     // First, check if MetaMask is available
     if (typeof window === 'undefined') {
@@ -133,13 +137,15 @@ export async function connectWallet() {
       throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
     }
     
+    console.log('✅ MetaMask detected, creating provider...');
     // Use BrowserProvider for better compatibility
     const provider = new BrowserProvider(window.ethereum);
+    console.log('✅ Provider created');
     
     // Request account access
     let accounts: string[];
     try {
-      console.log('📋 Requesting account access...');
+      console.log('📋 Requesting account access via provider.send...');
       accounts = await provider.send('eth_requestAccounts', []) as string[];
       console.log('✅ Accounts received:', accounts);
     } catch (requestError: any) {

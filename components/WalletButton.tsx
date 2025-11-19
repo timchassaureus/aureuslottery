@@ -14,13 +14,24 @@ export default function WalletButton() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleConnect = async () => {
+    console.log('🔘 Connect button clicked!');
+    
     // Check if MetaMask is installed first
-    if (typeof window === 'undefined' || !window.ethereum) {
+    if (typeof window === 'undefined') {
+      console.error('❌ Window is undefined');
+      toast.error('This function must be called in a browser environment.', { duration: 6000 });
+      return;
+    }
+    
+    if (!window.ethereum) {
+      console.error('❌ MetaMask not detected');
       toast.error('MetaMask is not installed. Please install MetaMask to continue.', { duration: 6000 });
       return;
     }
     
+    console.log('✅ MetaMask detected, starting connection...');
     setConnecting(true);
+    
     try {
       console.log('🔄 Attempting to connect wallet...');
       const address = await connectWallet();
@@ -146,7 +157,12 @@ export default function WalletButton() {
     <div className="flex items-center gap-2">
       {typeof window !== 'undefined' && window.ethereum && <NetworkStatus />}
       <button
-        onClick={handleConnect}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('🔘 Button onClick triggered');
+          handleConnect();
+        }}
         disabled={connecting}
         className="flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50"
       >
