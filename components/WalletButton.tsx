@@ -14,38 +14,63 @@ export default function WalletButton() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleConnect = async () => {
+    // Check if MetaMask is installed first
+    if (typeof window === 'undefined' || !window.ethereum) {
+      toast.error('MetaMask is not installed. Please install MetaMask to continue.', { duration: 6000 });
+      return;
+    }
+    
     setConnecting(true);
     try {
+      console.log('🔄 Attempting to connect wallet...');
       const address = await connectWallet();
+      console.log('✅ Wallet address received:', address);
+      
       connectStore(address);
+      
       if (mode === 'live') {
         // Force sync to get fresh data from blockchain
         await syncOnChainData(address);
         // Sync again after a short delay to ensure data is fresh
         setTimeout(() => syncOnChainData(address).catch(console.error), 1000);
       }
+      
       toast.success('Wallet connected successfully! 🎉');
     } catch (error: any) {
-      console.error('Failed to connect wallet:', error);
+      console.error('❌ Failed to connect wallet:', error);
       
       // Provide specific error messages
       let errorMessage = 'Failed to connect wallet';
       
       if (error?.message) {
-        if (error.message.includes('MetaMask') || error.message.includes('wallet')) {
+        const msg = error.message.toLowerCase();
+        
+        if (msg.includes('metamask') || msg.includes('wallet')) {
           errorMessage = error.message;
-        } else if (error.message.includes('network') || error.message.includes('Chain ID')) {
+        } else if (msg.includes('rejected') || error.code === 4001) {
+          errorMessage = 'Connection rejected. Please approve the connection request in MetaMask.';
+        } else if (msg.includes('pending') || error.code === -32002) {
+          errorMessage = 'Connection request already pending. Please check your MetaMask window.';
+        } else if (msg.includes('network') || msg.includes('chain')) {
           errorMessage = error.message;
-        } else if (error.code === 4001) {
+        } else if (msg.includes('unlock')) {
+          errorMessage = 'Please unlock your MetaMask wallet and try again.';
+        } else if (msg.includes('install')) {
+          errorMessage = 'MetaMask is not installed. Please install MetaMask to continue.';
+        } else {
+          errorMessage = error.message.length > 100 
+            ? 'Connection failed. Please check your MetaMask and try again.' 
+            : error.message;
+        }
+      } else if (error?.code) {
+        if (error.code === 4001) {
           errorMessage = 'Connection rejected. Please approve the connection request.';
         } else if (error.code === -32002) {
-          errorMessage = 'Connection request already pending. Please check your wallet.';
-        } else {
-          errorMessage = `Connection failed: ${error.message}`;
+          errorMessage = 'Connection request already pending. Please check your MetaMask.';
         }
       }
       
-      toast.error(errorMessage, { duration: 5000 });
+      toast.error(errorMessage, { duration: 6000 });
     } finally {
       setConnecting(false);
     }

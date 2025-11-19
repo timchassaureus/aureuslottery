@@ -35,16 +35,22 @@ function getReadLotteryContract() {
 }
 
 export async function ensureWalletProvider() {
-  if (typeof window === 'undefined' || !window.ethereum) {
+  if (typeof window === 'undefined') {
+    throw new Error('This function must be called in a browser environment.');
+  }
+  
+  if (!window.ethereum) {
     throw new Error(
       'MetaMask (or compatible wallet) is required. Please install MetaMask to continue.'
     );
   }
   
   try {
+    console.log('🔍 Checking wallet provider...');
     const provider = new BrowserProvider(window.ethereum);
     const network = await provider.getNetwork();
     const currentChainId = Number(network.chainId);
+    console.log('🌐 Current network:', { chainId: currentChainId, expected: DEFAULT_CHAIN_ID });
     
     if (currentChainId !== DEFAULT_CHAIN_ID) {
       try {
@@ -99,11 +105,46 @@ export async function ensureWalletProvider() {
 }
 
 export async function connectWallet() {
-  const provider = await ensureWalletProvider();
-  const accounts = await provider.send('eth_requestAccounts', []);
-  const signer = await provider.getSigner();
-  const address = accounts[0] || (await signer.getAddress());
-  return { provider, signer, address };
+  try {
+    console.log('🔌 Starting wallet connection...');
+    const provider = await ensureWalletProvider();
+    console.log('✅ Wallet provider ensured');
+    
+    // Request account access
+    let accounts;
+    try {
+      accounts = await provider.send('eth_requestAccounts', []);
+      console.log('📋 Accounts requested:', accounts);
+    } catch (requestError: any) {
+      console.error('❌ Failed to request accounts:', requestError);
+      if (requestError.code === 4001) {
+        throw new Error('Connection rejected. Please approve the connection request in MetaMask.');
+      } else if (requestError.code === -32002) {
+        throw new Error('Connection request already pending. Please check your MetaMask window.');
+      }
+      throw new Error(`Failed to connect: ${requestError.message || 'Unknown error'}`);
+    }
+    
+    if (!accounts || accounts.length === 0) {
+      throw new Error('No accounts found. Please unlock your MetaMask wallet.');
+    }
+    
+    const signer = await provider.getSigner();
+    const address = accounts[0] || (await signer.getAddress());
+    
+    if (!address) {
+      throw new Error('Failed to get wallet address. Please try again.');
+    }
+    
+    console.log('✅ Wallet connected:', address);
+    return { provider, signer, address };
+  } catch (error) {
+    console.error('❌ Wallet connection error:', error);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to connect wallet. Please make sure MetaMask is installed and unlocked.');
+  }
 }
 
 export async function fetchLotteryState(limit = 5) {
