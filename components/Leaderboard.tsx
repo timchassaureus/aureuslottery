@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Trophy, Medal } from 'lucide-react';
+import { useAppStore } from '@/lib/store';
+import { getDisplayName } from '@/lib/utils';
 
 interface Props {
   isOpen: boolean;
@@ -10,17 +12,79 @@ interface Props {
 
 export default function Leaderboard({ isOpen, onClose }: Props) {
   const [selectedPeriod, setSelectedPeriod] = useState('daily');
+  const { tickets, draws, secondaryDraws, mode, currentDrawNumber } = useAppStore();
 
   if (!isOpen) return null;
 
-  // Mock leaderboard data
-  const leaderboardData = [
-    { rank: 1, address: '0x8f...3a4', tickets: 150, winnings: 45000, change: '+3' },
-    { rank: 2, address: '0x9a...7b8', tickets: 120, winnings: 32000, change: '+1' },
-    { rank: 3, address: '0x7c...2d6', tickets: 98, winnings: 28000, change: '-2' },
-    { rank: 4, address: '0x6f...1c5', tickets: 87, winnings: 24500, change: '+5' },
-    { rank: 5, address: '0x5e...9d4', tickets: 65, winnings: 18900, change: '-1' },
-  ];
+  // Calculate leaderboard from real data
+  const leaderboardData = useMemo(() => {
+    // Filter tickets based on period
+    let filteredTickets = tickets;
+    const now = Date.now();
+    
+    if (selectedPeriod === 'daily') {
+      const oneDayAgo = now - 24 * 60 * 60 * 1000;
+      filteredTickets = tickets.filter(t => t.timestamp >= oneDayAgo);
+    } else if (selectedPeriod === 'weekly') {
+      const oneWeekAgo = now - 7 * 24 * 60 * 60 * 1000;
+      filteredTickets = tickets.filter(t => t.timestamp >= oneWeekAgo);
+    }
+    // 'all-time' uses all tickets
+
+    // Count tickets per address
+    const ticketCounts = new Map<string, number>();
+    filteredTickets.forEach(ticket => {
+      ticketCounts.set(ticket.owner, (ticketCounts.get(ticket.owner) || 0) + 1);
+    });
+
+    // Calculate winnings from draws
+    const winnings = new Map<string, number>();
+    
+    // Main draws
+    draws.forEach(draw => {
+      if (draw.winner && draw.prize) {
+        winnings.set(draw.winner, (winnings.get(draw.winner) || 0) + draw.prize);
+      }
+    });
+    
+    // Secondary draws
+    secondaryDraws.forEach(draw => {
+      if (draw.winners) {
+        draw.winners.forEach(winner => {
+          if (winner.prize) {
+            winnings.set(winner.address, (winnings.get(winner.address) || 0) + winner.prize);
+          }
+        });
+      }
+    });
+
+    // Combine data and sort
+    const players = Array.from(ticketCounts.entries()).map(([address, ticketCount]) => ({
+      address,
+      tickets: ticketCount,
+      winnings: winnings.get(address) || 0,
+    }));
+
+    // Sort by tickets (primary) and winnings (secondary)
+    players.sort((a, b) => {
+      if (b.tickets !== a.tickets) {
+        return b.tickets - a.tickets;
+      }
+      return b.winnings - a.winnings;
+    });
+
+    // Add rank and format
+    return players.slice(0, 10).map((player, index) => ({
+      rank: index + 1,
+      address: player.address,
+      tickets: player.tickets,
+      winnings: player.winnings,
+      change: '', // No change tracking for now
+    }));
+  }, [tickets, draws, secondaryDraws, selectedPeriod]);
+
+  // In live mode, show empty state if no data
+  const hasData = leaderboardData.length > 0;
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -59,50 +123,63 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
 
         {/* Leaderboard */}
         <div className="space-y-3">
-          {leaderboardData.map((player, index) => (
-            <div
-              key={index}
-              className={`bg-purple-800/30 rounded-xl p-4 border-2 ${
-                player.rank === 1
-                  ? 'border-yellow-500/50 bg-yellow-900/10'
-                  : player.rank <= 3
-                  ? 'border-primary-500/50'
-                  : 'border-purple-700/30'
-              }`}
-            >
-              <div className="flex items-center gap-4">
-                {/* Rank */}
-                <div className="flex items-center justify-center w-12 h-12 rounded-full font-black text-xl">
-                  {player.rank === 1 ? (
-                    <span className="text-yellow-400">🥇</span>
-                  ) : player.rank === 2 ? (
-                    <span className="text-gray-300">🥈</span>
-                  ) : player.rank === 3 ? (
-                    <span className="text-orange-400">🥉</span>
-                  ) : (
-                    <span className="text-purple-400">#{player.rank}</span>
-                  )}
-                </div>
+          {!hasData && mode === 'live' ? (
+            <div className="text-center py-12">
+              <Trophy className="w-16 h-16 text-purple-400/50 mx-auto mb-4" />
+              <p className="text-xl font-bold text-purple-300 mb-2">No players yet</p>
+              <p className="text-purple-400">Be the first to buy tickets and appear on the leaderboard!</p>
+            </div>
+          ) : !hasData ? (
+            <div className="text-center py-12">
+              <Trophy className="w-16 h-16 text-purple-400/50 mx-auto mb-4" />
+              <p className="text-xl font-bold text-purple-300 mb-2">No data available</p>
+              <p className="text-purple-400">Start playing to see the leaderboard!</p>
+            </div>
+          ) : (
+            leaderboardData.map((player, index) => (
+              <div
+                key={`${player.address}-${index}`}
+                className={`bg-purple-800/30 rounded-xl p-4 border-2 ${
+                  player.rank === 1
+                    ? 'border-yellow-500/50 bg-yellow-900/10'
+                    : player.rank <= 3
+                    ? 'border-primary-500/50'
+                    : 'border-purple-700/30'
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  {/* Rank */}
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full font-black text-xl">
+                    {player.rank === 1 ? (
+                      <span className="text-yellow-400">🥇</span>
+                    ) : player.rank === 2 ? (
+                      <span className="text-gray-300">🥈</span>
+                    ) : player.rank === 3 ? (
+                      <span className="text-orange-400">🥉</span>
+                    ) : (
+                      <span className="text-purple-400">#{player.rank}</span>
+                    )}
+                  </div>
 
-                {/* Address */}
-                <div className="flex-1">
-                  <p className="font-mono font-bold text-lg">{player.address}</p>
-                  <div className="flex gap-4 text-sm text-purple-300 mt-1">
-                    <span>{player.tickets} tickets</span>
-                    <span>•</span>
-                    <span>${player.winnings.toLocaleString('en-US')} won</span>
+                  {/* Address */}
+                  <div className="flex-1">
+                    <p className="font-mono font-bold text-lg">
+                      {getDisplayName(player.address, undefined, undefined)}
+                    </p>
+                    <div className="flex gap-4 text-sm text-purple-300 mt-1">
+                      <span>{player.tickets} ticket{player.tickets !== 1 ? 's' : ''}</span>
+                      {player.winnings > 0 && (
+                        <>
+                          <span>•</span>
+                          <span>${player.winnings.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} won</span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
-
-                {/* Change */}
-                <div className={`text-sm font-bold ${
-                  player.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
-                }`}>
-                  {player.change}
-                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         {/* Rewards info */}
