@@ -19,6 +19,8 @@ import {
 type Eip1193Provider = {
   request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
   isMetaMask?: boolean;
+  on?: (event: string, handler: (...args: any[]) => void) => void;
+  removeListener?: (event: string, handler: (...args: any[]) => void) => void;
 };
 
 declare global {
@@ -53,43 +55,57 @@ export async function ensureWalletProvider() {
     console.log('🌐 Current network:', { chainId: currentChainId, expected: DEFAULT_CHAIN_ID });
     
     if (currentChainId !== DEFAULT_CHAIN_ID) {
+      console.log('🔄 Switching to correct network...');
+      const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
+      
       try {
         // Try to switch network
-        await provider.send('wallet_switchEthereumChain', [
-          { chainId: `0x${DEFAULT_CHAIN_ID.toString(16)}` },
-        ]);
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: `0x${DEFAULT_CHAIN_ID.toString(16)}` }],
+        });
+        console.log('✅ Network switched successfully');
         // Wait a bit for the switch to complete
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
       } catch (switchError: any) {
+        console.log('⚠️ Switch failed, trying to add network...', switchError);
         // If switch fails, try to add the network
         if (switchError.code === 4902 || switchError.code === -32603) {
           // Network not added, try to add it
           try {
-            await provider.send('wallet_addEthereumChain', [
-              {
-                chainId: `0x${DEFAULT_CHAIN_ID.toString(16)}`,
-                chainName: DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia',
-                nativeCurrency: {
-                  name: 'ETH',
-                  symbol: 'ETH',
-                  decimals: 18,
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: `0x${DEFAULT_CHAIN_ID.toString(16)}`,
+                  chainName: networkName,
+                  nativeCurrency: {
+                    name: 'ETH',
+                    symbol: 'ETH',
+                    decimals: 18,
+                  },
+                  rpcUrls: [RPC_URL],
+                  blockExplorerUrls: [DEFAULT_CHAIN_ID === 8453 ? 'https://basescan.org' : 'https://sepolia.basescan.org'],
                 },
-                rpcUrls: [RPC_URL],
-                blockExplorerUrls: [DEFAULT_CHAIN_ID === 8453 ? 'https://basescan.org' : 'https://sepolia.basescan.org'],
-              },
-            ]);
+              ],
+            });
+            console.log('✅ Network added successfully');
             // Wait for network to be added
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          } catch (addError) {
-            const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
+            await new Promise(resolve => setTimeout(resolve, 1500));
+          } catch (addError: any) {
+            console.error('❌ Failed to add network:', addError);
+            if (addError.code === 4001) {
+              throw new Error(`Network addition rejected. Please add ${networkName} network manually in MetaMask.`);
+            }
             throw new Error(
               `Please switch to ${networkName} network (Chain ID: ${DEFAULT_CHAIN_ID}) in your wallet.`
             );
           }
+        } else if (switchError.code === 4001) {
+          throw new Error(`Network switch rejected. Please switch to ${networkName} manually in MetaMask.`);
         } else {
-          const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
           throw new Error(
-            `Failed to switch network. Please switch to ${networkName} (Chain ID: ${DEFAULT_CHAIN_ID}) manually.`
+            `Failed to switch network. Please switch to ${networkName} (Chain ID: ${DEFAULT_CHAIN_ID}) manually in MetaMask.`
           );
         }
       }
@@ -107,36 +123,60 @@ export async function ensureWalletProvider() {
 export async function connectWallet() {
   try {
     console.log('🔌 Starting wallet connection...');
-    const provider = await ensureWalletProvider();
-    console.log('✅ Wallet provider ensured');
+    
+    // First, check if MetaMask is available
+    if (typeof window === 'undefined') {
+      throw new Error('This function must be called in a browser environment.');
+    }
+    
+    if (!window.ethereum) {
+      throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
+    }
+    
+    // Use BrowserProvider for better compatibility
+    const provider = new BrowserProvider(window.ethereum);
     
     // Request account access
-    let accounts;
+    let accounts: string[];
     try {
-      accounts = await provider.send('eth_requestAccounts', []);
-      console.log('📋 Accounts requested:', accounts);
+      console.log('📋 Requesting account access...');
+      accounts = await provider.send('eth_requestAccounts', []) as string[];
+      console.log('✅ Accounts received:', accounts);
     } catch (requestError: any) {
       console.error('❌ Failed to request accounts:', requestError);
       if (requestError.code === 4001) {
         throw new Error('Connection rejected. Please approve the connection request in MetaMask.');
       } else if (requestError.code === -32002) {
-        throw new Error('Connection request already pending. Please check your MetaMask window.');
+        throw new Error('Connection request already pending. Please check your MetaMask window and approve the request.');
+      } else if (requestError.message) {
+        throw new Error(`Connection failed: ${requestError.message}`);
       }
-      throw new Error(`Failed to connect: ${requestError.message || 'Unknown error'}`);
+      throw new Error('Failed to connect. Please check your MetaMask and try again.');
     }
     
     if (!accounts || accounts.length === 0) {
-      throw new Error('No accounts found. Please unlock your MetaMask wallet.');
+      throw new Error('No accounts found. Please unlock your MetaMask wallet and try again.');
     }
     
-    const signer = await provider.getSigner();
-    const address = accounts[0] || (await signer.getAddress());
-    
-    if (!address) {
+    const address = accounts[0];
+    if (!address || typeof address !== 'string') {
       throw new Error('Failed to get wallet address. Please try again.');
     }
     
-    console.log('✅ Wallet connected:', address);
+    console.log('✅ Account connected:', address);
+    
+    // Get signer
+    const signer = await provider.getSigner();
+    
+    // Verify network (but don't fail if network is wrong - user can switch manually)
+    try {
+      await ensureWalletProvider();
+      console.log('✅ Network verified');
+    } catch (networkError: any) {
+      console.warn('⚠️ Network issue (but wallet is connected):', networkError);
+      // Don't throw - wallet is connected, network can be switched later
+    }
+    
     return { provider, signer, address };
   } catch (error) {
     console.error('❌ Wallet connection error:', error);
