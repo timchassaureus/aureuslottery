@@ -107,9 +107,16 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLive) return;
-    // Sync immediately on mount, even without wallet connected
-    syncOnChainData();
-    const interval = setInterval(() => syncOnChainData(user?.address), 30000);
+    // Force sync immediately on mount, even without wallet connected
+    // This ensures we get fresh data from blockchain
+    syncOnChainData().catch(err => {
+      console.error('Failed to sync on mount:', err);
+    });
+    const interval = setInterval(() => {
+      syncOnChainData(user?.address).catch(err => {
+        console.error('Failed to sync on interval:', err);
+      });
+    }, 30000);
     return () => clearInterval(interval);
   }, [isLive, user?.address, syncOnChainData]);
 

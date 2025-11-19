@@ -477,16 +477,21 @@ export const useAppStore = create<AppState>((set, get) => ({
         currentDrawId: chain.currentDrawId,
         totalTickets: chain.totalTickets,
       });
+      
+      // Force update jackpot - if blockchain returns 0, use 0, otherwise use the real value
+      const newJackpot = chain.mainPot ?? 0;
+      const newSecondaryPot = chain.bonusPot ?? 0;
+      
       set({
-        jackpot: chain.mainPot || 0, // Ensure it's never undefined, default to 0
-        secondaryPot: chain.bonusPot || 0, // Ensure it's never undefined, default to 0
+        jackpot: newJackpot,
+        secondaryPot: newSecondaryPot,
         currentDrawNumber: chain.currentDrawId,
         draws: chain.draws,
         secondaryDraws: chain.secondaryDraws,
         totalTicketsSold: chain.totalTickets,
         lastSynced: Date.now(),
       });
-      console.log('✅ Jackpot updated to:', chain.mainPot || 0);
+      console.log('✅ Jackpot updated to:', newJackpot, '(from blockchain)');
 
       const targetAddress = address || get().user?.address;
       if (targetAddress) {
@@ -502,6 +507,13 @@ export const useAppStore = create<AppState>((set, get) => ({
                 }))
               : [];
 
+          console.log('👤 User data synced:', {
+            address: targetAddress,
+            ticketCount: userData.ticketCount,
+            usdcBalance: userData.usdcBalance,
+            lifetimeTickets: userData.lifetimeTickets,
+          });
+          
           set((state) => ({
             connected: true,
             user: {
@@ -513,10 +525,12 @@ export const useAppStore = create<AppState>((set, get) => ({
               totalSpent: userData.lifetimeTickets * TICKET_PRICE,
               totalWon: state.user?.totalWon || 0,
               lifetimeTickets: userData.lifetimeTickets,
-              usdcBalance: userData.usdcBalance,
+              usdcBalance: userData.usdcBalance ?? 0, // Ensure it's never undefined
               pendingClaim: userData.pendingClaim,
             },
           }));
+          
+          console.log('✅ User balance updated to:', userData.usdcBalance ?? 0, '(from blockchain)');
         }
       }
     } catch (error) {

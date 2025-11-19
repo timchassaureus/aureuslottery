@@ -19,7 +19,10 @@ export default function WalletButton() {
       const address = await connectWallet();
       connectStore(address);
       if (mode === 'live') {
+        // Force sync to get fresh data from blockchain
         await syncOnChainData(address);
+        // Sync again after a short delay to ensure data is fresh
+        setTimeout(() => syncOnChainData(address).catch(console.error), 1000);
       }
       toast.success('Wallet connected successfully! 🎉');
     } catch (error: any) {
