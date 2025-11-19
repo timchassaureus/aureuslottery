@@ -56,8 +56,8 @@ export default function WalletButton() {
   };
 
   if (connected && user) {
-    // Mock balance for now - will be real when connected to blockchain
-    const balance = typeof user.usdcBalance === 'number' ? user.usdcBalance : 47.5;
+    // Use real balance from blockchain, default to 0 if not available
+    const balance = typeof user.usdcBalance === 'number' ? user.usdcBalance : 0;
     const userTicketsCount = user.ticketCount ?? user.tickets.length;
 
     return (

@@ -107,7 +107,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLive) return;
-    syncOnChainData(user?.address);
+    // Sync immediately on mount, even without wallet connected
+    syncOnChainData();
     const interval = setInterval(() => syncOnChainData(user?.address), 30000);
     return () => clearInterval(interval);
   }, [isLive, user?.address, syncOnChainData]);

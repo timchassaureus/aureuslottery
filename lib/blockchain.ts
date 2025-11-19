@@ -115,8 +115,19 @@ export async function fetchLotteryState(limit = 5) {
     ]);
 
     const currentDrawId = Number(currentDrawIdBn);
-    const mainPot = Number(formatUnits(pots[0], USDC_DECIMALS));
-    const bonusPot = Number(formatUnits(pots[1], USDC_DECIMALS));
+    const mainPotRaw = pots[0];
+    const bonusPotRaw = pots[1];
+    const mainPot = Number(formatUnits(mainPotRaw, USDC_DECIMALS));
+    const bonusPot = Number(formatUnits(bonusPotRaw, USDC_DECIMALS));
+    
+    console.log('📊 Blockchain state:', {
+      mainPotRaw: mainPotRaw.toString(),
+      mainPot,
+      bonusPotRaw: bonusPotRaw.toString(),
+      bonusPot,
+      currentDrawId,
+      contractAddress: LOTTERY_ADDRESS,
+    });
 
     const drawSnapshots = [];
     const bonusSnapshots = [];
@@ -184,12 +195,19 @@ export async function fetchUserState(address: string, drawId?: number) {
         new Contract(USDC_ADDRESS, ERC20_ABI, rpcProvider).balanceOf(address),
       ]);
 
+    const usdcBalance = Number(formatUnits(usdcBalanceBn, USDC_DECIMALS));
+    console.log('💰 User USDC balance:', {
+      address,
+      raw: usdcBalanceBn.toString(),
+      formatted: usdcBalance,
+    });
+    
     return {
       drawId: targetDraw,
       ticketCount: Number(ticketCountBn),
       lifetimeTickets: Number(lifetimeBn),
       pendingClaim: Number(formatUnits(pendingClaimBn, USDC_DECIMALS)),
-      usdcBalance: Number(formatUnits(usdcBalanceBn, USDC_DECIMALS)),
+      usdcBalance,
     };
   } catch (error) {
     console.error('Failed to fetch user state:', error);

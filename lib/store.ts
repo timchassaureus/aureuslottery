@@ -97,8 +97,8 @@ function calculateDiscount(count: number): number {
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
-  jackpot: 850, // 85% of 1000 tickets sold (example: $1 × 1000 × 0.85)
-  secondaryPot: 50, // 5% of 1000 tickets sold (example: $1 × 1000 × 0.05)
+  jackpot: 0, // Start at 0 - will be synced from blockchain in live mode
+  secondaryPot: 0, // Start at 0 - will be synced from blockchain in live mode
   ticketPrice: TICKET_PRICE,
   connected: false,
   user: null,
@@ -471,15 +471,22 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ isSyncing: true });
     try {
       const chain = await fetchLotteryState();
+      console.log('🔗 Syncing on-chain data:', {
+        mainPot: chain.mainPot,
+        bonusPot: chain.bonusPot,
+        currentDrawId: chain.currentDrawId,
+        totalTickets: chain.totalTickets,
+      });
       set({
-        jackpot: chain.mainPot,
-        secondaryPot: chain.bonusPot,
+        jackpot: chain.mainPot || 0, // Ensure it's never undefined, default to 0
+        secondaryPot: chain.bonusPot || 0, // Ensure it's never undefined, default to 0
         currentDrawNumber: chain.currentDrawId,
         draws: chain.draws,
         secondaryDraws: chain.secondaryDraws,
         totalTicketsSold: chain.totalTickets,
         lastSynced: Date.now(),
       });
+      console.log('✅ Jackpot updated to:', chain.mainPot || 0);
 
       const targetAddress = address || get().user?.address;
       if (targetAddress) {
