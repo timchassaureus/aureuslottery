@@ -535,6 +535,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       }
     } catch (error) {
       console.error('Failed to sync on-chain data', error);
+      // Don't throw - sync errors shouldn't break the app
+      // Just log and continue
     } finally {
       set({ isSyncing: false });
     }

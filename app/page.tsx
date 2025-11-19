@@ -110,11 +110,13 @@ export default function Home() {
     // Force sync immediately on mount, even without wallet connected
     // This ensures we get fresh data from blockchain
     syncOnChainData().catch(err => {
-      console.error('Failed to sync on mount:', err);
+      console.error('⚠️ Failed to sync on mount (non-critical):', err);
+      // Don't throw - sync errors shouldn't break the app
     });
     const interval = setInterval(() => {
       syncOnChainData(user?.address).catch(err => {
-        console.error('Failed to sync on interval:', err);
+        console.error('⚠️ Failed to sync on interval (non-critical):', err);
+        // Don't throw - sync errors shouldn't break the app
       });
     }, 30000);
     return () => clearInterval(interval);

@@ -41,9 +41,18 @@ export default function WalletButton() {
       
       if (mode === 'live') {
         // Force sync to get fresh data from blockchain
-        await syncOnChainData(address);
-        // Sync again after a short delay to ensure data is fresh
-        setTimeout(() => syncOnChainData(address).catch(console.error), 1000);
+        try {
+          await syncOnChainData(address);
+          // Sync again after a short delay to ensure data is fresh
+          setTimeout(() => {
+            syncOnChainData(address).catch(err => {
+              console.error('⚠️ Background sync failed (non-critical):', err);
+            });
+          }, 1000);
+        } catch (syncError) {
+          console.error('⚠️ Initial sync failed (non-critical):', syncError);
+          // Don't fail the connection if sync fails
+        }
       }
       
       toast.success('Wallet connected successfully! 🎉');
