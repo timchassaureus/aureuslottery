@@ -137,19 +137,24 @@ export async function connectWallet() {
       throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
     }
     
-    console.log('✅ MetaMask detected, creating provider...');
-    // Use BrowserProvider for better compatibility
-    const provider = new BrowserProvider(window.ethereum);
-    console.log('✅ Provider created');
+    console.log('✅ MetaMask detected');
     
-    // Request account access
+    // Use window.ethereum.request() directly - this is the standard MetaMask API
     let accounts: string[];
     try {
-      console.log('📋 Requesting account access via provider.send...');
-      accounts = await provider.send('eth_requestAccounts', []) as string[];
+      console.log('📋 Requesting account access via window.ethereum.request...');
+      accounts = await window.ethereum.request({ 
+        method: 'eth_requestAccounts' 
+      }) as string[];
       console.log('✅ Accounts received:', accounts);
     } catch (requestError: any) {
       console.error('❌ Failed to request accounts:', requestError);
+      console.error('Error details:', {
+        code: requestError.code,
+        message: requestError.message,
+        stack: requestError.stack
+      });
+      
       if (requestError.code === 4001) {
         throw new Error('Connection rejected. Please approve the connection request in MetaMask.');
       } else if (requestError.code === -32002) {
@@ -171,8 +176,11 @@ export async function connectWallet() {
     
     console.log('✅ Account connected:', address);
     
-    // Get signer
+    // Now create provider and signer
+    console.log('🔧 Creating provider and signer...');
+    const provider = new BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
+    console.log('✅ Provider and signer created');
     
     // Verify network (but don't fail if network is wrong - user can switch manually)
     try {
