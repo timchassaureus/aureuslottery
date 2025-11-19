@@ -203,10 +203,17 @@ export async function connectWallet() {
 
 export async function fetchLotteryState(limit = 5) {
   try {
+    console.log('📡 Fetching lottery state from blockchain...');
     const contract = getReadLotteryContract();
     const [pots, currentDrawIdBn] = await Promise.all([
-      contract.getCurrentPots(),
-      contract.currentDrawId(),
+      contract.getCurrentPots().catch(err => {
+        console.error('❌ Failed to get pots:', err);
+        throw new Error(`Failed to fetch lottery pots: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      }),
+      contract.currentDrawId().catch(err => {
+        console.error('❌ Failed to get currentDrawId:', err);
+        throw new Error(`Failed to fetch current draw ID: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      }),
     ]);
 
     const currentDrawId = Number(currentDrawIdBn);
@@ -280,14 +287,31 @@ export async function fetchUserState(address: string, drawId?: number) {
     return null;
   }
   try {
+    console.log('👤 Fetching user state for:', address);
     const contract = getReadLotteryContract();
-    const targetDraw = drawId ?? Number(await contract.currentDrawId());
+    const targetDraw = drawId ?? Number(await contract.currentDrawId().catch(err => {
+      console.error('❌ Failed to get currentDrawId for user state:', err);
+      throw new Error(`Failed to fetch current draw ID: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    }));
+    
     const [ticketCountBn, lifetimeBn, pendingClaimBn, usdcBalanceBn] =
       await Promise.all([
-        contract.getUserTickets(targetDraw, address),
-        contract.lifetimeTickets(address),
-        contract.pendingClaims(targetDraw, address),
-        new Contract(USDC_ADDRESS, ERC20_ABI, rpcProvider).balanceOf(address),
+        contract.getUserTickets(targetDraw, address).catch(err => {
+          console.error('❌ Failed to get user tickets:', err);
+          return BigInt(0);
+        }),
+        contract.lifetimeTickets(address).catch(err => {
+          console.error('❌ Failed to get lifetime tickets:', err);
+          return BigInt(0);
+        }),
+        contract.pendingClaims(targetDraw, address).catch(err => {
+          console.error('❌ Failed to get pending claims:', err);
+          return BigInt(0);
+        }),
+        new Contract(USDC_ADDRESS, ERC20_ABI, rpcProvider).balanceOf(address).catch(err => {
+          console.error('❌ Failed to get USDC balance:', err);
+          return BigInt(0);
+        }),
       ]);
 
     const usdcBalance = Number(formatUnits(usdcBalanceBn, USDC_DECIMALS));
