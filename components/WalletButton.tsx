@@ -6,7 +6,7 @@ import { useAccount, useChainId } from 'wagmi';
 import { useAppStore } from '@/lib/store';
 import { toast } from 'sonner';
 
-export function WalletButton() {
+function WalletButton() {
   const [mounted, setMounted] = useState(false);
   const { address, isConnected, isConnecting } = useAccount();
   const chainId = useChainId();
@@ -36,7 +36,7 @@ export function WalletButton() {
         }, 3000);
       }
     }
-  }, [isConnected, address, mounted, mode]);
+  }, [isConnected, address, mounted, mode, connectStore, syncOnChainData]);
 
   // Déconnexion
   useEffect(() => {
@@ -44,7 +44,7 @@ export function WalletButton() {
       console.log('Disconnected');
       disconnectStore();
     }
-  }, [isConnected, isConnecting, mounted]);
+  }, [isConnected, isConnecting, mounted, disconnectStore]);
 
   if (!mounted) return <div className="h-10 w-40 animate-pulse bg-gray-800 rounded" />;
 
@@ -59,4 +59,6 @@ export function WalletButton() {
     />
   );
 }
+
+export default WalletButton;
 

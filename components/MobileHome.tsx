@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Trophy, Timer, User, Award } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { FORCED_MODE } from '@/lib/config';
-import WalletButton from '@/components/WalletButton';
+import { WalletButton } from '@/components/WalletButton';
 import BuyTicketsModal from '@/components/BuyTicketsModal';
 import EnhancedWinnersHistory from '@/components/EnhancedWinnersHistory';
 import HowItWorksModal from '@/components/HowItWorksModal';
