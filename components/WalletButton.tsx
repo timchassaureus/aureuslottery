@@ -1,73 +1,57 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useChainId } from 'wagmi';
 import { useAppStore } from '@/lib/store';
 import { toast } from 'sonner';
 
 export function WalletButton() {
+  const [mounted, setMounted] = useState(false);
   const { address, isConnected, isConnecting } = useAccount();
   const chainId = useChainId();
-  const { user, mode, connectWallet: connectStore, syncOnChainData, disconnectWallet: disconnectStore } = useAppStore();
+  const { mode, connectWallet: connectStore, syncOnChainData, disconnectWallet: disconnectStore } = useAppStore();
 
-  // Log pour debugging
-  useEffect(() => {
-    console.log('🔍 WalletButton state:', {
-      isConnected,
-      isConnecting,
-      address,
-      chainId,
-      hasUser: !!user,
-    });
-  }, [isConnected, isConnecting, address, chainId, user]);
+  // Anti-hydratation Next.js
+  useEffect(() => setMounted(true), []);
 
-  // Synchroniser l'adresse RainbowKit avec notre store
+  // Connexion
   useEffect(() => {
+    if (!mounted) return;
     if (isConnected && address) {
-      console.log('🔗 RainbowKit wallet connected:', address);
-      
-      try {
-        connectStore(address);
-        console.log('✅ Store updated with address:', address);
-        
-        toast.success('Wallet connected! 🎉', {
-          description: `Connected: ${address.slice(0, 6)}...${address.slice(-4)}`,
-        });
-        
-        // Sync en arrière-plan (non-bloquant)
-        if (mode === 'live') {
-          setTimeout(() => {
-            syncOnChainData(address)
-              .then(() => {
-                console.log('✅ Background sync completed');
-                toast.success('Data synced from blockchain', {
-                  description: 'Your tickets and stats are up to date',
-                });
-              })
-              .catch((syncError) => {
-                console.error('⚠️ Background sync failed (non-critical):', syncError);
-                // Ne pas afficher d'erreur - la connexion a réussi
-              });
-          }, 2000); // Augmenter le délai pour laisser le temps à la connexion de se stabiliser
-        }
-      } catch (error) {
-        console.error('❌ Error connecting to store:', error);
-        toast.error('Failed to connect wallet', {
-          description: 'Please try again',
-        });
+      console.log('Connected → syncing store:', address);
+      connectStore(address);
+      toast.success('Wallet connected!');
+
+      // Sync sécurisé
+      if (mode === 'live') {
+        setTimeout(async () => {
+          try {
+            await syncOnChainData(address);
+            console.log('Sync OK');
+          } catch (e) {
+            console.error('Sync failed (non-blocking):', e);
+            // Pas de toast → on veut pas casser l'UX
+          }
+        }, 3000);
       }
-    } else if (!isConnected && !isConnecting) {
-      // Déconnexion seulement si on n'est pas en train de se connecter
-      console.log('🔌 Wallet disconnected');
+    }
+  }, [isConnected, address, mounted, mode]);
+
+  // Déconnexion
+  useEffect(() => {
+    if (!isConnected && !isConnecting && mounted) {
+      console.log('Disconnected');
       disconnectStore();
     }
-  }, [isConnected, address, mode, connectStore, syncOnChainData, disconnectStore, isConnecting]);
+  }, [isConnected, isConnecting, mounted]);
 
-  // Utiliser le ConnectButton standard de RainbowKit (plus fiable)
+  if (!mounted) return <div className="h-10 w-40 animate-pulse bg-gray-800 rounded" />;
+
   return (
     <ConnectButton
       showBalance={false}
+      chainStatus="icon"
       accountStatus={{
         smallScreen: 'avatar',
         largeScreen: 'full',

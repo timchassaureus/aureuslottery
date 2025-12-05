@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ToastProvider from "@/components/ToastProvider";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { RainbowKitSetup } from "@/lib/rainbowkit";
+import '@rainbow-me/rainbowkit/styles.css';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,8 +39,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ErrorBoundary>
-          <ToastProvider />
-          {children}
+          <RainbowKitSetup>
+            <ToastProvider />
+            {children}
+          </RainbowKitSetup>
         </ErrorBoundary>
       </body>
     </html>

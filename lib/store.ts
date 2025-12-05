@@ -166,6 +166,10 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   connectWallet: (address) => {
+    // PROTECTION SSR + LOGS
+    if (typeof window === 'undefined') return;
+    console.log('connectStore called for', address);
+
     const { draws, tickets } = get();
     // Count total lifetime tickets
     const lifetimeTickets = tickets.filter(t => t.owner === address).length;
@@ -467,78 +471,102 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   syncOnChainData: async (address) => {
-    if (get().mode !== 'live') return;
+    // Ne sync que en mode live
+    if (get().mode !== 'live') {
+      console.log('⏭️ Skipping sync - not in live mode');
+      return;
+    }
+    
+    console.log('🔄 Starting on-chain data sync...');
     set({ isSyncing: true });
+    
     try {
+      console.log('📡 Fetching lottery state from blockchain...');
       const chain = await fetchLotteryState();
-      console.log('🔗 Syncing on-chain data:', {
-        mainPot: chain.mainPot,
-        bonusPot: chain.bonusPot,
-        currentDrawId: chain.currentDrawId,
-        totalTickets: chain.totalTickets,
-      });
+      console.log('✅ Lottery state fetched successfully');
       
-      // Force update jackpot - if blockchain returns 0, use 0, otherwise use the real value
-      const newJackpot = chain.mainPot ?? 0;
-      const newSecondaryPot = chain.bonusPot ?? 0;
-      
+      // Mise à jour des données de la loterie
       set({
-        jackpot: newJackpot,
-        secondaryPot: newSecondaryPot,
+        jackpot: chain.mainPot ?? 0,
+        secondaryPot: chain.bonusPot ?? 0,
         currentDrawNumber: chain.currentDrawId,
         draws: chain.draws,
         secondaryDraws: chain.secondaryDraws,
         totalTicketsSold: chain.totalTickets,
         lastSynced: Date.now(),
       });
-      console.log('✅ Jackpot updated to:', newJackpot, '(from blockchain)');
+      
+      console.log('✅ Lottery data updated in store');
 
+      // Récupérer les données utilisateur
       const targetAddress = address || get().user?.address;
       if (targetAddress) {
-        const userData = await fetchUserState(targetAddress, chain.currentDrawId);
-        if (userData) {
-          const placeholderTickets =
-            userData.ticketCount > 0
-              ? Array.from({ length: userData.ticketCount }, (_, index) => ({
-                  id: `onchain-${chain.currentDrawId}-${index}`,
-                  owner: targetAddress,
-                  timestamp: Date.now(),
-                  drawNumber: chain.currentDrawId,
-                }))
-              : [];
-
-          console.log('👤 User data synced:', {
-            address: targetAddress,
-            ticketCount: userData.ticketCount,
-            usdcBalance: userData.usdcBalance,
-            lifetimeTickets: userData.lifetimeTickets,
-          });
+        console.log('📡 Fetching user state for address:', targetAddress);
+        
+        try {
+          const userData = await fetchUserState(targetAddress, chain.currentDrawId);
           
-          set((state) => ({
-            connected: true,
-            user: {
-              address: targetAddress,
-              username: state.user?.username,
-              telegramUsername: state.user?.telegramUsername,
-              tickets: placeholderTickets,
-              ticketCount: userData.ticketCount,
-              totalSpent: userData.lifetimeTickets * TICKET_PRICE,
-              totalWon: state.user?.totalWon || 0,
-              lifetimeTickets: userData.lifetimeTickets,
-              usdcBalance: userData.usdcBalance ?? 0, // Ensure it's never undefined
-              pendingClaim: userData.pendingClaim,
-            },
-          }));
-          
-          console.log('✅ User balance updated to:', userData.usdcBalance ?? 0, '(from blockchain)');
+          if (userData) {
+            console.log('✅ User state fetched successfully');
+            
+            // Créer des tickets placeholder (les vrais numéros viendront plus tard)
+            const placeholderTickets: Ticket[] = Array.from(
+              { length: userData.ticketCount }, 
+              (_, i) => ({
+                id: `${chain.currentDrawId}-${targetAddress}-${i}`,
+                owner: targetAddress,
+                drawNumber: chain.currentDrawId,
+                timestamp: Date.now(),
+              })
+            );
+            
+            // Mise à jour des données utilisateur
+            set((state) => ({
+              connected: true,
+              user: {
+                address: targetAddress,
+                username: state.user?.username,
+                telegramUsername: state.user?.telegramUsername,
+                tickets: placeholderTickets,
+                ticketCount: userData.ticketCount,
+                totalSpent: userData.lifetimeTickets * TICKET_PRICE,
+                totalWon: state.user?.totalWon || 0,
+                lifetimeTickets: userData.lifetimeTickets,
+                usdcBalance: userData.usdcBalance ?? 0,
+                pendingClaim: userData.pendingClaim,
+              },
+            }));
+            
+            console.log('✅ User data updated in store');
+          } else {
+            console.log('ℹ️ No user data found on blockchain (new user)');
+          }
+        } catch (userError: any) {
+          console.error('⚠️ Failed to fetch user state:', userError);
+          // Ne pas throw - les données de loterie ont été mises à jour
         }
       }
-    } catch (error) {
-      console.error('Failed to sync on-chain data', error);
-      // Don't throw - sync errors shouldn't break the app
-      // Just log and continue
+      
+      console.log('✅ On-chain sync completed successfully');
+      
+    } catch (error: any) {
+      console.error('❌ Failed to sync on-chain data:', error);
+      
+      // Log détaillé de l'erreur pour le debugging
+      if (error.code) {
+        console.error('Error code:', error.code);
+      }
+      if (error.reason) {
+        console.error('Error reason:', error.reason);
+      }
+      
+      // Ne pas throw - garder l'app stable
+      // L'utilisateur peut toujours utiliser l'app avec les données locales
+      // ou réessayer plus tard
+      
     } finally {
       set({ isSyncing: false });
+      console.log('🏁 Sync process finished');
     }
   },
 }));
