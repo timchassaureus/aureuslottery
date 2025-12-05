@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Timer, Wallet, Trophy, User, Award } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { WalletButton } from '@/components/WalletButton';
+import WalletButton from '@/components/WalletButton';
 import BuyTicketsModal from '@/components/BuyTicketsModal';
 import PremiumChat from '@/components/PremiumChat';
 import PreDrawCountdown from '@/components/PreDrawCountdown';
