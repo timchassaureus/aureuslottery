@@ -9,7 +9,8 @@ async function main() {
 
   // Load environment variables
   const usdcAddress = process.env.USDC_ADDRESS;
-  const treasuryAddress = process.env.TREASURY_ADDRESS;
+  // Treasury par défaut: adresse Ledger
+  const treasuryAddress = process.env.TREASURY_ADDRESS || "0xa166D2570d4bBfACcEBE7A78a426991b1Fa8f6eC";
   const vrfCoordinator = process.env.VRF_COORDINATOR;
   const keyHash = process.env.VRF_KEY_HASH;
   const subscriptionId = process.env.VRF_SUBSCRIPTION_ID;

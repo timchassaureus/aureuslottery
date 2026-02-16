@@ -385,6 +385,24 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
             <div className="text-xs text-purple-400 text-center mt-2">
               This is the amount the winner will receive (100%)
             </div>
+            <div className="mt-3 text-[11px] text-purple-200/80 space-y-1 border-t border-purple-600/40 pt-2">
+              <p>
+                ⚠️ Lottery tickets are a high-risk product. You can lose 100% of the amount you
+                spend. Never play with money you cannot afford to lose.
+              </p>
+              <p>
+                All ticket purchases, prize distributions and treasury flows are executed by
+                on-chain smart contracts designed for independent security audits and fully
+                transparent on the Base blockchain. Transactions are irreversible once confirmed
+                on-chain.
+              </p>
+              <p>
+                By buying tickets, you confirm that you are of legal age in your country, that
+                participation in online lotteries is permitted in your jurisdiction, and that you
+                remain solely responsible for complying with local laws and regulations. Nothing on
+                Aureus constitutes investment, tax or legal advice.
+              </p>
+            </div>
             {isLive && txHash && (
               <div className="text-xs text-green-300 text-center mt-2">
                 Tx confirmed —

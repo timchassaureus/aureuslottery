@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Timer, Wallet, Trophy, User, Award } from 'lucide-react';
+import { Timer, Wallet, Trophy, User, Award, CreditCard } from 'lucide-react';
 import toast from 'react-hot-toast';
-import WalletButton from '@/components/WalletButton';
+import AuthModal from '@/components/AuthModal';
+import DepositAddress from '@/components/DepositAddress';
+import CardPaymentModal from '@/components/CardPaymentModal';
 import BuyTicketsModal from '@/components/BuyTicketsModal';
 import PremiumChat from '@/components/PremiumChat';
 import PreDrawCountdown from '@/components/PreDrawCountdown';
@@ -64,7 +66,21 @@ export default function Home() {
   const [preDrawType, setPreDrawType] = useState<'8pm' | '10pm' | null>(null);
   const [hasTriggered8PM, setHasTriggered8PM] = useState(false);
   const [hasTriggered10PM, setHasTriggered10PM] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [cardPaymentOpen, setCardPaymentOpen] = useState(false);
+  const [aureusUser, setAureusUser] = useState<any>(null); // Utilisateur avec auth sociale
   const isLive = mode === 'live';
+
+  // Charger l'utilisateur au démarrage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const { getCurrentUser } = require('@/lib/userStorage');
+      const user = getCurrentUser();
+      if (user) {
+        setAureusUser(user);
+      }
+    }
+  }, []);
 
   // Force live mode if FORCED_MODE is set, and clear localStorage
   useEffect(() => {
@@ -288,7 +304,33 @@ export default function Home() {
 
   return (
     <>
-      <WalletInstallPrompt />
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onSuccess={(user) => {
+          setAureusUser(user);
+          setAuthModalOpen(false);
+        }}
+      />
+      <CardPaymentModal
+        isOpen={cardPaymentOpen}
+        onClose={() => setCardPaymentOpen(false)}
+        amount={10} // Exemple: 10 USDC
+        userWalletAddress={aureusUser?.walletAddress}
+        onSuccess={(amount) => {
+          // Mettre à jour le solde de l'utilisateur
+          if (aureusUser) {
+            const { updateUserBalance } = require('@/lib/userStorage');
+            const newBalance = (aureusUser.usdcBalance || 0) + amount;
+            updateUserBalance(aureusUser.id, newBalance);
+            setAureusUser({
+              ...aureusUser,
+              usdcBalance: newBalance,
+            });
+          }
+          setCardPaymentOpen(false);
+        }}
+      />
       <DisclaimerModal />
       <UsernameModal />
       
@@ -389,7 +431,26 @@ export default function Home() {
                 <span className="hidden md:inline">Profile</span>
               </button>
             )}
-            <WalletButton />
+            {aureusUser ? (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-purple-300">
+                  {aureusUser.name || aureusUser.email}
+                </span>
+                <button
+                  onClick={() => setAureusUser(null)}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition-all"
+                >
+                  Déconnexion
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setAuthModalOpen(true)}
+                className="px-6 py-3 bg-primary-500 hover:bg-primary-600 rounded-xl font-semibold transition-all hover:scale-105"
+              >
+                Se connecter
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -499,10 +560,10 @@ export default function Home() {
           <div className="flex justify-center mb-8">
             <button
               onClick={() => {
-                if (user) {
+                if (aureusUser) {
                   setBuyModalOpen(true);
                 } else {
-                  toast.error('Please connect your wallet first! 👛');
+                  setAuthModalOpen(true);
                 }
               }}
               className="group relative w-full max-w-2xl overflow-hidden cursor-pointer"
@@ -533,6 +594,25 @@ export default function Home() {
               <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none"></div>
             </button>
           </div>
+
+          {/* Deposit Address - Si utilisateur connecté */}
+          {aureusUser && (
+            <div className="mb-8">
+              <DepositAddress
+                walletAddress={aureusUser.walletAddress}
+                usdcBalance={aureusUser.usdcBalance || 0}
+              />
+              <div className="mt-4 flex justify-center">
+                <button
+                  onClick={() => setCardPaymentOpen(true)}
+                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl font-semibold transition-all hover:scale-105 flex items-center gap-2"
+                >
+                  <CreditCard className="w-5 h-5" />
+                  Acheter avec carte bancaire
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Recent Winners - Social Proof! */}
           <div className="mb-8">

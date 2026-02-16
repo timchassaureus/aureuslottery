@@ -10,17 +10,48 @@ export default function WalletInstallPrompt() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
-    // Check if wallet is installed
-    const hasWallet = typeof window.ethereum !== 'undefined';
+    // Wait a bit for MetaMask to load (sometimes it takes a moment)
+    const checkWallet = () => {
+      // Check if wallet is installed - check multiple ways
+      const hasWallet = 
+        typeof window.ethereum !== 'undefined' ||
+        (window as any).ethereum?.isMetaMask === true ||
+        (window as any).web3 !== undefined;
+      
+      // Check if mobile
+      const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      setIsMobile(mobile);
+      
+      // Show prompt if no wallet and not already dismissed
+      if (!hasWallet && !localStorage.getItem('wallet_prompt_dismissed')) {
+        setShow(true);
+      } else {
+        setShow(false);
+      }
+    };
     
-    // Check if mobile
-    const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    setIsMobile(mobile);
+    // Check immediately
+    checkWallet();
     
-    // Show prompt if no wallet and not already dismissed
-    if (!hasWallet && !localStorage.getItem('wallet_prompt_dismissed')) {
-      setShow(true);
+    // Check again after a short delay (MetaMask might load after page load)
+    const timeout = setTimeout(checkWallet, 1000);
+    
+    // Also listen for ethereum injection
+    if (typeof window !== 'undefined') {
+      const checkInterval = setInterval(() => {
+        if (window.ethereum) {
+          checkWallet();
+          clearInterval(checkInterval);
+        }
+      }, 500);
+      
+      // Clear after 5 seconds
+      setTimeout(() => clearInterval(checkInterval), 5000);
     }
+    
+    return () => {
+      clearTimeout(timeout);
+    };
   }, []);
 
   if (!show) return null;

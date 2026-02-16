@@ -36,168 +36,201 @@ function getReadLotteryContract() {
   return new Contract(LOTTERY_ADDRESS, AUREUS_LOTTERY_ABI, rpcProvider);
 }
 
-export async function ensureWalletProvider() {
-  if (typeof window === 'undefined') {
-    throw new Error('This function must be called in a browser environment.');
+/**
+ * Obtenir un provider RPC public (lecture seule)
+ */
+export function getPublicProvider(): JsonRpcProvider {
+  return new JsonRpcProvider(RPC_URL);
+}
+
+// Types
+interface WalletConnection {
+  provider: BrowserProvider;
+  signer: any;
+  address: string;
+}
+
+/**
+ * Vérifie et change le réseau si nécessaire
+ */
+async function ensureCorrectNetwork(): Promise<void> {
+  if (!window.ethereum) {
+    throw new Error('MetaMask not available');
   }
   
-  if (!window.ethereum) {
-    throw new Error(
-      'MetaMask (or compatible wallet) is required. Please install MetaMask to continue.'
-    );
-  }
+  const REQUIRED_CHAIN_ID = `0x${DEFAULT_CHAIN_ID.toString(16)}`;
+  const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
+  const blockExplorerUrl = DEFAULT_CHAIN_ID === 8453 ? 'https://basescan.org' : 'https://sepolia.basescan.org';
   
   try {
-    console.log('🔍 Checking wallet provider...');
-    const provider = new BrowserProvider(window.ethereum);
-    const network = await provider.getNetwork();
-    const currentChainId = Number(network.chainId);
-    console.log('🌐 Current network:', { chainId: currentChainId, expected: DEFAULT_CHAIN_ID });
+    // Vérifier le réseau actuel
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' }) as string;
+    console.log('📡 Current chain ID:', chainId);
     
-    if (currentChainId !== DEFAULT_CHAIN_ID) {
-      console.log('🔄 Switching to correct network...');
-      const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
+    if (chainId !== REQUIRED_CHAIN_ID) {
+      console.log(`🔄 Wrong network - switching to ${networkName}...`);
       
       try {
-        // Try to switch network
+        // Essayer de changer vers le réseau requis
         await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${DEFAULT_CHAIN_ID.toString(16)}` }],
+          params: [{ chainId: REQUIRED_CHAIN_ID }],
         });
-        console.log('✅ Network switched successfully');
-        // Wait a bit for the switch to complete
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        console.log(`✅ Network switched to ${networkName}`);
       } catch (switchError: any) {
-        console.log('⚠️ Switch failed, trying to add network...', switchError);
-        // If switch fails, try to add the network
-        if (switchError.code === 4902 || switchError.code === -32603) {
-          // Network not added, try to add it
-          try {
-            await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [
-                {
-                  chainId: `0x${DEFAULT_CHAIN_ID.toString(16)}`,
-                  chainName: networkName,
-                  nativeCurrency: {
-                    name: 'ETH',
-                    symbol: 'ETH',
-                    decimals: 18,
-                  },
-                  rpcUrls: [RPC_URL],
-                  blockExplorerUrls: [DEFAULT_CHAIN_ID === 8453 ? 'https://basescan.org' : 'https://sepolia.basescan.org'],
-                },
-              ],
-            });
-            console.log('✅ Network added successfully');
-            // Wait for network to be added
-            await new Promise(resolve => setTimeout(resolve, 1500));
-          } catch (addError: any) {
-            console.error('❌ Failed to add network:', addError);
-            if (addError.code === 4001) {
-              throw new Error(`Network addition rejected. Please add ${networkName} network manually in MetaMask.`);
-            }
-            throw new Error(
-              `Please switch to ${networkName} network (Chain ID: ${DEFAULT_CHAIN_ID}) in your wallet.`
-            );
-          }
-        } else if (switchError.code === 4001) {
-          throw new Error(`Network switch rejected. Please switch to ${networkName} manually in MetaMask.`);
+        // Si le réseau n'existe pas dans MetaMask, l'ajouter
+        if (switchError.code === 4902) {
+          console.log(`➕ Adding ${networkName} network...`);
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: REQUIRED_CHAIN_ID,
+              chainName: networkName,
+              nativeCurrency: {
+                name: 'ETH',
+                symbol: 'ETH',
+                decimals: 18,
+              },
+              rpcUrls: [RPC_URL],
+              blockExplorerUrls: [blockExplorerUrl],
+            }],
+          });
+          console.log(`✅ ${networkName} network added`);
         } else {
-          throw new Error(
-            `Failed to switch network. Please switch to ${networkName} (Chain ID: ${DEFAULT_CHAIN_ID}) manually in MetaMask.`
-          );
+          throw switchError;
         }
       }
+    } else {
+      console.log(`✅ Already on ${networkName}`);
     }
-    
-    return provider;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error('Failed to connect to wallet. Please try again.');
+  } catch (error: any) {
+    console.error('❌ Network check/switch error:', error);
+    throw new Error(`Network error: ${error.message}`);
   }
 }
 
-export async function connectWallet() {
+export async function ensureWalletProvider(): Promise<BrowserProvider> {
+  if (typeof window === 'undefined' || !window.ethereum) {
+    throw new Error('MetaMask not available');
+  }
+  
+  const provider = new BrowserProvider(window.ethereum);
+  
+  // Vérifier le réseau
+  await ensureCorrectNetwork();
+  
+  return provider;
+}
+
+/**
+ * Connexion au wallet MetaMask
+ * Gère la détection, la connexion et la vérification du réseau
+ */
+export async function connectWallet(): Promise<WalletConnection> {
   try {
-    console.log('🔌 Starting wallet connection...');
-    console.log('🔍 Checking environment...', { 
-      hasWindow: typeof window !== 'undefined',
-      hasEthereum: typeof window !== 'undefined' && !!window.ethereum 
-    });
+    console.log('🔌 blockchain.ts: Starting wallet connection...');
     
-    // First, check if MetaMask is available
+    // Vérification environnement navigateur
     if (typeof window === 'undefined') {
       throw new Error('This function must be called in a browser environment.');
     }
     
+    // Vérification présence MetaMask
     if (!window.ethereum) {
       throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
     }
     
     console.log('✅ MetaMask detected');
     
-    // Use window.ethereum.request() directly - this is the standard MetaMask API
+    // REQUÊTE PRINCIPALE - eth_requestAccounts
     let accounts: string[];
     try {
       console.log('📋 Requesting account access via window.ethereum.request...');
-      accounts = await window.ethereum.request({ 
+      
+      const ethereum = window.ethereum;
+      
+      // Double vérification que ethereum.request existe
+      if (!ethereum || typeof ethereum.request !== 'function') {
+        throw new Error('MetaMask is not properly installed or initialized. Please refresh the page.');
+      }
+      
+      // Demander l'accès aux comptes
+      accounts = await ethereum.request({ 
         method: 'eth_requestAccounts' 
       }) as string[];
-      console.log('✅ Accounts received:', accounts);
-    } catch (requestError: any) {
-      console.error('❌ Failed to request accounts:', requestError);
-      console.error('Error details:', {
-        code: requestError.code,
-        message: requestError.message,
-        stack: requestError.stack
-      });
       
+      console.log('✅ Accounts received from MetaMask:', accounts);
+      
+    } catch (requestError: any) {
+      console.error('❌ Request error:', requestError);
+      
+      // Gestion des erreurs spécifiques MetaMask
       if (requestError.code === 4001) {
-        throw new Error('Connection rejected. Please approve the connection request in MetaMask.');
+        throw new Error('Connection request rejected by user. Please try again and approve the connection.');
       } else if (requestError.code === -32002) {
-        throw new Error('Connection request already pending. Please check your MetaMask window and approve the request.');
-      } else if (requestError.message) {
-        throw new Error(`Connection failed: ${requestError.message}`);
+        throw new Error('Connection request already pending. Please check MetaMask and approve the pending request.');
+      } else if (requestError.code === -32603) {
+        throw new Error('Internal MetaMask error. Please try refreshing the page.');
       }
-      throw new Error('Failed to connect. Please check your MetaMask and try again.');
+      
+      // Erreur générique
+      throw new Error(`Failed to request accounts: ${requestError.message || 'Unknown error'}`);
     }
     
+    // Vérification que des comptes ont été retournés
     if (!accounts || accounts.length === 0) {
       throw new Error('No accounts found. Please unlock your MetaMask wallet and try again.');
     }
     
     const address = accounts[0];
-    if (!address || typeof address !== 'string') {
-      throw new Error('Failed to get wallet address. Please try again.');
+    
+    // Vérification que l'adresse est valide
+    if (!address || typeof address !== 'string' || !address.startsWith('0x')) {
+      throw new Error('Invalid wallet address received from MetaMask.');
     }
     
-    console.log('✅ Account connected:', address);
+    console.log('✅ Valid account address:', address);
     
-    // Now create provider and signer
+    // Création du provider et signer
     console.log('🔧 Creating provider and signer...');
-    const provider = new BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
-    console.log('✅ Provider and signer created');
+    let provider: BrowserProvider;
+    let signer: any;
     
-    // Verify network (but don't fail if network is wrong - user can switch manually)
     try {
-      await ensureWalletProvider();
-      console.log('✅ Network verified');
+      provider = new BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+      console.log('✅ Provider and signer created successfully');
+    } catch (providerError: any) {
+      console.error('❌ Provider creation error:', providerError);
+      throw new Error(`Failed to create provider: ${providerError.message}`);
+    }
+    
+    // Vérification du réseau (non-bloquant)
+    try {
+      console.log('🌐 Checking network...');
+      await ensureCorrectNetwork();
+      const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
+      console.log(`✅ Network verified - connected to ${networkName}`);
     } catch (networkError: any) {
       console.warn('⚠️ Network issue (but wallet is connected):', networkError);
-      // Don't throw - wallet is connected, network can be switched later
+      // Ne pas throw - le wallet est connecté, l'utilisateur peut changer le réseau plus tard
+      // On pourrait afficher un warning à l'utilisateur ici
     }
     
+    console.log('✅ Wallet connection complete');
+    
     return { provider, signer, address };
+    
   } catch (error) {
     console.error('❌ Wallet connection error:', error);
+    
+    // Re-throw les erreurs avec leurs messages
     if (error instanceof Error) {
       throw error;
     }
-    throw new Error('Failed to connect wallet. Please make sure MetaMask is installed and unlocked.');
+    
+    // Erreur inconnue
+    throw new Error('Failed to connect wallet. Please try again.');
   }
 }
 
@@ -278,7 +311,15 @@ export async function fetchLotteryState(limit = 5) {
     };
   } catch (error) {
     console.error('Failed to fetch lottery state:', error);
-    throw new Error(`Failed to fetch lottery state: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.log('⚠️ Falling back to default lottery state (demo mode).');
+    return {
+      mainPot: 0,
+      bonusPot: 0,
+      currentDrawId: 1,
+      totalTickets: 0,
+      draws: [],
+      secondaryDraws: [],
+    };
   }
 }
 
@@ -330,7 +371,7 @@ export async function fetchUserState(address: string, drawId?: number) {
     };
   } catch (error) {
     console.error('Failed to fetch user state:', error);
-    throw new Error(`Failed to fetch user state: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    return null;
   }
 }
 

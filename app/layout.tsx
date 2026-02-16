@@ -3,8 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ToastProvider from "@/components/ToastProvider";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import { RainbowKitSetup } from "@/lib/rainbowkit";
-import '@rainbow-me/rainbowkit/styles.css';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,10 +37,24 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ErrorBoundary>
-          <RainbowKitSetup>
-            <ToastProvider />
-            {children}
-          </RainbowKitSetup>
+          <ToastProvider />
+          <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-950 via-slate-950 to-slate-950">
+            <main className="flex-1">{children}</main>
+            <footer className="border-t border-white/5 bg-black/70 text-[11px] text-slate-300/80 px-4 py-3 text-center leading-snug">
+              <p>
+                Aureus is a decentralized lottery application secured by on-chain smart contracts.
+                Core protocol contracts are designed to be independently audited by professional
+                security firms before mainnet launch and remain fully transparent and verifiable
+                on the blockchain.
+              </p>
+              <p className="mt-1">
+                Nothing on this website is financial, legal or tax advice. Participating in the
+                lottery is high-risk and you can lose 100% of the funds you play with. You are
+                solely responsible for checking that online lotteries and crypto-assets are legal
+                in your jurisdiction and that you meet the minimum legal age requirements.
+              </p>
+            </footer>
+          </div>
         </ErrorBoundary>
       </body>
     </html>
