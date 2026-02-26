@@ -61,6 +61,7 @@ export default function Home() {
   } = useAppStore();
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [buyModalOpen, setBuyModalOpen] = useState(false);
+  const [buyInitialCount, setBuyInitialCount] = useState(1);
   const [profileOpen, setProfileOpen] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [howItWorksOpen, setHowItWorksOpen] = useState(false);
@@ -601,33 +602,68 @@ export default function Home() {
               )}
 
               {/* BUY TICKETS CTA */}
-              <div className="px-8 pb-8 pt-4">
-                <button
-                  onClick={() => {
-                    if (aureusUser || user) {
-                      setBuyModalOpen(true);
-                    } else {
-                      setAuthModalOpen(true);
-                    }
-                  }}
-                  className="group relative w-full overflow-hidden rounded-2xl cursor-pointer"
-                >
-                  {/* Animated gradient background */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-indigo-600 animate-gradient-x" />
-                  {/* Hover glow */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-violet-400 via-fuchsia-400 to-indigo-400 blur-lg" />
-                  {/* Shine */}
-                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
-                  {/* Content */}
-                  <div className="relative py-5 px-8 flex flex-col items-center gap-1">
-                    <div className="flex items-center gap-3">
+              <div className="px-8 pb-8 pt-4 space-y-3">
+
+                {/* Quantity chips */}
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  <span className="text-xs text-slate-500 font-medium mr-1">How many?</span>
+                  {[1, 5, 10, 25, 50].map(n => (
+                    <button
+                      key={n}
+                      onClick={() => {
+                        setBuyInitialCount(n);
+                        if (aureusUser || user) setBuyModalOpen(true);
+                        else setAuthModalOpen(true);
+                      }}
+                      className="px-4 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 hover:border-violet-400/50 text-sm font-bold text-white transition-all hover:scale-105"
+                    >
+                      {n}×
+                    </button>
+                  ))}
+                </div>
+
+                {/* Two main CTAs */}
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Quick Buy — 1 ticket */}
+                  <button
+                    onClick={() => {
+                      setBuyInitialCount(1);
+                      if (aureusUser || user) setBuyModalOpen(true);
+                      else setAuthModalOpen(true);
+                    }}
+                    className="group relative overflow-hidden rounded-2xl cursor-pointer"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500 to-orange-600" />
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-amber-400 to-orange-500 blur-sm" />
+                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+                    <div className="relative py-5 flex flex-col items-center gap-1">
                       <span className="text-4xl group-hover:scale-110 transition-transform">🎫</span>
-                      <span className="font-black text-2xl text-white">Buy Tickets — $1 USDC each</span>
-                      <span className="text-4xl group-hover:scale-110 transition-transform">🎫</span>
+                      <span className="font-black text-lg text-white">Buy a Ticket</span>
+                      <span className="text-xs text-amber-100/80">$1 USDC · instant</span>
                     </div>
-                    <p className="text-xs text-violet-200/80 font-medium">Every ticket enters both draws · Instant · Secured on Base</p>
-                  </div>
-                </button>
+                  </button>
+
+                  {/* Play — choose quantity */}
+                  <button
+                    onClick={() => {
+                      setBuyInitialCount(5);
+                      if (aureusUser || user) setBuyModalOpen(true);
+                      else setAuthModalOpen(true);
+                    }}
+                    className="group relative overflow-hidden rounded-2xl cursor-pointer"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-violet-600 to-fuchsia-700" />
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-violet-500 to-fuchsia-600 blur-sm" />
+                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+                    <div className="relative py-5 flex flex-col items-center gap-1">
+                      <span className="text-4xl group-hover:scale-110 transition-transform">🎮</span>
+                      <span className="font-black text-lg text-white">Play</span>
+                      <span className="text-xs text-violet-200/80">Choose your amount</span>
+                    </div>
+                  </button>
+                </div>
+
+                <p className="text-center text-xs text-slate-600">Every ticket enters both draws · Secured on Base</p>
               </div>
 
             </div>
@@ -672,8 +708,9 @@ export default function Home() {
       </main>
 
       <div className="hidden md:block">
-      <BuyTicketsModal 
-        isOpen={buyModalOpen} 
+      <BuyTicketsModal
+        isOpen={buyModalOpen}
+        initialCount={buyInitialCount}
         onClose={() => {
           const prevCount = userTicketsCount;
           setBuyModalOpen(false);

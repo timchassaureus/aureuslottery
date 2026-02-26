@@ -34,6 +34,7 @@ async function recordReferralPurchase(
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  initialCount?: number;
 }
 
 // Quick buy deals with special discounts
@@ -52,8 +53,13 @@ function calculateDiscount(count: number): number {
   return deal ? deal.discount : 0;
 }
 
-export default function BuyTicketsModal({ isOpen, onClose }: Props) {
-  const [count, setCount] = useState(1);
+export default function BuyTicketsModal({ isOpen, onClose, initialCount = 1 }: Props) {
+  const [count, setCount] = useState(initialCount);
+
+  useEffect(() => {
+    if (isOpen) setCount(initialCount);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
   const [paymentMethod, setPaymentMethod] = useState<'crypto' | 'card'>('crypto');
   const [cardProvider, setCardProvider] = useState<'moonpay' | 'ramp'>('moonpay');
   const { jackpot, ticketPrice, user, tickets, buyMultipleTickets, setJackpot, mode, syncOnChainData } = useAppStore();
