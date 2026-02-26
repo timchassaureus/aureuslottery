@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Mail, Chrome, Apple } from 'lucide-react';
+import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface AuthModalProps {
@@ -11,15 +11,24 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
+  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleEmailSignup = async () => {
-    if (!email || !name) {
-      toast.error('Veuillez remplir tous les champs');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    if (mode === 'register' && !name.trim()) {
+      toast.error('Please choose a username');
       return;
     }
 
@@ -28,47 +37,39 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
       const response = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: 'email',
-          email,
-          name,
-        }),
+        body: JSON.stringify({ mode, email, password, name }),
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
-        // Sauvegarder l'utilisateur localement
         const { saveUser } = await import('@/lib/userStorage');
         saveUser(data.user);
-        
-        toast.success('Compte créé avec succès ! 🎉');
+        toast.success(
+          mode === 'register'
+            ? `Account created! Welcome ${data.user.name} 🎉`
+            : `Welcome ${data.user.name} 👋`
+        );
         onSuccess(data.user);
         onClose();
       } else {
-        toast.error('Erreur lors de la création du compte');
+        toast.error(data.error || 'Login error');
       }
-    } catch (error) {
-      console.error('Signup error:', error);
-      toast.error('Erreur de connexion');
+    } catch {
+      toast.error('Network error');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleSignup = async () => {
-    // TODO: Implémenter Google OAuth
-    toast.info('Connexion Google - À venir');
-  };
-
-  const handleAppleSignup = async () => {
-    // TODO: Implémenter Apple Sign In
-    toast.info('Connexion Apple - À venir');
+  const switchMode = () => {
+    setMode(m => (m === 'login' ? 'register' : 'login'));
+    setPassword('');
   };
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gradient-to-br from-purple-900 to-indigo-900 border-2 border-purple-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+      <div className="relative bg-gradient-to-br from-purple-900 to-indigo-900 border-2 border-purple-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
@@ -77,81 +78,92 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
         </button>
 
         <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold mb-2">Créer un compte</h2>
+          <h2 className="text-3xl font-bold mb-2">
+            {mode === 'login' ? 'Sign in' : 'Create account'}
+          </h2>
           <p className="text-purple-200">
-            Rejoignez AUREUS Lottery en quelques secondes
+            {mode === 'login'
+              ? 'Access your AUREUS account'
+              : 'Join AUREUS Lottery in seconds'}
           </p>
         </div>
 
-        {/* Email Signup */}
-        <div className="space-y-4 mb-6">
-          <div>
-            <label className="block text-sm font-medium text-purple-200 mb-2">
-              Nom / Pseudo
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Votre nom"
-              className="w-full px-4 py-3 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-purple-200 mb-2">
-              Email
-            </label>
+        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
+          {mode === 'register' && (
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
+              <input
+                type="text"
+                name="name"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Username"
+                autoComplete="name"
+                className="w-full pl-10 pr-4 py-3 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+          )}
+
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
             <input
               type="email"
+              name="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="votre@email.com"
-              className="w-full px-4 py-3 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              onChange={e => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              autoComplete="email"
+              className="w-full pl-10 pr-4 py-3 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
+
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="Password (6 characters min.)"
+              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+              className="w-full pl-10 pr-12 py-3 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(v => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-400 hover:text-white"
+            >
+              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
+          </div>
+
           <button
-            onClick={handleEmailSignup}
+            type="submit"
             disabled={loading}
-            className="w-full py-3 bg-primary-500 hover:bg-primary-600 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-3 bg-yellow-500 hover:bg-yellow-400 text-black rounded-xl font-bold text-lg transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-2"
           >
             <Mail className="w-5 h-5" />
-            {loading ? 'Création...' : 'Créer avec Email'}
+            {loading
+              ? mode === 'login' ? 'Signing in...' : 'Creating...'
+              : mode === 'login' ? 'Sign in' : 'Create my account'}
           </button>
-        </div>
+        </form>
 
-        <div className="relative mb-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-purple-600/50"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-purple-900 text-purple-300">Ou</span>
-          </div>
-        </div>
-
-        {/* Social Signup */}
-        <div className="space-y-3">
+        <div className="mt-5 text-center">
           <button
-            onClick={handleGoogleSignup}
-            className="w-full py-3 bg-white hover:bg-gray-100 text-gray-900 rounded-xl font-semibold transition-all hover:scale-105 flex items-center justify-center gap-2"
+            onClick={switchMode}
+            className="text-purple-300 hover:text-white text-sm transition-colors"
           >
-            <Chrome className="w-5 h-5" />
-            Continuer avec Google
-          </button>
-          <button
-            onClick={handleAppleSignup}
-            className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-semibold transition-all hover:scale-105 flex items-center justify-center gap-2"
-          >
-            <Apple className="w-5 h-5" />
-            Continuer avec Apple
+            {mode === 'login'
+              ? "No account yet? → Create account"
+              : 'Already have an account? → Sign in'}
           </button>
         </div>
 
-        <p className="mt-6 text-xs text-purple-300 text-center">
-          En créant un compte, vous acceptez nos conditions d'utilisation.
-          Un wallet sera créé automatiquement pour vous.
+        <p className="mt-4 text-xs text-purple-400 text-center">
+          By using AUREUS, you agree to our terms of service.
         </p>
       </div>
     </div>
   );
 }
-

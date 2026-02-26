@@ -6,6 +6,30 @@ import { useAppStore } from '@/lib/store';
 import toast from 'react-hot-toast';
 import { buyTicketsOnChain } from '@/lib/blockchain';
 import { BASESCAN_TX_URL, DEFAULT_CHAIN_ID } from '@/lib/config';
+import { getStoredReferralCodeForPurchase } from '@/hooks/useReferral';
+import TransactionStatus from './TransactionStatus';
+
+async function recordReferralPurchase(
+  walletAddress: string,
+  amountUsd: number,
+  ticketsCount: number
+) {
+  try {
+    const referralCode = getStoredReferralCodeForPurchase();
+    await fetch('/api/referral/record-purchase', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        walletAddress: walletAddress.toLowerCase(),
+        amountUsd,
+        ticketsCount,
+        referralCode: referralCode || null,
+      }),
+    });
+  } catch (e) {
+    console.warn('Referral record failed (non-blocking):', e);
+  }
+}
 
 interface Props {
   isOpen: boolean;
@@ -32,15 +56,19 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
   const [count, setCount] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState<'crypto' | 'card'>('crypto');
   const [cardProvider, setCardProvider] = useState<'moonpay' | 'ramp'>('moonpay');
-  const { jackpot, ticketPrice, user, buyMultipleTickets, setJackpot, mode, syncOnChainData } = useAppStore();
+  const { jackpot, ticketPrice, user, tickets, buyMultipleTickets, setJackpot, mode, syncOnChainData } = useAppStore();
   const [processing, setProcessing] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [txStatus, setTxStatus] = useState<'pending' | 'confirming' | 'success' | 'error'>('pending');
+  const [txMessage, setTxMessage] = useState<string>('');
   const isLive = mode === 'live';
 
   useEffect(() => {
     if (!isOpen) {
       setTxHash(null);
       setProcessing(false);
+      setTxStatus('pending');
+      setTxMessage('');
     }
   }, [isOpen]);
 
@@ -74,6 +102,8 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
     }
     
     setProcessing(true);
+    setTxStatus('pending');
+    setTxMessage('Preparing transaction...');
     
     const loadingToast = toast.loading(
       isLive
@@ -85,27 +115,49 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
     
     try {
       if (isLive) {
+        setTxStatus('pending');
+        setTxMessage('Waiting for wallet confirmation...');
+        
         const receipt = await buyTicketsOnChain(count);
         setTxHash(receipt.hash);
+        setTxStatus('confirming');
+        setTxMessage('Transaction submitted! Confirming on blockchain...');
+        
+        setTxStatus('success');
+        setTxMessage(`Successfully purchased ${count} ticket${count > 1 ? 's' : ''}!`);
+        
         await syncOnChainData(user.address);
+        recordReferralPurchase(user.address, totalCost, count);
         const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
         toast.success(
           `🎉 Purchased ${count} ticket${count > 1 ? 's' : ''} on ${networkName}!`,
           { id: loadingToast }
         );
       } else {
+        setTxStatus('pending');
+        setTxMessage(paymentMethod === 'card' ? 'Processing card payment...' : 'Processing...');
+        
         const delay = paymentMethod === 'card' ? 3000 : 1500;
         await new Promise(resolve => setTimeout(resolve, delay));
+        
         buyMultipleTickets(user.address, count);
         setJackpot(newJackpot);
+        
+        setTxStatus('success');
+        setTxMessage(`Successfully purchased ${count} ticket${count > 1 ? 's' : ''}!`);
+        
+        recordReferralPurchase(user.address, totalCost, count);
         toast.success(
           `🎉 Successfully purchased ${count} ticket${count > 1 ? 's' : ''}!`,
           { id: loadingToast }
         );
       }
       
-      onClose();
-      setCount(1);
+      // Close modal after short delay
+      setTimeout(() => {
+        onClose();
+        setCount(1);
+      }, 2000);
     } catch (error: any) {
       console.error('Purchase failed:', error);
       
@@ -132,6 +184,8 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
         errorMessage = error.message;
       }
       
+      setTxStatus('error');
+      setTxMessage(errorMessage);
       toast.error(errorMessage, { id: loadingToast, duration: 6000 });
     } finally {
       setProcessing(false);
@@ -139,7 +193,20 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 p-3 md:p-4 flex items-start md:items-center justify-center">
+    <>
+      {txHash && txStatus !== 'error' && (
+        <TransactionStatus
+          txHash={txHash}
+          status={txStatus === 'pending' ? 'pending' : txStatus === 'confirming' ? 'confirming' : 'success'}
+          message={txMessage}
+          onComplete={() => {
+            setTxHash(null);
+            setTxStatus('pending');
+            setTxMessage('');
+          }}
+        />
+      )}
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 p-3 md:p-4 flex items-start md:items-center justify-center">
       <div className="modal w-full max-w-md bg-gradient-to-br from-purple-900 to-purple-800 border border-purple-500/30 rounded-3xl relative">
         <div className="modal-content p-6 md:p-8">
         <button
@@ -313,8 +380,7 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
                             : 'bg-green-500/20 text-green-400'
                         }`}>
                           {deal.label}
-                        </div>
-                      </div>
+                        </div>                      </div>
                       {isSelected && (
                         <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
                           <span className="text-black text-xs font-bold">✓</span>
@@ -385,6 +451,24 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
             <div className="text-xs text-purple-400 text-center mt-2">
               This is the amount the winner will receive (100%)
             </div>
+            {/* Probability calculator */}
+            {count > 0 && (() => {
+              const totalTicketsSold = tickets?.length ?? 0;
+              const totalAfterBuy = totalTicketsSold + count;
+              const winChance = (count / totalAfterBuy) * 100;
+              const oneIn = Math.round(totalAfterBuy / count);
+              return (
+                <div className="mt-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-center">
+                  <p className="text-yellow-300 text-xs font-bold mb-1">Your chances of winning</p>
+                  <p className="text-yellow-400 text-xl font-black">
+                    {winChance < 0.01 ? '< 0.01' : winChance.toFixed(2)}%
+                  </p>
+                  <p className="text-yellow-300/70 text-xs">
+                    1 in {oneIn.toLocaleString('en-US')} · {count} ticket{count > 1 ? 's' : ''} out of {totalAfterBuy.toLocaleString('en-US')} total
+                  </p>
+                </div>
+              );
+            })()}
             <div className="mt-3 text-[11px] text-purple-200/80 space-y-1 border-t border-purple-600/40 pt-2">
               <p>
                 ⚠️ Lottery tickets are a high-risk product. You can lose 100% of the amount you
@@ -421,7 +505,7 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
 
           {/* Action button moved to sticky footer below */}
         </div>
-        </div>  {/* Ferme modal-content */}
+        </div>  {/* Closes modal-content */}
         
         {/* Modal Footer - Sticky button */}
         <div className="modal-footer">
@@ -447,6 +531,7 @@ export default function BuyTicketsModal({ isOpen, onClose }: Props) {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

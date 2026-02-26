@@ -31,6 +31,9 @@ declare global {
 
 const USDC_DECIMALS = 6;
 const rpcProvider = new JsonRpcProvider(RPC_URL);
+const isDev = process.env.NODE_ENV !== 'production';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const devLog = (...args: any[]) => { if (isDev) console.log(...args); };
 
 function getReadLotteryContract() {
   return new Contract(LOTTERY_ADDRESS, AUREUS_LOTTERY_ABI, rpcProvider);
@@ -65,10 +68,10 @@ async function ensureCorrectNetwork(): Promise<void> {
   try {
     // Vérifier le réseau actuel
     const chainId = await window.ethereum.request({ method: 'eth_chainId' }) as string;
-    console.log('📡 Current chain ID:', chainId);
+    devLog('📡 Current chain ID:', chainId);
     
     if (chainId !== REQUIRED_CHAIN_ID) {
-      console.log(`🔄 Wrong network - switching to ${networkName}...`);
+      devLog(`🔄 Wrong network - switching to ${networkName}...`);
       
       try {
         // Essayer de changer vers le réseau requis
@@ -76,11 +79,11 @@ async function ensureCorrectNetwork(): Promise<void> {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: REQUIRED_CHAIN_ID }],
         });
-        console.log(`✅ Network switched to ${networkName}`);
+        devLog(`✅ Network switched to ${networkName}`);
       } catch (switchError: any) {
         // Si le réseau n'existe pas dans MetaMask, l'ajouter
         if (switchError.code === 4902) {
-          console.log(`➕ Adding ${networkName} network...`);
+          devLog(`➕ Adding ${networkName} network...`);
           await window.ethereum.request({
             method: 'wallet_addEthereumChain',
             params: [{
@@ -95,13 +98,13 @@ async function ensureCorrectNetwork(): Promise<void> {
               blockExplorerUrls: [blockExplorerUrl],
             }],
           });
-          console.log(`✅ ${networkName} network added`);
+          devLog(`✅ ${networkName} network added`);
         } else {
           throw switchError;
         }
       }
     } else {
-      console.log(`✅ Already on ${networkName}`);
+      devLog(`✅ Already on ${networkName}`);
     }
   } catch (error: any) {
     console.error('❌ Network check/switch error:', error);
@@ -128,7 +131,7 @@ export async function ensureWalletProvider(): Promise<BrowserProvider> {
  */
 export async function connectWallet(): Promise<WalletConnection> {
   try {
-    console.log('🔌 blockchain.ts: Starting wallet connection...');
+    devLog('🔌 blockchain.ts: Starting wallet connection...');
     
     // Vérification environnement navigateur
     if (typeof window === 'undefined') {
@@ -140,12 +143,12 @@ export async function connectWallet(): Promise<WalletConnection> {
       throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
     }
     
-    console.log('✅ MetaMask detected');
+    devLog('✅ MetaMask detected');
     
     // REQUÊTE PRINCIPALE - eth_requestAccounts
     let accounts: string[];
     try {
-      console.log('📋 Requesting account access via window.ethereum.request...');
+      devLog('📋 Requesting account access via window.ethereum.request...');
       
       const ethereum = window.ethereum;
       
@@ -159,7 +162,7 @@ export async function connectWallet(): Promise<WalletConnection> {
         method: 'eth_requestAccounts' 
       }) as string[];
       
-      console.log('✅ Accounts received from MetaMask:', accounts);
+      devLog('✅ Accounts received from MetaMask:', accounts);
       
     } catch (requestError: any) {
       console.error('❌ Request error:', requestError);
@@ -189,17 +192,17 @@ export async function connectWallet(): Promise<WalletConnection> {
       throw new Error('Invalid wallet address received from MetaMask.');
     }
     
-    console.log('✅ Valid account address:', address);
+    devLog('✅ Valid account address:', address);
     
     // Création du provider et signer
-    console.log('🔧 Creating provider and signer...');
+    devLog('🔧 Creating provider and signer...');
     let provider: BrowserProvider;
     let signer: any;
     
     try {
       provider = new BrowserProvider(window.ethereum);
       signer = await provider.getSigner();
-      console.log('✅ Provider and signer created successfully');
+      devLog('✅ Provider and signer created successfully');
     } catch (providerError: any) {
       console.error('❌ Provider creation error:', providerError);
       throw new Error(`Failed to create provider: ${providerError.message}`);
@@ -207,17 +210,17 @@ export async function connectWallet(): Promise<WalletConnection> {
     
     // Vérification du réseau (non-bloquant)
     try {
-      console.log('🌐 Checking network...');
+      devLog('🌐 Checking network...');
       await ensureCorrectNetwork();
       const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
-      console.log(`✅ Network verified - connected to ${networkName}`);
+      devLog(`✅ Network verified - connected to ${networkName}`);
     } catch (networkError: any) {
       console.warn('⚠️ Network issue (but wallet is connected):', networkError);
       // Ne pas throw - le wallet est connecté, l'utilisateur peut changer le réseau plus tard
       // On pourrait afficher un warning à l'utilisateur ici
     }
     
-    console.log('✅ Wallet connection complete');
+    devLog('✅ Wallet connection complete');
     
     return { provider, signer, address };
     
@@ -236,15 +239,13 @@ export async function connectWallet(): Promise<WalletConnection> {
 
 export async function fetchLotteryState(limit = 5) {
   try {
-    console.log('📡 Fetching lottery state from blockchain...');
+    devLog('📡 Fetching lottery state from blockchain...');
     const contract = getReadLotteryContract();
     const [pots, currentDrawIdBn] = await Promise.all([
-      contract.getCurrentPots().catch(err => {
-        console.error('❌ Failed to get pots:', err);
+      contract.getCurrentPots().catch((err: unknown) => {
         throw new Error(`Failed to fetch lottery pots: ${err instanceof Error ? err.message : 'Unknown error'}`);
       }),
-      contract.currentDrawId().catch(err => {
-        console.error('❌ Failed to get currentDrawId:', err);
+      contract.currentDrawId().catch((err: unknown) => {
         throw new Error(`Failed to fetch current draw ID: ${err instanceof Error ? err.message : 'Unknown error'}`);
       }),
     ]);
@@ -255,7 +256,7 @@ export async function fetchLotteryState(limit = 5) {
     const mainPot = Number(formatUnits(mainPotRaw, USDC_DECIMALS));
     const bonusPot = Number(formatUnits(bonusPotRaw, USDC_DECIMALS));
     
-    console.log('📊 Blockchain state:', {
+    devLog('📊 Blockchain state:', {
       mainPotRaw: mainPotRaw.toString(),
       mainPot,
       bonusPotRaw: bonusPotRaw.toString(),
@@ -310,8 +311,7 @@ export async function fetchLotteryState(limit = 5) {
       secondaryDraws: bonusSnapshots,
     };
   } catch (error) {
-    console.error('Failed to fetch lottery state:', error);
-    console.log('⚠️ Falling back to default lottery state (demo mode).');
+    devLog('⚠️ Contract not reachable — falling back to defaults:', error instanceof Error ? error.message : error);
     return {
       mainPot: 0,
       bonusPot: 0,
@@ -328,35 +328,22 @@ export async function fetchUserState(address: string, drawId?: number) {
     return null;
   }
   try {
-    console.log('👤 Fetching user state for:', address);
+    devLog('👤 Fetching user state for:', address);
     const contract = getReadLotteryContract();
-    const targetDraw = drawId ?? Number(await contract.currentDrawId().catch(err => {
-      console.error('❌ Failed to get currentDrawId for user state:', err);
+    const targetDraw = drawId ?? Number(await contract.currentDrawId().catch((err: unknown) => {
       throw new Error(`Failed to fetch current draw ID: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }));
     
     const [ticketCountBn, lifetimeBn, pendingClaimBn, usdcBalanceBn] =
       await Promise.all([
-        contract.getUserTickets(targetDraw, address).catch(err => {
-          console.error('❌ Failed to get user tickets:', err);
-          return BigInt(0);
-        }),
-        contract.lifetimeTickets(address).catch(err => {
-          console.error('❌ Failed to get lifetime tickets:', err);
-          return BigInt(0);
-        }),
-        contract.pendingClaims(targetDraw, address).catch(err => {
-          console.error('❌ Failed to get pending claims:', err);
-          return BigInt(0);
-        }),
-        new Contract(USDC_ADDRESS, ERC20_ABI, rpcProvider).balanceOf(address).catch(err => {
-          console.error('❌ Failed to get USDC balance:', err);
-          return BigInt(0);
-        }),
+        contract.getUserTickets(targetDraw, address).catch(() => BigInt(0)),
+        contract.lifetimeTickets(address).catch(() => BigInt(0)),
+        contract.pendingClaims(targetDraw, address).catch(() => BigInt(0)),
+        new Contract(USDC_ADDRESS, ERC20_ABI, rpcProvider).balanceOf(address).catch(() => BigInt(0)),
       ]);
 
     const usdcBalance = Number(formatUnits(usdcBalanceBn, USDC_DECIMALS));
-    console.log('💰 User USDC balance:', {
+    devLog('💰 User USDC balance:', {
       address,
       raw: usdcBalanceBn.toString(),
       formatted: usdcBalance,
@@ -370,7 +357,7 @@ export async function fetchUserState(address: string, drawId?: number) {
       usdcBalance,
     };
   } catch (error) {
-    console.error('Failed to fetch user state:', error);
+    devLog('⚠️ Failed to fetch user state:', error instanceof Error ? error.message : error);
     return null;
   }
 }

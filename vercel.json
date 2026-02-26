@@ -4,6 +4,16 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "regions": ["iad1"],
+  "crons": [
+    {
+      "path": "/api/draw/trigger?type=main",
+      "schedule": "0 21 * * *"
+    },
+    {
+      "path": "/api/draw/trigger?type=bonus",
+      "schedule": "30 21 * * *"
+    }
+  ],
   "env": {
     "NEXT_PUBLIC_DEFAULT_MODE": "live",
     "NEXT_PUBLIC_FORCE_MODE": "live",

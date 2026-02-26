@@ -45,6 +45,36 @@ export interface User {
   pendingClaim?: number;
 }
 
+export interface GroupMember {
+  id: string;
+  group_id: string;
+  wallet_address: string;
+  amount_contributed: number;
+  share_percentage: number;
+  joined_at: string;
+  status: 'pending' | 'paid' | 'won';
+}
+
+export interface Group {
+  id: string;
+  name: string;
+  creator_wallet: string;
+  invite_code: string;
+  max_members: number;
+  status: 'active' | 'closed';
+  created_at: string;
+  draw_date: string;
+  total_pool: number;
+  members?: GroupMember[];
+}
+
+export interface GroupNotification {
+  id: string;
+  message: string;
+  type: 'join' | 'pool' | 'reminder' | 'win' | 'loss';
+  createdAt: number;
+}
+
 interface AppState {
   jackpot: number;
   secondaryPot: number; // 5% pot for 10PM draw
@@ -60,8 +90,20 @@ interface AppState {
   mode: 'demo' | 'live';
   isSyncing: boolean;
   lastSynced?: number;
-  
+  referralCode: string | null;
+  currentStreak: number;
+  bonusTickets: number;
+  myGroups: Group[];
+  activeGroup: Group | null;
+  groupNotifications: GroupNotification[];
+
   // Actions
+  setReferralCode: (code: string | null) => void;
+  setCurrentStreak: (n: number) => void;
+  setBonusTickets: (n: number) => void;
+  setMyGroups: (groups: Group[]) => void;
+  setActiveGroup: (group: Group | null) => void;
+  addGroupNotification: (notification: GroupNotification) => void;
   setJackpot: (amount: number) => void;
   buyTicket: (owner: string) => void;
   buyMultipleTickets: (owner: string, count: number) => void;
@@ -110,18 +152,34 @@ export const useAppStore = create<AppState>((set, get) => ({
   totalTicketsSold: 0,
   mode: FORCED_MODE ?? DEFAULT_MODE,
   isSyncing: false,
+  referralCode: null,
+  currentStreak: 0,
+  bonusTickets: 0,
+  myGroups: [],
+  activeGroup: null,
+  groupNotifications: [],
+
+  setReferralCode: (code) => set({ referralCode: code }),
+  setCurrentStreak: (n) => set({ currentStreak: n }),
+  setBonusTickets: (n) => set({ bonusTickets: n }),
+  setMyGroups: (groups) => set({ myGroups: groups }),
+  setActiveGroup: (group) => set({ activeGroup: group }),
+  addGroupNotification: (notification) =>
+    set((state) => ({
+      groupNotifications: [notification, ...state.groupNotifications].slice(0, 50),
+    })),
 
   setJackpot: (amount) => set({ jackpot: amount }),
 
   buyTicket: (owner) => {
     const { tickets, currentDrawNumber, jackpot, secondaryPot, totalTicketsSold } = get();
     const ticket: Ticket = {
-      id: `ticket-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `ticket-${Date.now()}-${crypto.randomUUID().slice(-9)}`,
       owner,
       timestamp: Date.now(),
       drawNumber: currentDrawNumber,
     };
-    
+
     // New distribution: 85% jackpot, 10% owner, 5% secondary pot
     set({
       tickets: [...tickets, ticket],
@@ -142,7 +200,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const secondaryContribution = totalCost * 0.05;
     
     const newTickets: Ticket[] = Array.from({ length: count }, (_, i) => ({
-      id: `ticket-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `ticket-${Date.now()}-${i}-${crypto.randomUUID().slice(-9)}`,
       owner,
       timestamp: Date.now(),
       drawNumber: currentDrawNumber,
@@ -372,7 +430,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     
     // Give 1 free ticket for sharing
     const bonusTicket: Ticket = {
-      id: `bonus-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `bonus-${Date.now()}-${crypto.randomUUID().slice(-9)}`,
       owner,
       timestamp: Date.now(),
       drawNumber: currentDrawNumber,

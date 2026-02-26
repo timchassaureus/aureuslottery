@@ -7,85 +7,67 @@ import { toast } from 'sonner';
 interface CardPaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  amount: number; // Montant en USDC
-  userWalletAddress?: string; // Adresse de dépôt de l'utilisateur
+  amount: number; // Amount in USDC
+  userWalletAddress?: string;
   onSuccess: (amount: number) => void;
 }
 
-export default function CardPaymentModal({ isOpen, onClose, amount, userWalletAddress, onSuccess }: CardPaymentModalProps) {
+function getWalletAddress(userWalletAddress?: string): string | null {
+  if (userWalletAddress) return userWalletAddress;
+  try {
+    const stored = localStorage.getItem('aureus_current_user');
+    if (stored) return JSON.parse(stored).walletAddress || null;
+  } catch {}
+  return null;
+}
+
+export default function CardPaymentModal({ isOpen, onClose, amount, userWalletAddress, onSuccess: _onSuccess }: CardPaymentModalProps) {
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'ramp' | 'stripe' | null>(null);
 
   if (!isOpen) return null;
 
-  const handleRampPayment = async () => {
-    setLoading(true);
-    try {
-      // Récupérer l'adresse de l'utilisateur depuis le localStorage
-      const currentUserStr = localStorage.getItem('aureus_current_user');
-      if (!currentUserStr) {
-        toast.error('Veuillez vous connecter d\'abord');
-        setLoading(false);
-        return;
-      }
-      
-      const currentUser = JSON.parse(currentUserStr);
-      const userAddress = currentUser.walletAddress;
-      
-      // Appeler l'API Ramp
-      const response = await fetch('/api/payment/ramp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userAddress,
-          amount,
-          currency: 'USDC',
-        }),
-      });
-
-      const data = await response.json();
-      
-      if (data.success && data.rampUrl) {
-        // Ouvrir Ramp dans une nouvelle fenêtre
-        window.open(data.rampUrl, 'ramp', 'width=500,height=700');
-        toast.success('Redirection vers Ramp...');
-      } else {
-        toast.error('Erreur lors de l\'ouverture de Ramp');
-      }
-    } catch (error) {
-      console.error('Ramp error:', error);
-      toast.error('Erreur de connexion');
-    } finally {
-      setLoading(false);
+  // MoonPay — no API key required to get started
+  // Buys USDC on Base and sends it directly to the user's wallet
+  const handleMoonPay = () => {
+    const address = getWalletAddress(userWalletAddress);
+    if (!address) {
+      toast.error('Please connect first to get your wallet address');
+      return;
     }
+    const moonpayKey = process.env.NEXT_PUBLIC_MOONPAY_API_KEY || '';
+    const params = new URLSearchParams({
+      currencyCode: 'usdc_base',
+      walletAddress: address,
+      baseCurrencyAmount: String(amount),
+      ...(moonpayKey ? { apiKey: moonpayKey } : {}),
+    });
+    window.open(`https://buy.moonpay.com/?${params.toString()}`, '_blank', 'width=500,height=700');
+    toast.success('MoonPay opened — buy your USDC and it will arrive in your wallet!');
+    onClose();
   };
 
-  const handleStripePayment = async () => {
+  // Ramp Network — alternative to MoonPay
+  const handleRamp = async () => {
     setLoading(true);
     try {
-      // Créer une session Stripe
-      const response = await fetch('/api/payment/stripe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: amount * 100, // Stripe utilise les centimes
-          currency: 'usd',
-        }),
-      });
-
-      const data = await response.json();
-      
-      if (data.success && data.sessionId) {
-        // Rediriger vers Stripe Checkout
-        // En production, utiliser Stripe Checkout
-        toast.success('Redirection vers Stripe...');
-        // window.location.href = data.checkoutUrl;
-      } else {
-        toast.error('Erreur lors de la création de la session de paiement');
+      const address = getWalletAddress(userWalletAddress);
+      if (!address) {
+        toast.error('Please connect first');
+        return;
       }
-    } catch (error) {
-      console.error('Stripe error:', error);
-      toast.error('Erreur de connexion');
+      const rampKey = process.env.NEXT_PUBLIC_RAMP_API_KEY || '';
+      const params = new URLSearchParams({
+        swapAsset: 'BASE_USDC',
+        swapAmount: String(amount * 1e6), // USDC micro-units
+        userAddress: address,
+        ...(rampKey ? { hostApiKey: rampKey } : {}),
+      });
+      window.open(`https://buy.ramp.network/?${params.toString()}`, '_blank', 'width=500,height=700');
+      toast.success('Ramp opened — buy your USDC!');
+      onClose();
+    } catch (err) {
+      console.error('Ramp error:', err);
+      toast.error('Error opening Ramp');
     } finally {
       setLoading(false);
     }
@@ -93,7 +75,7 @@ export default function CardPaymentModal({ isOpen, onClose, amount, userWalletAd
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gradient-to-br from-purple-900 to-indigo-900 border-2 border-purple-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+      <div className="relative bg-gradient-to-br from-purple-900 to-indigo-900 border-2 border-purple-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
@@ -105,51 +87,48 @@ export default function CardPaymentModal({ isOpen, onClose, amount, userWalletAd
           <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-500/20 rounded-full mb-4">
             <CreditCard className="w-8 h-8 text-purple-400" />
           </div>
-          <h2 className="text-2xl font-bold mb-2">Paiement par carte</h2>
+          <h2 className="text-2xl font-bold mb-2">Buy with card</h2>
           <p className="text-purple-200">
-            Achetez {amount} USDC avec votre carte bancaire
+            Buy <strong>{amount} USDC</strong> — sent directly to your wallet
           </p>
         </div>
 
-        <div className="space-y-4">
-          {/* Option Ramp (Crypto on-ramp) */}
+        <div className="space-y-3">
+          {/* MoonPay — recommended */}
           <button
-            onClick={handleRampPayment}
+            onClick={handleMoonPay}
+            className="w-full py-4 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 rounded-xl font-semibold transition-all hover:scale-105 flex items-center justify-center gap-3"
+          >
+            <span className="text-xl">🌙</span>
+            <div className="text-left">
+              <div className="font-bold">MoonPay</div>
+              <div className="text-xs text-blue-200">Visa / Mastercard / Apple Pay</div>
+            </div>
+            <span className="ml-auto text-xs bg-green-500/30 text-green-300 px-2 py-1 rounded-full">Recommended</span>
+          </button>
+
+          {/* Ramp Network */}
+          <button
+            onClick={handleRamp}
             disabled={loading}
-            className="w-full py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-3"
+            className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-3"
           >
             {loading ? (
               <Loader className="w-5 h-5 animate-spin" />
             ) : (
               <>
-                <CreditCard className="w-5 h-5" />
-                <span>Payer avec Ramp (Crypto)</span>
+                <span className="text-xl">⚡</span>
+                <div className="text-left">
+                  <div className="font-bold">Ramp Network</div>
+                  <div className="text-xs text-purple-200">Bank card / wire transfer</div>
+                </div>
               </>
             )}
           </button>
 
-          {/* Option Stripe (Fiat → USDC) */}
-          <button
-            onClick={handleStripePayment}
-            disabled={loading}
-            className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-3"
-          >
-            {loading ? (
-              <Loader className="w-5 h-5 animate-spin" />
-            ) : (
-              <>
-                <CreditCard className="w-5 h-5" />
-                <span>Payer avec Stripe (Carte bancaire)</span>
-              </>
-            )}
-          </button>
-
-          <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-3 text-sm text-blue-200">
-            <p className="font-semibold mb-1">💳 Options de paiement</p>
-            <ul className="list-disc list-inside space-y-1 text-blue-100">
-              <li><strong>Ramp:</strong> Achat direct de crypto avec carte</li>
-              <li><strong>Stripe:</strong> Paiement fiat converti en USDC</li>
-            </ul>
+          <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3 text-xs text-green-200">
+            <p className="font-semibold mb-1">✅ How does it work?</p>
+            <p>You buy USDC (stablecoin = fixed $1) directly via MoonPay or Ramp. The USDC arrives in your wallet in ~1 minute, then you use it to buy your tickets.</p>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Trophy, Medal } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { getDisplayName } from '@/lib/utils';
 
@@ -12,15 +12,13 @@ interface Props {
 
 export default function Leaderboard({ isOpen, onClose }: Props) {
   const [selectedPeriod, setSelectedPeriod] = useState('daily');
-  const { tickets, draws, secondaryDraws, mode, currentDrawNumber } = useAppStore();
-
-  if (!isOpen) return null;
+  const { tickets, draws, secondaryDraws, mode } = useAppStore();
 
   // Calculate leaderboard from real data
   const leaderboardData = useMemo(() => {
     // Filter tickets based on period
     let filteredTickets = tickets;
-    const now = Date.now();
+    const now = new Date().getTime();
     
     if (selectedPeriod === 'daily') {
       const oneDayAgo = now - 24 * 60 * 60 * 1000;
@@ -85,6 +83,8 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
 
   // In live mode, show empty state if no data
   const hasData = leaderboardData.length > 0;
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Trophy, Zap } from 'lucide-react';
+import LiveDrawReactions from '@/components/LiveDrawReactions';
 
 interface Props {
   participants: Array<{ address: string; ticketCount: number }>;
@@ -47,12 +48,12 @@ export default function WheelAnimation({ participants: propParticipants, winner,
   const finalWinner = winner || participants[Math.floor(Math.random() * participants.length)].address;
 
   useEffect(() => {
-    // Timer qui compte les secondes
+    // Timer counting seconds
     const timer = setInterval(() => {
       setSecondsElapsed(prev => prev + 1);
     }, 1000);
 
-    // Noms qui défilent
+    // Names scrolling
     const nameInterval = setInterval(() => {
       const randomParticipant = participants[Math.floor(Math.random() * participants.length)];
       setCurrentName(randomParticipant.address);
@@ -64,7 +65,7 @@ export default function WheelAnimation({ participants: propParticipants, winner,
     };
   }, [participants, secondsElapsed]);
 
-  // Changement de phase basé sur le temps
+  // Phase change based on time
   useEffect(() => {
     if (secondsElapsed === 5) {
       setPhase('slowing');
@@ -78,6 +79,7 @@ export default function WheelAnimation({ participants: propParticipants, winner,
 
   return (
     <div className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center z-[100] p-4 overflow-hidden">
+      <LiveDrawReactions active viewerCount={participants.length} />
       {/* Close button */}
       <button
         onClick={onAnimationComplete}

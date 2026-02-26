@@ -15,37 +15,29 @@ import UrgencyBanner from '@/components/UrgencyBanner';
 import LiveStats from '@/components/LiveStats';
 import InviteBar from '@/components/InviteBar';
 import toast from 'react-hot-toast';
+import StreakDisplay from '@/components/StreakDisplay';
+import WinnersFeed from '@/components/WinnersFeed';
+import JackpotCounter from '@/components/JackpotCounter';
+import DailyEngagementCard from '@/components/DailyEngagementCard';
+import GroupDashboard from '@/components/GroupDashboard';
 
 export default function MobileHome() {
   const { jackpot, secondaryPot, user, initDemo, mode, setMode, syncOnChainData } = useAppStore();
-  
-  // Force live mode on mobile too
+
+  // Force live mode on mobile — one-shot, no polling
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
     if (FORCED_MODE === 'live') {
       localStorage.removeItem('aureus_mode');
       localStorage.removeItem('aureus_demo_initialized');
-      if (mode !== 'live') {
-        setMode('live');
-      }
-      
-      // Continuous check to prevent demo mode
-      const checkInterval = setInterval(() => {
-        const stored = localStorage.getItem('aureus_mode');
-        if (stored === 'demo' || mode !== 'live') {
-          localStorage.removeItem('aureus_mode');
-          localStorage.removeItem('aureus_demo_initialized');
-          setMode('live');
-        }
-      }, 1000);
-      
-      return () => clearInterval(checkInterval);
+      if (mode !== 'live') setMode('live');
     }
-  }, [mode, setMode]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [buyOpen, setBuyOpen] = useState(false);
   const [howItWorksOpen, setHowItWorksOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
 
@@ -172,10 +164,10 @@ export default function MobileHome() {
               </button>
             )}
             <button
-              onClick={() => {/* TODO: Ouvrir AuthModal */}}
+              onClick={() => setAuthModalOpen(true)}
               className="px-4 py-2 bg-primary-500 hover:bg-primary-600 rounded-xl font-semibold transition-all"
             >
-              Se connecter
+              Sign in
             </button>
           </div>
         </div>
@@ -186,7 +178,7 @@ export default function MobileHome() {
 
       {/* Main Content */}
       <main className="px-4 py-6 pb-28">
-        {/* JACKPOT ÉNORME ET VISIBLE */}
+        {/* HUGE VISIBLE JACKPOT */}
         <div className="relative mb-6">
           <div className="absolute inset-0 bg-primary-500/40 blur-3xl rounded-full animate-pulse"></div>
           <div className="relative bg-gradient-to-br from-indigo-950/95 via-purple-950/95 via-purple-950/95 to-slate-950/95 backdrop-blur-2xl border-4 border-white/30 rounded-3xl p-6 shadow-2xl shadow-white/20">
@@ -208,9 +200,9 @@ export default function MobileHome() {
                 🎰 Current Jackpot 🎰
               </p>
               
-              {/* Montant ENORME */}
-              <div className="text-5xl font-black bg-gradient-to-r from-amber-300 from-5% via-yellow-200 via-30% via-yellow-200 via-70% to-amber-300 to-95% bg-clip-text text-transparent mb-4 leading-tight drop-shadow-2xl break-all" style={{ textShadow: '0 0 30px rgba(251, 191, 36, 0.5), 0 0 60px rgba(251, 191, 36, 0.3)' }}>
-                ${jackpot.toLocaleString('en-US')}
+              {/* HUGE amount with animated counter */}
+              <div className="mt-2 flex justify-center">
+                <JackpotCounter />
               </div>
 
               <p className="text-lg text-primary-400 font-bold mt-4">
@@ -317,9 +309,26 @@ export default function MobileHome() {
         <div className="mb-6">
           <EnhancedWinnersHistory />
         </div>
+
+        {/* Streak + Winners feed */}
+        <div className="space-y-4 mb-6">
+          <StreakDisplay />
+          <WinnersFeed />
+          <DailyEngagementCard
+            userTicketsCount={userTicketsCount}
+            lifetimeTickets={user?.lifetimeTickets ?? 0}
+            jackpot={jackpot}
+          />
+          <GroupDashboard />
+        </div>
       </main>
 
       {/* Modals */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onSuccess={() => setAuthModalOpen(false)}
+      />
       <BuyTicketsModal isOpen={buyOpen} onClose={() => setBuyOpen(false)} />
       <UserProfile isOpen={profileOpen} onClose={() => setProfileOpen(false)} />
       <Leaderboard isOpen={leaderboardOpen} onClose={() => setLeaderboardOpen(false)} />

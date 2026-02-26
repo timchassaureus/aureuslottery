@@ -2,14 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useChainId } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useAppStore } from '@/lib/store';
 import { toast } from 'sonner';
 
 function WalletButton() {
   const [mounted, setMounted] = useState(false);
   const { address, isConnected, isConnecting } = useAccount();
-  const chainId = useChainId();
   const { mode, connectWallet: connectStore, syncOnChainData, disconnectWallet: disconnectStore } = useAppStore();
 
   // Anti-hydratation Next.js

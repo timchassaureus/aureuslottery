@@ -1,7 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Bell, X, CheckCircle, Gift } from 'lucide-react';
+import {
+  subscribeToInAppNotifications,
+  type InAppNotificationPayload,
+} from '@/lib/notificationBus';
+import { ensureNotificationPermission } from '@/lib/webNotifications';
 
 interface Notification {
   id: string;
@@ -13,56 +18,44 @@ interface Notification {
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [permission, setPermission] = useState<NotificationPermission | 'unsupported'>('unsupported');
 
-  useEffect(() => {
-    const scheduleNotifications = () => {
-      const now = new Date();
-      const currentHour = now.getUTCHours();
-      const currentMinute = now.getUTCMinutes();
-
-      // Notification at 12PM UTC
-      if (currentHour === 12 && currentMinute === 0) {
-        addNotification({
-          id: Date.now().toString(),
-          message: '✨ Good luck for tonight\'s draw at 9PM UTC!',
-          time: now.toLocaleTimeString(),
-          type: 'reminder',
-        });
-      }
-
-      // Notification at 8PM UTC (1 hour before the draw)
-      if (currentHour === 20 && currentMinute === 0) {
-        addNotification({
-          id: (Date.now() + 1).toString(),
-          message: '🔥 1 hour left! Tonight\'s jackpot draws at 9PM UTC!',
-          time: now.toLocaleTimeString(),
-          type: 'jackpot',
-        });
-      }
-    };
-
-    // Check every minute for notifications
-    const interval = setInterval(scheduleNotifications, 60000);
-
-    // Add demo notification
-    addNotification({
-      id: 'demo-1',
-      message: '👋 Welcome to AUREUS!',
-      time: new Date().toLocaleTimeString(),
-      type: 'reminder',
-    });
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const addNotification = (notification: Notification) => {
+  const addNotification = useCallback((notification: Notification) => {
     setNotifications((prev) => [notification, ...prev.slice(0, 4)]);
-    
+
     // Auto close after 5 seconds
     setTimeout(() => {
       setNotifications((prev) => prev.filter(n => n.id !== notification.id));
     }, 5000);
-  };
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToInAppNotifications((payload: InAppNotificationPayload) => {
+      addNotification({
+        id: payload.id ?? `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        message: payload.message,
+        type: payload.type,
+        time: payload.time ?? new Date().toLocaleTimeString(),
+      });
+    });
+
+    addNotification({
+      id: 'notif-welcome',
+      message: '👋 Notifications are live. Turn on browser alerts for draw reminders.',
+      time: new Date().toLocaleTimeString(),
+      type: 'reminder',
+    });
+
+    return unsubscribe;
+  }, [addNotification]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      setPermission('unsupported');
+      return;
+    }
+    setPermission(Notification.permission);
+  }, []);
 
   const removeNotification = (id: string) => {
     setNotifications((prev) => prev.filter(n => n.id !== id));
@@ -94,6 +87,30 @@ export default function NotificationCenter() {
               className="text-gray-400 hover:text-white"
             >
               <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="mb-4">
+            <button
+              onClick={async () => {
+                const result = await ensureNotificationPermission();
+                setPermission(result);
+                if (result === 'granted') {
+                  addNotification({
+                    id: `perm-${Date.now()}`,
+                    message: 'Browser notifications enabled. You will receive draw reminders.',
+                    time: new Date().toLocaleTimeString(),
+                    type: 'reminder',
+                  });
+                }
+              }}
+              className="w-full rounded-lg border border-blue-400/30 bg-blue-500/15 px-3 py-2 text-sm text-blue-100 hover:bg-blue-500/25 transition-colors"
+            >
+              {permission === 'granted'
+                ? 'Browser notifications enabled'
+                : permission === 'denied'
+                  ? 'Browser notifications blocked (allow in browser settings)'
+                  : 'Enable browser notifications'}
             </button>
           </div>
 

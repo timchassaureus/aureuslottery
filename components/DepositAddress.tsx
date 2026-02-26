@@ -15,7 +15,7 @@ export default function DepositAddress({ walletAddress, usdcBalance }: DepositAd
   const copyAddress = () => {
     navigator.clipboard.writeText(walletAddress);
     setCopied(true);
-    toast.success('Adresse copiée !');
+    toast.success('Address copied!');
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -26,22 +26,22 @@ export default function DepositAddress({ walletAddress, usdcBalance }: DepositAd
           <Wallet className="w-6 h-6 text-purple-400" />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-white">Votre adresse de dépôt</h3>
-          <p className="text-sm text-purple-300">Envoyez n'importe quelle crypto</p>
+          <h3 className="text-lg font-bold text-white">Your deposit address</h3>
+          <p className="text-sm text-purple-300">Send any crypto</p>
         </div>
       </div>
 
       <div className="space-y-4">
-        {/* Solde USDC */}
+        {/* USDC Balance */}
         <div className="bg-purple-800/30 rounded-xl p-4">
-          <p className="text-sm text-purple-300 mb-1">Solde disponible</p>
+          <p className="text-sm text-purple-300 mb-1">Available balance</p>
           <p className="text-3xl font-bold text-white">{usdcBalance.toFixed(2)} USDC</p>
         </div>
 
-        {/* Adresse de dépôt */}
+        {/* Deposit address */}
         <div>
           <label className="block text-sm font-medium text-purple-200 mb-2">
-            Adresse de dépôt (ETH, USDT, USDC, DAI, etc.)
+            Deposit address (ETH, USDT, USDC, DAI, etc.)
           </label>
           <div className="flex items-center gap-2">
             <input
@@ -63,19 +63,19 @@ export default function DepositAddress({ walletAddress, usdcBalance }: DepositAd
           </div>
         </div>
 
-        {/* QR Code (optionnel) */}
+        {/* QR Code (optional) */}
         <div className="flex items-center gap-2 text-sm text-purple-300">
           <QrCode className="w-4 h-4" />
-          <span>Scannez avec votre wallet pour envoyer</span>
+          <span>Scan with your wallet to send</span>
         </div>
 
         {/* Info */}
         <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-3 text-sm text-blue-200">
-          <p className="font-semibold mb-1">💡 Comment ça marche ?</p>
+          <p className="font-semibold mb-1">💡 How does it work?</p>
           <ul className="list-disc list-inside space-y-1 text-blue-100">
-            <li>Envoyez ETH, USDT, USDC, DAI, LINK ou WBTC</li>
-            <li>Conversion automatique en USDC</li>
-            <li>Crédit instantané pour acheter des tickets</li>
+            <li>Send ETH, USDT, USDC, DAI, LINK or WBTC</li>
+            <li>Automatic conversion to USDC</li>
+            <li>Instant credit to buy tickets</li>
           </ul>
         </div>
       </div>

@@ -12,6 +12,20 @@ interface VRFResult {
   timestamp: number;
 }
 
+// Cryptographically secure random float in [0, 1)
+function secureRandomFloat(): number {
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  return array[0] / (0xFFFFFFFF + 1);
+}
+
+// Cryptographically secure random hex string of given length
+function secureRandomHex(len: number): string {
+  const bytes = new Uint8Array(Math.ceil(len / 2));
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, len);
+}
+
 /**
  * Simulates Chainlink VRF v2 callback
  * In production, this would be handled on-chain
@@ -22,11 +36,11 @@ export function requestRandomness(): Promise<VRFResult> {
     setTimeout(() => {
       const now = Date.now();
       const blockNumber = now % 1000000;
-      const blockHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-      
-      // Generate cryptographically-secure random number
-      const randomValue = Math.random();
-      
+      const blockHash = `0x${secureRandomHex(64)}`;
+
+      // Cryptographically-secure random value
+      const randomValue = secureRandomFloat();
+
       resolve({
         randomValue,
         blockNumber,

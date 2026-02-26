@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Timer, Wallet, Trophy, User, Award, CreditCard } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Timer, Trophy, CreditCard, ChevronDown, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
 import AuthModal from '@/components/AuthModal';
 import DepositAddress from '@/components/DepositAddress';
@@ -11,10 +12,11 @@ import PremiumChat from '@/components/PremiumChat';
 import PreDrawCountdown from '@/components/PreDrawCountdown';
 import UserProfile from '@/components/UserProfile';
 import WinnerAnimation from '@/components/WinnerAnimation';
-import WheelAnimation from '@/components/WheelAnimation';
+import EpicDrawCeremony from '@/components/EpicDrawCeremony';
 import MobileHome from '@/components/MobileHome';
 import Leaderboard from '@/components/Leaderboard';
 import EnhancedWinnersHistory from '@/components/EnhancedWinnersHistory';
+import TrustBadges from '@/components/TrustBadges';
 import DisclaimerModal from '@/components/DisclaimerModal';
 import HowItWorksModal from '@/components/HowItWorksModal';
 import UsernameModal from '@/components/UsernameModal';
@@ -24,11 +26,25 @@ import UrgencyBanner from '@/components/UrgencyBanner';
 import ViralShareModal from '@/components/ViralShareModal';
 import InviteBar from '@/components/InviteBar';
 import AdminControls from '@/components/AdminControls';
-import WalletInstallPrompt from '@/components/WalletInstallPrompt';
+import ReferralDashboard from '@/components/ReferralDashboard';
+import StreakDisplay from '@/components/StreakDisplay';
+import WinnersFeed from '@/components/WinnersFeed';
+import JackpotCounter from '@/components/JackpotCounter';
+import DailyEngagementCard from '@/components/DailyEngagementCard';
+import NotificationCenter from '@/components/NotificationCenter';
+import NotificationAutomation from '@/components/NotificationAutomation';
+import GroupDashboard from '@/components/GroupDashboard';
+import GroupNotificationAutomation from '@/components/GroupNotificationAutomation';
+import JackpotHistoryChart from '@/components/JackpotHistoryChart';
 import { useAppStore } from '@/lib/store';
 import { FORCED_MODE, DEFAULT_CHAIN_ID } from '@/lib/config';
+import { AureusUser } from '@/lib/auth';
+import { getCurrentUser, updateUserBalance } from '@/lib/userStorage';
+import { sendBrowserNotification } from '@/lib/webNotifications';
+import { emitInAppNotification } from '@/lib/notificationBus';
 
 export default function Home() {
+  const router = useRouter();
   const { 
     jackpot, 
     secondaryPot, 
@@ -48,7 +64,9 @@ export default function Home() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [howItWorksOpen, setHowItWorksOpen] = useState(false);
+  const [referralOpen, setReferralOpen] = useState(false);
   const [viralShareOpen, setViralShareOpen] = useState(false);
+  const [custodialProfileOpen, setCustodialProfileOpen] = useState(false);
   const [lastPurchaseCount, setLastPurchaseCount] = useState(0);
   const [drawAnimation, setDrawAnimation] = useState<{ 
     winner?: string; 
@@ -56,11 +74,12 @@ export default function Home() {
     prize?: number; 
     drawType: '8pm' | '10pm' 
   } | null>(null);
-  const [showWheel, setShowWheel] = useState(false);
-  const [wheelData, setWheelData] = useState<{
-    participants: Array<{ address: string; ticketCount: number }>;
+  const [epicDraw, setEpicDraw] = useState<{
+    participants: Array<{ address: string; ticketCount: number; username?: string }>;
     winner: string;
+    winnerUsername?: string;
     prize: number;
+    totalTickets: number;
   } | null>(null);
   const [showPreDrawCountdown, setShowPreDrawCountdown] = useState(false);
   const [preDrawType, setPreDrawType] = useState<'8pm' | '10pm' | null>(null);
@@ -68,17 +87,27 @@ export default function Home() {
   const [hasTriggered10PM, setHasTriggered10PM] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [cardPaymentOpen, setCardPaymentOpen] = useState(false);
-  const [aureusUser, setAureusUser] = useState<any>(null); // Utilisateur avec auth sociale
+  // Defer localStorage read to client-only (avoids SSR hydration mismatch)
+  const [aureusUser, setAureusUser] = useState<AureusUser | null>(null);
   const isLive = mode === 'live';
 
-  // Charger l'utilisateur au démarrage
+  // Load aureusUser from localStorage on client mount (avoids SSR hydration mismatch)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const { getCurrentUser } = require('@/lib/userStorage');
-      const user = getCurrentUser();
-      if (user) {
-        setAureusUser(user);
-      }
+    setAureusUser(getCurrentUser());
+  }, []);
+
+  // Pick up user after OAuth redirect (Google/Apple) via short-lived cookie
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)aureus_oauth_user=([^;]+)/);
+    if (match) {
+      try {
+        const oauthUser: AureusUser = JSON.parse(decodeURIComponent(match[1]));
+        import('@/lib/userStorage').then(({ saveUser }) => saveUser(oauthUser));
+        setAureusUser(oauthUser);
+        // Clear the cookie immediately
+        document.cookie = 'aureus_oauth_user=; Max-Age=0; path=/';
+        toast.success(`Welcome ${oauthUser.name || oauthUser.email}! 🎉`);
+      } catch {}
     }
   }, []);
 
@@ -88,28 +117,13 @@ export default function Home() {
     
     // Always force live mode (FORCED_MODE defaults to 'live')
     if (FORCED_MODE === 'live') {
-      // Clear any stored demo mode immediately
+      // Clear any stored demo mode and enforce live mode once
       localStorage.removeItem('aureus_mode');
       localStorage.removeItem('aureus_demo_initialized');
-      
-      // Force live mode immediately
       if (mode !== 'live') {
         setMode('live');
       }
-      
-      // Double-check: if localStorage still has demo, clear it again
-      const checkInterval = setInterval(() => {
-        const stored = localStorage.getItem('aureus_mode');
-        if (stored === 'demo') {
-          localStorage.removeItem('aureus_mode');
-          localStorage.removeItem('aureus_demo_initialized');
-          if (mode !== 'live') {
-            setMode('live');
-          }
-        }
-      }, 1000);
-      
-      return () => clearInterval(checkInterval);
+      return;
     }
     
     // Only restore from localStorage if not forced to live
@@ -137,16 +151,6 @@ export default function Home() {
     }, 30000);
     return () => clearInterval(interval);
   }, [isLive, user?.address, syncOnChainData]);
-
-  // Emergency: force-accept disclaimer for all users to unblock access
-  useEffect(() => {
-    try {
-      localStorage.setItem('aureus_disclaimer_accepted', 'true');
-      if (typeof document !== 'undefined') {
-        document.cookie = 'aureus_disclaimer_accepted=true; Path=/; Max-Age=31536000; SameSite=Lax';
-      }
-    } catch {}
-  }, []);
 
   // Auto-initialize demo mode on first load (if no data exists)
   // Skip if FORCED_MODE is set (we're in live mode)
@@ -192,113 +196,150 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-    // Auto-trigger draws (DEMO - simule le comportement avec smart contract)
-    useEffect(() => {
-    if (isLive) return;
+  // Auto-trigger draw countdown (demo + live mode)
+  useEffect(() => {
     const totalSeconds = timeLeft.hours * 3600 + timeLeft.minutes * 60 + timeLeft.seconds;
-      
-      // Trigger 9PM draw countdown (2 minutes before)
-      if (totalSeconds <= 120 && totalSeconds > 0 && !hasTriggered8PM && !showPreDrawCountdown) {
-        setPreDrawType('8pm');
-        setShowPreDrawCountdown(true);
-        toast('🎰 Main Draw Starting!', { duration: 5000 });
-      }
-      
-      // Check for 9:30PM draw (30 minutes after 9PM)
+
+    // Trigger 9PM main draw countdown (2 minutes before 21:00 UTC)
+    if (totalSeconds <= 120 && totalSeconds > 0 && !hasTriggered8PM && !showPreDrawCountdown) {
+      setHasTriggered8PM(true); // Set BEFORE countdown to prevent race condition
+      setPreDrawType('8pm');
+      setShowPreDrawCountdown(true);
+      toast('🎰 Main Draw Starting!', { duration: 5000 });
+    }
+
+    // Trigger 9:30PM bonus draw countdown (21:28–21:32 UTC)
     const now = new Date();
     const currentHour = now.getUTCHours();
     const currentMinute = now.getUTCMinutes();
-    
-    // 9:30PM draw logic (21:30 UTC)
+
     if (currentHour === 21 && currentMinute >= 28 && currentMinute <= 32 && !hasTriggered10PM && !showPreDrawCountdown) {
+      setHasTriggered10PM(true); // Set BEFORE countdown to prevent race condition
       setPreDrawType('10pm');
       setShowPreDrawCountdown(true);
       toast('💎 Bonus Draw Starting!', { duration: 5000 });
     }
-  }, [timeLeft, hasTriggered8PM, hasTriggered10PM, showPreDrawCountdown, isLive]);
+  }, [timeLeft, hasTriggered8PM, hasTriggered10PM, showPreDrawCountdown]);
 
-  // Handle countdown complete -> trigger draw
+  // Handle countdown complete -> trigger draw (demo or live)
   const handleCountdownComplete = async () => {
+    setShowPreDrawCountdown(false);
+
     if (isLive) {
-      setShowPreDrawCountdown(false);
+      // Live mode: delegate draw execution to server-side API (called by Vercel cron)
+      // Countdown is purely cosmetic; we just fetch the result after the cron fires
+      const drawApiType = preDrawType === '8pm' ? 'main' : 'bonus';
+      try {
+        const res = await fetch(`/api/draw/trigger?type=${drawApiType}`, { method: 'GET' });
+        const data = await res.json();
+        if (data.success && drawApiType === 'main' && data.winner) {
+          setEpicDraw({
+            participants: [],
+            winner: data.winner,
+            prize: data.prize ?? 0,
+            totalTickets: data.totalTickets ?? 0,
+          });
+          // Win notification
+          const userAddr = (aureusUser?.walletAddress || user?.address || '').toLowerCase();
+          if (userAddr && data.winner.toLowerCase() === userAddr) {
+            sendBrowserNotification('🏆 You won the jackpot!', `You just won $${data.prize?.toLocaleString('en-US')} USDC on Aureus!`);
+            emitInAppNotification({ type: 'winner', message: `🏆 You won the jackpot! $${data.prize?.toLocaleString('en-US')} USDC is on its way to your wallet.` });
+          } else {
+            emitInAppNotification({ type: 'jackpot', message: `🎰 Main draw complete! Winner: ${data.winner?.slice(0,6)}...${data.winner?.slice(-4)} won $${data.prize?.toLocaleString('en-US')}` });
+          }
+        } else if (data.success && drawApiType === 'bonus' && data.winners?.length > 0) {
+          const prizePerWinner = data.prizePerWinner ?? 0;
+          setDrawAnimation({
+            winners: (data.winners as string[]).map((addr: string) => ({ address: addr, prize: prizePerWinner })),
+            prize: prizePerWinner,
+            drawType: '10pm',
+          });
+          // Win notification for bonus draw
+          const userAddr = (aureusUser?.walletAddress || user?.address || '').toLowerCase();
+          const didWin = userAddr && (data.winners as string[]).some((addr: string) => addr.toLowerCase() === userAddr);
+          if (didWin) {
+            sendBrowserNotification('🎁 Bonus draw win!', `You won $${prizePerWinner.toFixed(2)} USDC in the bonus draw!`);
+            emitInAppNotification({ type: 'winner', message: `🎁 You won the bonus draw! $${prizePerWinner.toFixed(2)} USDC sent to your wallet.` });
+          } else {
+            emitInAppNotification({ type: 'jackpot', message: `🎁 Bonus draw complete! ${data.winners.length} winners × $${prizePerWinner.toFixed(2)} each.` });
+          }
+        }
+        // Refresh on-chain state after draw
+        syncOnChainData(user?.address);
+      } catch (err) {
+        console.error('Live draw trigger error:', err);
+      }
+      setPreDrawType(null);
       return;
     }
-    setShowPreDrawCountdown(false);
-    
+
+    // Demo mode: run draw locally
     if (preDrawType === '8pm') {
-      setHasTriggered8PM(true);
-      
-      // Simulate draw delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Perform the draw
+
       const result = await performDraw();
-      
+
       if (result && tickets.length > 0) {
-        // Show wheel animation
         const ticketsInDraw = tickets.filter(t => t.drawNumber === currentDrawNumber);
-        
         const participantsMap = new Map<string, number>();
         ticketsInDraw.forEach(ticket => {
           participantsMap.set(ticket.owner, (participantsMap.get(ticket.owner) || 0) + 1);
         });
-        
         const participants = Array.from(participantsMap.entries()).map(([address, count]) => ({
           address,
-          ticketCount: count
+          ticketCount: count,
+          username: typeof window !== 'undefined'
+            ? localStorage.getItem(`aureus_username_${address.toLowerCase()}`) || undefined
+            : undefined,
         }));
-        
-        setWheelData({
-          participants,
-          winner: result.winner,
-          prize: result.prize
-        });
-        setShowWheel(true);
+        const totalTix = ticketsInDraw.length;
+        const winnerUsername = typeof window !== 'undefined'
+          ? localStorage.getItem(`aureus_username_${result.winner.toLowerCase()}`) || undefined
+          : undefined;
+        setEpicDraw({ participants, winner: result.winner, winnerUsername, prize: result.prize, totalTickets: totalTix });
+        // Win notification demo mode
+        const userAddr = (aureusUser?.walletAddress || user?.address || '').toLowerCase();
+        if (userAddr && result.winner.toLowerCase() === userAddr) {
+          sendBrowserNotification('🏆 You won!', `You just won $${result.prize?.toLocaleString('en-US')} USDC!`);
+          emitInAppNotification({ type: 'winner', message: `🏆 You won the jackpot! $${result.prize?.toLocaleString('en-US')} USDC` });
+        }
       }
     } else if (preDrawType === '10pm') {
-      setHasTriggered10PM(true);
-      
-      // Simulate draw delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Perform secondary draw
+
       await performSecondaryDraw();
-      
-      // Show animation with mock data (will be real with smart contract)
+
       const ticketsInDraw = tickets.filter(t => t.drawNumber === currentDrawNumber);
-      const prizePerWinner = secondaryPot / Math.min(25, ticketsInDraw.length);
-      
-      // Select 25 random winners (or less if not enough tickets)
       const numWinners = Math.min(25, ticketsInDraw.length);
-      const winners = ticketsInDraw
-        .sort(() => Math.random() - 0.5)
-        .slice(0, numWinners)
-        .map(t => ({
+      if (numWinners > 0) {
+        const prizePerWinner = secondaryPot / numWinners;
+        // Shuffle using Fisher-Yates with crypto random (avoid Math.random)
+        const shuffled = [...ticketsInDraw];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const rand = new Uint32Array(1);
+          crypto.getRandomValues(rand);
+          const j = rand[0] % (i + 1);
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        const winners = shuffled.slice(0, numWinners).map(t => ({
           address: t.owner,
-          prize: prizePerWinner
-        }));
-      
-      if (winners.length > 0) {
-        setDrawAnimation({
-          winners,
           prize: prizePerWinner,
-          drawType: '10pm'
-        });
+        }));
+        setDrawAnimation({ winners, prize: prizePerWinner, drawType: '10pm' });
       }
     }
-    
+
     setPreDrawType(null);
   };
 
-  // Reset triggers at midnight UTC
+  // Reset draw triggers at midnight UTC
   useEffect(() => {
-    if (isLive) return;
     const now = new Date();
     if (now.getUTCHours() === 0 && now.getUTCMinutes() === 0) {
       setHasTriggered8PM(false);
       setHasTriggered10PM(false);
     }
-  }, [timeLeft, isLive]);
+  }, [timeLeft]);
 
   const userTicketsCount = user ? user.ticketCount ?? user.tickets.length : 0;
 
@@ -315,12 +356,11 @@ export default function Home() {
       <CardPaymentModal
         isOpen={cardPaymentOpen}
         onClose={() => setCardPaymentOpen(false)}
-        amount={10} // Exemple: 10 USDC
+        amount={10} // Example: 10 USDC
         userWalletAddress={aureusUser?.walletAddress}
         onSuccess={(amount) => {
-          // Mettre à jour le solde de l'utilisateur
+          // Update the user's balance
           if (aureusUser) {
-            const { updateUserBalance } = require('@/lib/userStorage');
             const newBalance = (aureusUser.usdcBalance || 0) + amount;
             updateUserBalance(aureusUser.id, newBalance);
             setAureusUser({
@@ -344,120 +384,162 @@ export default function Home() {
         backgroundSize: '400% 400%',
         animation: 'gradient 20s ease infinite'
       }} />
-      <header className="hidden md:block border-b border-indigo-700/30 backdrop-blur-sm bg-slate-900/50">
-        <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Trophy className="w-10 h-10 text-primary-400" />
-            <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent">
-              AUREUS
-            </h1>
-            <span
-              className={`text-xs px-3 py-1 rounded-full border ${
-                isLive
-                  ? 'bg-green-600/30 border-green-400/40 text-green-200'
-                  : 'bg-slate-800/60 border-white/20 text-white/80'
-              }`}
-            >
-              {isLive ? (isSyncing ? 'Syncing…' : `Live • ${DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia'}`) : 'Demo'}
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            {FORCED_MODE ? (
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-green-500/40 bg-green-700/60 font-semibold">
-                <span className="text-lg">🟢</span>
-                <span className="hidden md:inline">
-                  {isSyncing ? 'Syncing…' : `Live • ${DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia'}`}
+      <header className="hidden md:block sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(5,5,15,0.75)', backdropFilter: 'blur(24px)' }}>
+        <div className="container mx-auto px-6 h-20 flex items-center justify-between gap-8">
+
+          {/* ── Logo ── */}
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-7 h-7 text-yellow-400" />
+              <span className="text-2xl font-black tracking-tight text-white">AUREUS</span>
+            </div>
+            {/* Status dot */}
+            <div className="flex items-center gap-1.5 ml-1">
+              <span
+                className={`w-2 h-2 rounded-full ${isLive ? 'bg-emerald-400' : 'bg-slate-600'}`}
+                style={isLive ? { boxShadow: '0 0 6px rgba(52,211,153,0.9)', animation: 'pulse 2s infinite' } : {}}
+              />
+              {!FORCED_MODE && (
+                <button
+                  onClick={() => {
+                    if (isLive) { setMode('demo'); toast.success('Demo mode'); }
+                    else { setMode('live'); syncOnChainData(user?.address); toast.success('Live mode'); }
+                  }}
+                  className="text-[10px] text-slate-500 hover:text-slate-300 uppercase tracking-widest font-medium transition-colors"
+                  title={isLive ? 'Switch to demo' : 'Switch to live'}
+                >
+                  {isLive ? (isSyncing ? 'sync…' : 'live') : 'demo'}
+                </button>
+              )}
+              {FORCED_MODE && (
+                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-medium">
+                  {isSyncing ? 'sync…' : 'live'}
                 </span>
-              </div>
-            ) : (
+              )}
+            </div>
+          </div>
+
+          {/* ── Nav centre ── */}
+          <nav className="flex items-center gap-2">
+            {[
+              { icon: '📖', label: 'How It Works', sub: 'Rules, draws & prize breakdown', action: () => setHowItWorksOpen(true) },
+              { icon: '🏅', label: 'Leaderboard', sub: 'Top players this week', action: () => setLeaderboardOpen(true) },
+              { icon: '💸', label: 'Invite & Earn', sub: 'Bring friends — earn USDC', action: () => setReferralOpen(true) },
+            ].map(item => (
               <button
-                onClick={() => {
-                  if (isLive) {
-                    setMode('demo');
-                    toast.success('Demo mode enabled');
-                  } else {
-                    setMode('live');
-                    syncOnChainData(user?.address);
-                    toast.success('Live mode enabled (Base Sepolia)');
-                  }
-                }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition-all hover:scale-105 border ${
-                  isLive
-                    ? 'bg-green-700/60 border-green-500/40 hover:bg-green-700/80'
-                    : 'bg-slate-800/60 border-slate-500/40 hover:bg-slate-700/70'
-                }`}
+                key={item.label}
+                onClick={item.action}
+                className="group flex flex-col items-start px-5 py-3 rounded-xl hover:bg-white/[0.07] transition-all"
               >
-                <span className="text-lg">{isLive ? '🟢' : '🛰️'}</span>
-                <span className="hidden md:inline">
-                  {isLive ? (isSyncing ? 'Syncing…' : `Live • ${DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia'}`) : 'Go Live'}
+                <span className="text-white/85 group-hover:text-white text-base font-bold transition-colors whitespace-nowrap">
+                  {item.icon} {item.label}
+                </span>
+                <span className="text-xs text-slate-500 group-hover:text-slate-300 transition-colors mt-0.5 whitespace-nowrap">
+                  {item.sub}
                 </span>
               </button>
-            )}
+            ))}
             {!isLive && !FORCED_MODE && (
               <button
-                onClick={() => {
-                  initDemo();
-                  toast.success('🎮 Demo mode initialized!', { duration: 3000 });
-                }}
-                className="flex items-center gap-2 px-4 py-2 bg-green-700/50 hover:bg-green-700/70 rounded-xl font-semibold transition-all hover:scale-105 border border-green-600/30"
-                title="Initialize demo with realistic data"
+                onClick={() => { initDemo(); toast.success('🎮 Demo initialized'); }}
+                className="ml-2 text-slate-600 hover:text-slate-400 text-xs font-medium transition-colors px-3 py-1 rounded-lg hover:bg-white/5"
               >
-                <span className="text-lg">🎮</span>
-                <span className="hidden md:inline">Demo Data</span>
+                ↺ reset demo
               </button>
             )}
-            <button
-              onClick={() => setHowItWorksOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-violet-700/50 hover:bg-violet-700/70 rounded-xl font-semibold transition-all hover:scale-105 border border-violet-600/30"
-            >
-              <Award className="w-5 h-5 text-violet-300" />
-              <span className="hidden md:inline">How It Works</span>
-            </button>
-            {user && (
-              <button
-                onClick={() => setLeaderboardOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-yellow-900/50 hover:bg-yellow-800/70 rounded-xl font-semibold transition-all hover:scale-105 border border-yellow-700/30"
-              >
-                <Trophy className="w-5 h-5 text-yellow-400" />
-                <span className="hidden md:inline">Leaderboard</span>
-              </button>
-            )}
+          </nav>
+
+          {/* ── Right: user + CTA ── */}
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Wallet user */}
             {user && (
               <button
                 onClick={() => setProfileOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-700/50 hover:bg-blue-700/70 rounded-xl font-semibold transition-all hover:scale-105"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all group"
               >
-                <User className="w-5 h-5" />
-                <span className="hidden md:inline">Profile</span>
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-xs font-black text-black">
+                  {(user.username || user.address || '?')[0].toUpperCase()}
+                </div>
+                <span className="text-sm text-white/70 group-hover:text-white transition-colors font-medium">
+                  {user.username || `${user.address?.slice(0,6)}…${user.address?.slice(-4)}`}
+                </span>
+                <ChevronDown className="w-3 h-3 text-slate-500 group-hover:text-slate-300 transition-colors" />
               </button>
             )}
-            {aureusUser ? (
+
+            {/* Email/custodial user */}
+            {aureusUser && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-purple-300">
-                  {aureusUser.name || aureusUser.email}
-                </span>
+                <button
+                  onClick={() => setCustodialProfileOpen(true)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/5 transition-all group"
+                >
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-xs font-black text-white">
+                    {(aureusUser.name || aureusUser.email || '?')[0].toUpperCase()}
+                  </div>
+                  <span className="text-sm text-white/70 group-hover:text-white transition-colors font-medium">
+                    {aureusUser.name || aureusUser.email?.split('@')[0]}
+                  </span>
+                  <ChevronDown className="w-3 h-3 text-slate-500 group-hover:text-slate-300 transition-colors" />
+                </button>
                 <button
                   onClick={() => setAureusUser(null)}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition-all"
+                  className="p-1.5 text-slate-600 hover:text-slate-300 transition-colors rounded-lg hover:bg-white/5"
+                  title="Sign out"
                 >
-                  Déconnexion
+                  <LogOut className="w-4 h-4" />
                 </button>
               </div>
-            ) : (
+            )}
+
+            {/* Sign in */}
+            {!user && !aureusUser && (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="px-6 py-3 bg-primary-500 hover:bg-primary-600 rounded-xl font-semibold transition-all hover:scale-105"
+                className="px-4 py-2 text-sm font-semibold text-white/70 hover:text-white border border-white/10 hover:border-white/20 rounded-full transition-all"
               >
-                Se connecter
+                Sign in
               </button>
             )}
+
+            {/* Primary CTA */}
+            <button
+              onClick={() => aureusUser ? setBuyModalOpen(true) : setAuthModalOpen(true)}
+              className="relative px-6 py-2.5 rounded-full font-bold text-sm text-black overflow-hidden group"
+              style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}
+            >
+              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'linear-gradient(135deg, #fbbf24, #f97316)' }} />
+              <span className="relative">🎫 Play Now</span>
+            </button>
           </div>
+
         </div>
       </header>
 
       {isLive && (
         <div className="hidden md:block container mx-auto px-4 mt-4">
           <AdminControls />
+        </div>
+      )}
+
+      {/* Test ceremony button — dev only (shown regardless of live/demo mode) */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="hidden md:flex justify-end container mx-auto px-6 mt-2">
+          <button
+            onClick={() => {
+              const demo = [
+                { address: user?.address || '0xDEADBEEF1234567890abcdef1234567890abcdef', ticketCount: 5, username: user?.username || 'TonPseudo' },
+                { address: '0xABCDEF1234567890abcdef1234567890abcdef12', ticketCount: 3, username: 'GoldRush_Tim' },
+                { address: '0x1234567890abcdef1234567890abcdef12345678', ticketCount: 8, username: 'DiamondKing99' },
+                { address: '0x9876543210fedcba9876543210fedcba98765432', ticketCount: 2, username: 'LuckyStrike88' },
+              ];
+              const w = demo[Math.floor(Math.random() * demo.length)];
+              setEpicDraw({ participants: demo, winner: w.address, winnerUsername: w.username, prize: jackpot || 2847, totalTickets: 18 });
+            }}
+            className="text-xs text-slate-600 hover:text-yellow-500 transition-colors font-medium"
+          >
+            🎬 test draw
+          </button>
         </div>
       )}
 
@@ -468,156 +550,123 @@ export default function Home() {
 
       <main className="hidden md:block container mx-auto px-4 py-8 pb-32">
         <div className="max-w-6xl mx-auto">
-          {/* JACKPOT ÉNORME ET VISIBLE */}
-          <div className="relative mb-8">
-            <div className="absolute inset-0 bg-primary-500/40 blur-3xl rounded-full animate-pulse"></div>
-            <div className="relative bg-gradient-to-br from-indigo-950/90 via-purple-950/90 via-blue-950/90 to-slate-950/90 backdrop-blur-2xl border-4 border-white/20 rounded-3xl p-6 md:p-16 shadow-2xl shadow-white/10">
-              <div className="text-center">
-                {/* Mini Countdown */}
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <Timer className="w-5 h-5 text-slate-400" />
-                  <span className="text-sm text-slate-400">Next Draw:</span>
-                  <div className="flex items-center gap-1 bg-black/30 px-3 py-1 rounded-lg">
-                    <span className="text-lg font-bold text-white">{String(timeLeft.hours).padStart(2, '0')}</span>
-                    <span className="text-slate-400">:</span>
-                    <span className="text-lg font-bold text-white">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                    <span className="text-slate-400">:</span>
-                    <span className="text-lg font-bold text-white">{String(timeLeft.seconds).padStart(2, '0')}</span>
+
+          {/* ── HERO — everything above the fold ─────────────────────────── */}
+          <div className="relative mb-10">
+            <div className="absolute inset-0 bg-primary-500/30 blur-3xl rounded-full animate-pulse pointer-events-none" />
+            <div className="relative bg-gradient-to-br from-indigo-950/90 via-purple-950/90 to-slate-950/90 backdrop-blur-2xl border-2 border-white/15 rounded-3xl shadow-2xl shadow-black/40 overflow-hidden">
+
+              {/* Top bar: countdown */}
+              <div className="flex items-center justify-center gap-3 px-8 py-4 border-b border-white/[0.06] bg-black/20">
+                <Timer className="w-4 h-4 text-slate-400 shrink-0" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-slate-400">Next Draw in</span>
+                <div className="flex items-center gap-0.5 font-mono text-white font-bold text-lg">
+                  <span className="tabular-nums">{String(timeLeft.hours).padStart(2, '0')}</span>
+                  <span className="text-slate-500 mx-0.5">:</span>
+                  <span className="tabular-nums">{String(timeLeft.minutes).padStart(2, '0')}</span>
+                  <span className="text-slate-500 mx-0.5">:</span>
+                  <span className="tabular-nums">{String(timeLeft.seconds).padStart(2, '0')}</span>
+                </div>
+              </div>
+
+              {/* Prize amounts */}
+              <div className="grid grid-cols-2 divide-x divide-white/[0.08] px-6 py-10">
+                {/* Main jackpot */}
+                <div className="flex flex-col items-center text-center pr-8">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-400/60 mb-3">🏆 Main Jackpot</p>
+                  <p className="text-7xl xl:text-8xl font-black text-white leading-none drop-shadow-[0_0_30px_rgba(251,191,36,0.25)]">
+                    ${jackpot.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                  </p>
+                  <p className="text-sm text-slate-500 mt-3">1 winner · Daily 9 PM UTC</p>
+                </div>
+
+                {/* Bonus draw */}
+                <div className="flex flex-col items-center text-center pl-8">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-400/60 mb-3">💎 Bonus Draw</p>
+                  <p className="text-7xl xl:text-8xl font-black text-violet-300 leading-none drop-shadow-[0_0_30px_rgba(167,139,250,0.25)]">
+                    ${secondaryPot.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                  </p>
+                  <p className="text-sm text-slate-500 mt-3">25 winners · Daily 9:30 PM UTC</p>
+                </div>
+              </div>
+
+              {/* User tickets badge */}
+              {userTicketsCount > 0 && (
+                <div className="flex justify-center pb-2">
+                  <div className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-500/15 to-blue-500/15 border border-white/15 rounded-full px-6 py-2">
+                    <span className="text-sm text-slate-300">Your tickets this draw:</span>
+                    <span className="text-yellow-300 font-black text-lg">{userTicketsCount}</span>
                   </div>
                 </div>
+              )}
 
-                <p className="text-2xl md:text-3xl text-primary-400 mb-6 font-bold uppercase tracking-wider">
-                  🎰 Current Jackpot 🎰
-                </p>
-                
-                {/* Montant ENORME */}
-                <div className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-amber-400 from-5% via-yellow-300 via-30% via-yellow-300 via-70% to-amber-400 to-95% bg-clip-text text-transparent mb-4 leading-tight drop-shadow-2xl break-all">
-                  ${jackpot.toLocaleString('en-US')}
-                </div>
-
-                <p className="text-xl md:text-2xl text-primary-400 font-bold mt-6">
-                  🎯 Daily Draws
-                </p>
-
-                {userTicketsCount > 0 && (
-                  <div className="inline-block bg-gradient-to-r from-violet-500/20 to-blue-500/20 rounded-full px-8 py-3 border-2 border-white/30 mb-4">
-                    <p className="text-xl font-bold text-white">
-                      Your tickets: <span className="text-yellow-300 font-black">{userTicketsCount}</span>
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Secondary Pot Display */}
-          <div className="flex justify-center mb-8 px-4">
-            <div className="bg-gradient-to-r from-purple-900/60 via-violet-900/60 to-blue-900/60 backdrop-blur-xl border-2 border-violet-500/40 rounded-2xl p-6 max-w-2xl w-full shadow-2xl">
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                {/* Main Jackpot Info */}
-                <div className="flex-1 min-w-[200px]">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-3xl">🏆</span>
-                    <h3 className="text-lg font-bold text-yellow-400">Main Jackpot</h3>
-                  </div>
-                  <p className="text-3xl font-black text-white mb-1">
-                    ${jackpot.toLocaleString('en-US')}
-                  </p>
-                  <p className="text-sm text-slate-300">Main Jackpot</p>
-                </div>
-
-                {/* Divider */}
-                <div className="hidden md:block w-px h-20 bg-white/20"></div>
-
-                {/* Secondary Pot Info */}
-                <div className="flex-1 min-w-[200px]">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-3xl">💎</span>
-                    <h3 className="text-lg font-bold text-violet-400">Bonus Draw</h3>
-                  </div>
-                  <p className="text-3xl font-black text-white mb-1">
-                    ${secondaryPot.toLocaleString('en-US')}
-                  </p>
-                  <p className="text-sm text-slate-300">25 Winners</p>
-                </div>
-              </div>
-
-              {/* Info Banner */}
-              <div className="mt-4 bg-gradient-to-r from-violet-500/10 to-blue-500/10 border border-violet-500/30 rounded-lg p-3">
-                <div className="text-center space-y-1">
-                  <p className="text-xs text-violet-200">
-                    💡 <strong>Every ticket enters BOTH draws!</strong> Win big or share the bonus pot 🎉
-                  </p>
-                  <p className="text-xs text-yellow-300 font-bold">
-                    📣 Invite your friends — more players = a BIGGER pot. Let’s push the jackpot to <span className="text-white">MILLIONS daily</span>! 🚀
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Actions - Buy Tickets */}
-          <div className="flex justify-center mb-8">
-            <button
-              onClick={() => {
-                if (aureusUser) {
-                  setBuyModalOpen(true);
-                } else {
-                  setAuthModalOpen(true);
-                }
-              }}
-              className="group relative w-full max-w-2xl overflow-hidden cursor-pointer"
-            >
-              {/* Animated background */}
-              <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 via-indigo-600 to-blue-600 animate-gradient-x pointer-events-none"></div>
-              
-              {/* Glow effect */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <div className="absolute inset-0 bg-gradient-to-r from-violet-400 via-fuchsia-400 to-indigo-400 blur-xl"></div>
-              </div>
-              
-              {/* Button content */}
-              <div className="relative py-6 md:py-8 px-6 md:px-12 rounded-3xl border-4 border-white/40 backdrop-blur-sm">
-                <div className="flex items-center justify-center gap-2 md:gap-4">
-                  <span className="text-3xl md:text-5xl group-hover:scale-125 transition-transform">🎫</span>
-                  <span className="font-black text-2xl md:text-3xl text-white drop-shadow-lg">
-                    Buy Tickets Now
-                  </span>
-                  <span className="text-3xl md:text-5xl group-hover:scale-125 transition-transform">💰</span>
-                </div>
-                <div className="mt-2 text-yellow-300 font-bold text-xs md:text-sm">
-                  ⚡ Instant Purchase • No Limits
-                </div>
-              </div>
-              
-              {/* Shine effect */}
-              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none"></div>
-            </button>
-          </div>
-
-          {/* Deposit Address - Si utilisateur connecté */}
-          {aureusUser && (
-            <div className="mb-8">
-              <DepositAddress
-                walletAddress={aureusUser.walletAddress}
-                usdcBalance={aureusUser.usdcBalance || 0}
-              />
-              <div className="mt-4 flex justify-center">
+              {/* BUY TICKETS CTA */}
+              <div className="px-8 pb-8 pt-4">
                 <button
-                  onClick={() => setCardPaymentOpen(true)}
-                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl font-semibold transition-all hover:scale-105 flex items-center gap-2"
+                  onClick={() => {
+                    if (aureusUser || user) {
+                      setBuyModalOpen(true);
+                    } else {
+                      setAuthModalOpen(true);
+                    }
+                  }}
+                  className="group relative w-full overflow-hidden rounded-2xl cursor-pointer"
                 >
-                  <CreditCard className="w-5 h-5" />
-                  Acheter avec carte bancaire
+                  {/* Animated gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-indigo-600 animate-gradient-x" />
+                  {/* Hover glow */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-violet-400 via-fuchsia-400 to-indigo-400 blur-lg" />
+                  {/* Shine */}
+                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
+                  {/* Content */}
+                  <div className="relative py-5 px-8 flex flex-col items-center gap-1">
+                    <div className="flex items-center gap-3">
+                      <span className="text-4xl group-hover:scale-110 transition-transform">🎫</span>
+                      <span className="font-black text-2xl text-white">Buy Tickets — $1 USDC each</span>
+                      <span className="text-4xl group-hover:scale-110 transition-transform">🎫</span>
+                    </div>
+                    <p className="text-xs text-violet-200/80 font-medium">Every ticket enters both draws · Instant · Secured on Base</p>
+                  </div>
                 </button>
               </div>
-            </div>
-          )}
 
-          {/* Recent Winners - Social Proof! */}
+            </div>
+          </div>
+
+          {/* ── BELOW FOLD — social proof & engagement ─────────────────── */}
+
+          {/* Streak + Winners Feed */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <StreakDisplay />
+            <WinnersFeed />
+          </div>
+
+          {/* Daily retention loop */}
+          <div className="mb-8">
+            <DailyEngagementCard
+              userTicketsCount={userTicketsCount}
+              lifetimeTickets={user?.lifetimeTickets ?? 0}
+              jackpot={jackpot}
+            />
+          </div>
+
+          {/* Group syndication */}
+          <div className="mb-8">
+            <GroupDashboard />
+          </div>
+
+          {/* Recent Winners - Social Proof */}
           <div className="mb-8">
             <EnhancedWinnersHistory />
           </div>
+
+          {/* Jackpot History Chart */}
+          <div className="mb-8">
+            <JackpotHistoryChart />
+          </div>
+
+          {/* Trust Badges */}
+          <TrustBadges />
 
         </div>
       </main>
@@ -641,6 +690,83 @@ export default function Home() {
       <UserProfile isOpen={profileOpen} onClose={() => setProfileOpen(false)} />
       <Leaderboard isOpen={leaderboardOpen} onClose={() => setLeaderboardOpen(false)} />
       <HowItWorksModal isOpen={howItWorksOpen} onClose={() => setHowItWorksOpen(false)} />
+      {referralOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setReferralOpen(false)}>
+          <div className="bg-slate-900 border border-purple-500/30 rounded-2xl max-w-md w-full p-6 shadow-xl" onClick={e => e.stopPropagation()}>
+            <ReferralDashboard />
+            <button onClick={() => setReferralOpen(false)} className="mt-4 w-full py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-medium">Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Custodial user profile modal ── */}
+      {custodialProfileOpen && aureusUser && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          onClick={() => setCustodialProfileOpen(false)}
+        >
+          <div
+            className="bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-900 border border-white/10 rounded-2xl max-w-md w-full shadow-2xl overflow-hidden"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-sm font-black text-white">
+                  {(aureusUser.name || aureusUser.email || '?')[0].toUpperCase()}
+                </div>
+                <div>
+                  <p className="font-bold text-white">{aureusUser.name || aureusUser.email?.split('@')[0]}</p>
+                  <p className="text-xs text-slate-400">{aureusUser.email}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setCustodialProfileOpen(false)}
+                className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full transition-all text-white text-xl"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 space-y-4">
+              {/* USDC balance */}
+              <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">USDC Balance</p>
+                  <p className="text-2xl font-black text-green-400">${(aureusUser.usdcBalance || 0).toFixed(2)}</p>
+                </div>
+                <span className="text-3xl">💰</span>
+              </div>
+
+              {/* Deposit address */}
+              <DepositAddress
+                walletAddress={aureusUser.walletAddress}
+                usdcBalance={aureusUser.usdcBalance || 0}
+              />
+
+              {/* Buy with card */}
+              <button
+                onClick={() => { setCustodialProfileOpen(false); setCardPaymentOpen(true); }}
+                className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl font-semibold transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
+              >
+                <CreditCard className="w-5 h-5" />
+                Buy with bank card
+              </button>
+
+              {/* Sign out */}
+              <button
+                onClick={() => { setAureusUser(null); setCustodialProfileOpen(false); }}
+                className="w-full py-2 rounded-xl text-sm text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-all flex items-center justify-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <PremiumChat />
       
       {/* Invite & Viral Bar - desktop only to avoid overlap on phones */}
@@ -656,41 +782,71 @@ export default function Home() {
       {/* Sticky Buy Button removed per request */}
       
       {/* Viral Share Modal - After Purchase */}
-      <ViralShareModal 
+      <ViralShareModal
         isOpen={viralShareOpen}
         onClose={() => setViralShareOpen(false)}
         ticketCount={lastPurchaseCount}
         jackpot={jackpot}
       />
-      
-      {/* Wheel Animation for 9PM draw */}
-      {showWheel && wheelData && (
-        <WheelAnimation
-          participants={wheelData.participants}
-          winner={wheelData.winner}
-          prize={wheelData.prize}
-          onAnimationComplete={() => {
-            setShowWheel(false);
-            setWheelData(null);
+
+      </div>
+      </div>
+
+      {/* ── Epic Draw Ceremony — OUTSIDE any hidden wrapper so fixed positioning works ── */}
+      {epicDraw && (
+        <EpicDrawCeremony
+          participants={epicDraw.participants}
+          winner={epicDraw.winner}
+          winnerUsername={epicDraw.winnerUsername}
+          prize={epicDraw.prize}
+          totalTickets={epicDraw.totalTickets}
+          userAddress={aureusUser?.walletAddress || user?.address}
+          userUsername={user?.username}
+          onComplete={() => {
+            const winnerAddr = epicDraw.winner.toLowerCase();
+            const userAddr = (aureusUser?.walletAddress || user?.address || '').toLowerCase();
+            const isWinner = Boolean(userAddr) && winnerAddr === userAddr;
+            const prize = epicDraw.prize;
+            setEpicDraw(null);
+            if (isWinner) {
+              router.push(`/winner-guide?amount=${encodeURIComponent(String(prize))}`);
+            }
           }}
         />
       )}
 
-      {/* Standard animation for 10PM draw (50 winners) */}
+      {/* Standard animation for 10PM bonus draw — also outside hidden wrapper */}
       {drawAnimation && drawAnimation.drawType === '10pm' && (
         <WinnerAnimation
-          winner={drawAnimation.winner}
           winners={drawAnimation.winners}
-          prize={drawAnimation.prize}
           drawType={drawAnimation.drawType}
-          onClose={() => setDrawAnimation(null)}
+          userAddress={aureusUser?.walletAddress || user?.address}
+          onClose={() => {
+            const currentAddress = String(user?.address || '').toLowerCase();
+            const myBonusGain =
+              currentAddress && drawAnimation.winners
+                ? drawAnimation.winners
+                    .filter((entry) => entry.address.toLowerCase() === currentAddress)
+                    .reduce((sum, entry) => sum + Number(entry.prize || 0), 0)
+                : 0;
+            setDrawAnimation(null);
+            if (myBonusGain > 0) {
+              router.push(`/winner-guide?amount=${encodeURIComponent(String(myBonusGain))}`);
+            }
+          }}
         />
       )}
 
-      </div>
-      </div>
-
       {/* Legal banner temporarily disabled to unblock mobile */}
+
+      <NotificationAutomation
+        timeLeft={timeLeft}
+        jackpot={jackpot}
+        connected={Boolean(user || aureusUser)}
+        userTicketsCount={userTicketsCount}
+      />
+      <GroupNotificationAutomation wallet={user?.address || aureusUser?.walletAddress || null} />
+      <NotificationCenter />
 
       {/* Pre-Draw Countdown - Shows 2 minutes before draw */}
       {showPreDrawCountdown && (

@@ -6,6 +6,21 @@ const nextConfig: NextConfig = {
   
   // Configuration pour le déploiement
   output: 'standalone',
+
+  // Forcer Turbopack à utiliser ce dossier comme racine du workspace
+  turbopack: {
+    root: __dirname,
+  },
+
+  webpack: (config) => {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      // MetaMask SDK optional RN dependency: not needed on web build
+      "@react-native-async-storage/async-storage": false,
+    };
+    return config;
+  },
   
   
   // Headers de sécurité
@@ -37,6 +52,14 @@ const nextConfig: NextConfig = {
           {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()'
+          },
+          {
+            key: 'X-Permitted-Cross-Domain-Policies',
+            value: 'none'
           }
         ],
       },
