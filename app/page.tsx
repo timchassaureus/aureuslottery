@@ -43,6 +43,52 @@ import { getCurrentUser, updateUserBalance } from '@/lib/userStorage';
 import { sendBrowserNotification } from '@/lib/webNotifications';
 import { emitInAppNotification } from '@/lib/notificationBus';
 
+const QUICK_AMOUNTS = [1, 5, 10, 25, 50];
+
+function PlayCard({ onPlay }: { onPlay: (n: number) => void }) {
+  const [selected, setSelected] = useState(5);
+  return (
+    <div className="mx-6 mb-8 rounded-2xl bg-white/[0.03] border border-white/[0.08] p-5">
+      <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400 mb-4 text-center">
+        🎮 How many tickets?
+      </p>
+      {/* Amount chips */}
+      <div className="flex justify-center gap-2 mb-5 flex-wrap">
+        {QUICK_AMOUNTS.map(n => (
+          <button
+            key={n}
+            onClick={() => setSelected(n)}
+            className={`px-5 py-2 rounded-full text-sm font-black transition-all border ${
+              selected === n
+                ? 'bg-violet-600 border-violet-400 text-white scale-105 shadow-[0_0_16px_rgba(139,92,246,0.4)]'
+                : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10 hover:border-white/20'
+            }`}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
+      {/* Play button */}
+      <button
+        onClick={() => onPlay(selected)}
+        className="group relative w-full overflow-hidden rounded-xl"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600 bg-[length:200%] transition-all duration-500 group-hover:bg-right" />
+        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
+        <div className="relative py-3.5 flex items-center justify-center gap-3">
+          <span className="font-black text-white text-base">
+            Play {selected} ticket{selected > 1 ? 's' : ''} — ${selected}.00
+          </span>
+          <span className="text-white/70 text-sm">→</span>
+        </div>
+      </button>
+      <p className="text-center text-[11px] text-slate-600 mt-3">
+        Every ticket enters both draws · $1 USDC each · Secured on Base
+      </p>
+    </div>
+  );
+}
+
 export default function Home() {
   const router = useRouter();
   const { 
@@ -505,12 +551,16 @@ export default function Home() {
 
             {/* Primary CTA */}
             <button
-              onClick={() => aureusUser ? setBuyModalOpen(true) : setAuthModalOpen(true)}
+              onClick={() => {
+                setBuyInitialCount(1);
+                if (aureusUser || user) setBuyModalOpen(true);
+                else setAuthModalOpen(true);
+              }}
               className="relative px-6 py-2.5 rounded-full font-bold text-sm text-black overflow-hidden group"
               style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}
             >
               <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'linear-gradient(135deg, #fbbf24, #f97316)' }} />
-              <span className="relative">🎫 Play Now</span>
+              <span className="relative">🎫 Buy Ticket</span>
             </button>
           </div>
 
@@ -601,70 +651,14 @@ export default function Home() {
                 </div>
               )}
 
-              {/* BUY TICKETS CTA */}
-              <div className="px-8 pb-8 pt-4 space-y-3">
-
-                {/* Quantity chips */}
-                <div className="flex items-center justify-center gap-2 flex-wrap">
-                  <span className="text-xs text-slate-500 font-medium mr-1">How many?</span>
-                  {[1, 5, 10, 25, 50].map(n => (
-                    <button
-                      key={n}
-                      onClick={() => {
-                        setBuyInitialCount(n);
-                        if (aureusUser || user) setBuyModalOpen(true);
-                        else setAuthModalOpen(true);
-                      }}
-                      className="px-4 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 hover:border-violet-400/50 text-sm font-bold text-white transition-all hover:scale-105"
-                    >
-                      {n}×
-                    </button>
-                  ))}
-                </div>
-
-                {/* Two main CTAs */}
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Quick Buy — 1 ticket */}
-                  <button
-                    onClick={() => {
-                      setBuyInitialCount(1);
-                      if (aureusUser || user) setBuyModalOpen(true);
-                      else setAuthModalOpen(true);
-                    }}
-                    className="group relative overflow-hidden rounded-2xl cursor-pointer"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500 to-orange-600" />
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-amber-400 to-orange-500 blur-sm" />
-                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-                    <div className="relative py-5 flex flex-col items-center gap-1">
-                      <span className="text-4xl group-hover:scale-110 transition-transform">🎫</span>
-                      <span className="font-black text-lg text-white">Buy a Ticket</span>
-                      <span className="text-xs text-amber-100/80">$1 USDC · instant</span>
-                    </div>
-                  </button>
-
-                  {/* Play — choose quantity */}
-                  <button
-                    onClick={() => {
-                      setBuyInitialCount(5);
-                      if (aureusUser || user) setBuyModalOpen(true);
-                      else setAuthModalOpen(true);
-                    }}
-                    className="group relative overflow-hidden rounded-2xl cursor-pointer"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-violet-600 to-fuchsia-700" />
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-violet-500 to-fuchsia-600 blur-sm" />
-                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-                    <div className="relative py-5 flex flex-col items-center gap-1">
-                      <span className="text-4xl group-hover:scale-110 transition-transform">🎮</span>
-                      <span className="font-black text-lg text-white">Play</span>
-                      <span className="text-xs text-violet-200/80">Choose your amount</span>
-                    </div>
-                  </button>
-                </div>
-
-                <p className="text-center text-xs text-slate-600">Every ticket enters both draws · Secured on Base</p>
-              </div>
+              {/* PLAY CARD */}
+              <PlayCard
+                onPlay={(n) => {
+                  setBuyInitialCount(n);
+                  if (aureusUser || user) setBuyModalOpen(true);
+                  else setAuthModalOpen(true);
+                }}
+              />
 
             </div>
           </div>
