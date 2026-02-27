@@ -50,11 +50,18 @@ async function runDraw(req: NextRequest) {
     }
 
     // Load today's ticket purchases
-    const { data: purchases, error: purchasesError } = await supabase
-      .from('purchases')
-      .select('wallet_address, tickets_count')
-      .gte('created_at', todayStart.toISOString())
-      .lte('created_at', todayEnd.toISOString());
+    const [{ data: purchases, error: purchasesError }, { data: bonusTickets }] = await Promise.all([
+      supabase
+        .from('purchases')
+        .select('wallet_address, tickets_count')
+        .gte('created_at', todayStart.toISOString())
+        .lte('created_at', todayEnd.toISOString()),
+      // Load all unused bonus tickets (streak rewards, welcome bonuses, etc.)
+      supabase
+        .from('bonus_tickets')
+        .select('id, wallet_address, amount')
+        .eq('used', false),
+    ]);
 
     if (purchasesError) {
       return NextResponse.json({ error: purchasesError.message }, { status: 500 });
@@ -64,7 +71,7 @@ async function runDraw(req: NextRequest) {
       return NextResponse.json({ winner: null, message: 'No tickets sold today', drawType }, { status: 200 });
     }
 
-    // Build ticket pool weighted by ticket count
+    // Build ticket pool weighted by ticket count (purchased tickets)
     const ticketPool: string[] = [];
     for (const p of purchases) {
       const count = Math.max(1, Number(p.tickets_count) || 1);
@@ -73,7 +80,28 @@ async function runDraw(req: NextRequest) {
       }
     }
 
+    // Add bonus tickets to pool (streak rewards, referral welcome bonuses, etc.)
+    const bonusTicketIds: string[] = [];
+    for (const bt of bonusTickets || []) {
+      const count = Math.max(1, Number(bt.amount) || 1);
+      for (let i = 0; i < count; i++) {
+        ticketPool.push(bt.wallet_address);
+      }
+      bonusTicketIds.push(bt.id);
+    }
+
     const totalTickets = ticketPool.length;
+    const bonusTicketsCount = (bonusTickets || []).reduce((s, bt) => s + (Number(bt.amount) || 1), 0);
+
+    // Mark bonus tickets as used (consumed in this draw)
+    const markBonusUsed = async () => {
+      if (bonusTicketIds.length > 0) {
+        await supabase
+          .from('bonus_tickets')
+          .update({ used: true })
+          .in('id', bonusTicketIds);
+      }
+    };
 
     if (drawType === 'main') {
       // Main jackpot — 1 winner gets 85% of the pot
@@ -92,12 +120,15 @@ async function runDraw(req: NextRequest) {
         return NextResponse.json({ error: insertError.message }, { status: 500 });
       }
 
+      await markBonusUsed();
+
       return NextResponse.json({
         success: true,
         drawType: 'main',
         winner: winnerAddress,
         prize: prizeUsd,
         totalTickets,
+        bonusTicketsUsed: bonusTicketsCount,
         timestamp: now.toISOString(),
       });
     }
@@ -138,6 +169,8 @@ async function runDraw(req: NextRequest) {
         return NextResponse.json({ error: insertError.message }, { status: 500 });
       }
 
+      await markBonusUsed();
+
       return NextResponse.json({
         success: true,
         drawType: 'bonus',
@@ -145,13 +178,15 @@ async function runDraw(req: NextRequest) {
         prizePerWinner,
         bonusPot,
         totalTickets,
+        bonusTicketsUsed: bonusTicketsCount,
         timestamp: now.toISOString(),
       });
     }
 
     return NextResponse.json({ error: 'Unknown draw type' }, { status: 400 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Internal error' }, { status: 500 });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Internal error';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 

@@ -15,13 +15,14 @@ interface ChartPoint {
 interface Stats {
   users: number; purchases: number;
   totalRevenue: number; totalTickets: number; totalPaidOut: number; totalCommissions: number;
+  pendingCommissions: number; platformBalance: number; platformAddress: string;
   revenueToday: number; revenueWeek: number; revenueMonth: number;
   ticketsToday: number; ticketsWeek: number; ticketsMonth: number;
   usersToday: number; usersWeek: number; usersMonth: number;
   chartData: ChartPoint[];
-  recentPurchases: Array<{ wallet_address: string; amount_usdc: number; ticket_count: number; created_at: string }>;
-  recentWinners:   Array<{ wallet_address: string; prize_usdc: number; draw_type: string; created_at: string }>;
-  recentReferrals: Array<{ referrer_wallet: string; commission_usdc: number; created_at: string }>;
+  recentPurchases: Array<{ wallet_address: string; amount_usd: number; tickets_count: number; created_at: string }>;
+  recentWinners:   Array<{ wallet_address: string; prize_usdc?: number; amount_usd?: number; draw_type: string; created_at: string }>;
+  recentReferrals: Array<{ referrer_wallet: string; commission_usdc: number; total_paid: number; pending: number; created_at: string }>;
 }
 
 function fmt(addr: string) { return `${addr.slice(0, 6)}…${addr.slice(-4)}`; }
@@ -294,6 +295,42 @@ export default function AdminPage() {
           </div>
         </div>
 
+        {/* ── Commissions en attente ── */}
+        {((s?.pendingCommissions ?? 0) > 0 || (s?.platformAddress)) && (
+          <div className={`border rounded-2xl p-5 ${(s?.pendingCommissions ?? 0) > 0 ? 'bg-pink-950/30 border-pink-500/30' : 'bg-slate-900 border-white/[0.06]'}`}>
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <h2 className="font-bold text-white mb-1">💸 Commissions de parrainage</h2>
+                <div className="flex items-center gap-4 text-sm">
+                  <span className="text-slate-400">En attente : <span className="text-pink-400 font-bold">{usd(s?.pendingCommissions ?? 0)}</span></span>
+                  {s?.platformAddress && (
+                    <span className="text-slate-400">Solde wallet : <span className={(s?.platformBalance ?? 0) >= (s?.pendingCommissions ?? 0) ? 'text-green-400 font-bold' : 'text-red-400 font-bold'}>{usd(s?.platformBalance ?? 0)}</span></span>
+                  )}
+                  {!s?.platformAddress && (
+                    <span className="text-slate-500 text-xs">PLATFORM_PRIVATE_KEY non configuré → paiement manuel</span>
+                  )}
+                </div>
+              </div>
+              {s?.platformAddress && (s?.pendingCommissions ?? 0) > 0 && (
+                <button
+                  onClick={async () => {
+                    if (!confirm(`Payer ${usd(s?.pendingCommissions ?? 0)} de commissions à tous les parrains ?`)) return;
+                    const res = await fetch('/api/commissions/pay', { method: 'POST', headers: { Authorization: `Bearer ${secret}` } });
+                    const d = await res.json();
+                    alert(d.ok
+                      ? `✅ ${d.paid} parrains payés — ${d.failed ?? 0} erreurs`
+                      : `❌ ${d.error}`);
+                    fetchStats(secret);
+                  }}
+                  className="px-5 py-2.5 bg-pink-600/30 hover:bg-pink-600/50 border border-pink-500/40 rounded-xl text-sm font-bold text-pink-300 transition"
+                >
+                  💸 Payer maintenant
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* ── Actions rapides ── */}
         <div className="bg-slate-900 border border-white/[0.06] rounded-2xl p-5">
           <h2 className="font-bold text-white mb-4">Actions rapides</h2>
@@ -303,7 +340,7 @@ export default function AdminPage() {
                 const res = await fetch('/api/draw/trigger?type=main', { headers: { Authorization: `Bearer ${secret}` } });
                 const d = await res.json();
                 alert(d.success
-                  ? `✅ Tirage principal : gagnant ${d.winner}, gain $${d.prize}`
+                  ? `✅ Tirage principal : gagnant ${d.winner}, gain $${d.prize} (${d.bonusTicketsUsed ?? 0} tickets bonus inclus)`
                   : `❌ ${d.error || d.message}`);
               }}
               className="px-5 py-3 bg-amber-600/20 hover:bg-amber-600/40 border border-amber-500/30 rounded-xl text-sm font-bold text-amber-300 transition"
@@ -315,7 +352,7 @@ export default function AdminPage() {
                 const res = await fetch('/api/draw/trigger?type=bonus', { headers: { Authorization: `Bearer ${secret}` } });
                 const d = await res.json();
                 alert(d.success
-                  ? `✅ Tirage bonus : ${d.winners?.length} gagnants, $${d.prizePerWinner?.toFixed(2)} chacun`
+                  ? `✅ Tirage bonus : ${d.winners?.length} gagnants, $${d.prizePerWinner?.toFixed(2)} chacun (${d.bonusTicketsUsed ?? 0} tickets bonus inclus)`
                   : `❌ ${d.error || d.message}`);
               }}
               className="px-5 py-3 bg-violet-600/20 hover:bg-violet-600/40 border border-violet-500/30 rounded-xl text-sm font-bold text-violet-300 transition"
@@ -344,8 +381,8 @@ export default function AdminPage() {
                     <p className="text-xs text-slate-500">{fmtDate(p.created_at)}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-green-400 font-bold text-sm">${p.amount_usdc?.toFixed(2)}</p>
-                    <p className="text-xs text-slate-500">{p.ticket_count} ticket{p.ticket_count !== 1 ? 's' : ''}</p>
+                    <p className="text-green-400 font-bold text-sm">${(p.amount_usd ?? 0).toFixed(2)}</p>
+                    <p className="text-xs text-slate-500">{p.tickets_count} ticket{p.tickets_count !== 1 ? 's' : ''}</p>
                   </div>
                 </div>
               ))}
@@ -367,7 +404,7 @@ export default function AdminPage() {
                     <p className="font-mono text-sm text-white">{fmt(w.wallet_address)}</p>
                     <p className="text-xs text-slate-500">{fmtDate(w.created_at)} · {w.draw_type}</p>
                   </div>
-                  <p className="text-amber-400 font-bold text-sm">${w.prize_usdc?.toFixed(2)}</p>
+                  <p className="text-amber-400 font-bold text-sm">${(w.prize_usdc ?? w.amount_usd ?? 0).toFixed(2)}</p>
                 </div>
               ))}
             </div>
@@ -388,7 +425,20 @@ export default function AdminPage() {
                     <p className="font-mono text-sm text-white">{fmt(r.referrer_wallet)}</p>
                     <p className="text-xs text-slate-500">{fmtDate(r.created_at)}</p>
                   </div>
-                  <p className="text-pink-400 font-bold text-sm">${r.commission_usdc?.toFixed(2)}</p>
+                  <div className="text-right flex items-center gap-4">
+                    <div className="text-center">
+                      <p className="text-xs text-slate-500">Total gagné</p>
+                      <p className="text-pink-400 font-bold text-sm">{usd(r.commission_usdc ?? 0)}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-slate-500">Payé</p>
+                      <p className="text-green-400 font-bold text-sm">{usd(r.total_paid ?? 0)}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-slate-500">En attente</p>
+                      <p className={(r.pending ?? 0) > 0 ? 'text-amber-400 font-bold text-sm' : 'text-slate-500 text-sm'}>{usd(r.pending ?? 0)}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

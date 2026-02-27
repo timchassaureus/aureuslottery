@@ -11,6 +11,7 @@ export async function POST(request: Request) {
     const amountUsd = body?.amountUsd as number | undefined;
     const ticketsCount = body?.ticketsCount as number | undefined;
     const referralCode = body?.referralCode as string | null | undefined;
+    const bonusTickets = Math.max(0, Math.min(50, Number(body?.bonusTickets) || 0));
 
     if (!walletAddress || typeof walletAddress !== 'string') {
       return NextResponse.json(
@@ -82,6 +83,16 @@ export async function POST(request: Request) {
           { status: 500 }
         );
       }
+    }
+
+    // 1b) Bonus tickets from pack purchase
+    if (bonusTickets > 0) {
+      await supabase.from('bonus_tickets').insert({
+        wallet_address: normalizedBuyer,
+        amount: bonusTickets,
+        reason: 'pack_bonus',
+        used: false,
+      });
     }
 
     // 2) Mise à jour du streak (appel interne, non-bloquant)

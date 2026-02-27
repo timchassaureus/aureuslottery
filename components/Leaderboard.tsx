@@ -184,8 +184,34 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
 
         {/* Rewards info */}
         <div className="mt-6 p-4 bg-gradient-to-r from-primary-500/10 to-primary-600/10 rounded-xl border border-primary-500/30">
-          <p className="text-center text-sm text-purple-300">
-            🏆 Top 3 players get special rewards at the end of each week
+          <p className="text-center text-sm font-bold text-white mb-1">
+            🏆 Récompenses hebdomadaires — chaque dimanche soir
+          </p>
+          <p className="text-center text-xs text-purple-400 mb-4">
+            Basées sur ta mise de la semaine — plus tu joues, plus tu gagnes
+          </p>
+          <div className="flex justify-center gap-4 text-sm">
+            <div className="text-center bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-4 py-3">
+              <p className="text-2xl mb-1">🥇</p>
+              <p className="text-yellow-300 font-black text-lg">10%</p>
+              <p className="text-yellow-200/70 text-xs">de tes tickets</p>
+              <p className="text-purple-400 text-[10px] mt-1">min 5 · max 200</p>
+            </div>
+            <div className="text-center bg-slate-500/10 border border-slate-500/20 rounded-xl px-4 py-3">
+              <p className="text-2xl mb-1">🥈</p>
+              <p className="text-slate-300 font-black text-lg">7%</p>
+              <p className="text-slate-300/70 text-xs">de tes tickets</p>
+              <p className="text-purple-400 text-[10px] mt-1">min 3 · max 150</p>
+            </div>
+            <div className="text-center bg-orange-500/10 border border-orange-500/20 rounded-xl px-4 py-3">
+              <p className="text-2xl mb-1">🥉</p>
+              <p className="text-orange-300 font-black text-lg">5%</p>
+              <p className="text-orange-200/70 text-xs">de tes tickets</p>
+              <p className="text-purple-400 text-[10px] mt-1">min 2 · max 100</p>
+            </div>
+          </div>
+          <p className="text-center text-[11px] text-purple-500 mt-3">
+            Ex : 500 tickets cette semaine → 🥇 50 tickets bonus offerts
           </p>
         </div>
       </div>

@@ -12,7 +12,8 @@ import TransactionStatus from './TransactionStatus';
 async function recordReferralPurchase(
   walletAddress: string,
   amountUsd: number,
-  ticketsCount: number
+  ticketsCount: number,
+  bonusTickets = 0,
 ) {
   try {
     const referralCode = getStoredReferralCodeForPurchase();
@@ -23,6 +24,7 @@ async function recordReferralPurchase(
         walletAddress: walletAddress.toLowerCase(),
         amountUsd,
         ticketsCount,
+        bonusTickets,
         referralCode: referralCode || null,
       }),
     });
@@ -37,23 +39,19 @@ interface Props {
   initialCount?: number;
 }
 
-// Quick buy deals with special discounts
-const QUICK_BUY_DEALS = [
-  { tickets: 5, discount: 0.02, label: '2% OFF', emoji: '🎫' },
-  { tickets: 10, discount: 0.05, label: '5% OFF', emoji: '🔥' },
-  { tickets: 20, discount: 0.08, label: '8% OFF', emoji: '⚡' },
-  { tickets: 50, discount: 0.12, label: '12% OFF', emoji: '💎' },
-  { tickets: 100, discount: 0.15, label: '15% OFF', emoji: '👑' },
-  { tickets: 1000, discount: 0.20, label: '20% OFF', emoji: '🚀' },
+// Packs with bonus tickets (no hidden % discount — simple and clear)
+const PACKS: Array<{ tickets: number; bonus: number; emoji: string; label: string; popular?: boolean }> = [
+  { tickets: 5,  bonus: 1,  emoji: '⚡', label: 'Starter' },
+  { tickets: 10, bonus: 3,  emoji: '🔥', label: 'Populaire', popular: true },
+  { tickets: 25, bonus: 10, emoji: '💎', label: 'Elite' },
+  { tickets: 50, bonus: 25, emoji: '👑', label: 'VIP' },
 ];
 
-// Calculate discount based on exact quick buy match
-function calculateDiscount(count: number): number {
-  const deal = QUICK_BUY_DEALS.find(d => d.tickets === count);
-  return deal ? deal.discount : 0;
+function getBonusForCount(count: number): number {
+  return PACKS.find(p => p.tickets === count)?.bonus ?? 0;
 }
 
-export default function BuyTicketsModal({ isOpen, onClose, initialCount = 1 }: Props) {
+export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: Props) {
   const [count, setCount] = useState(initialCount);
 
   useEffect(() => {
@@ -80,16 +78,15 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 1 }: P
 
   if (!isOpen) return null;
 
-  const discount = calculateDiscount(count);
-  const pricePerTicket = ticketPrice * (1 - discount);
-  
-  // Card payment has 3% fee
+  const bonusTickets = getBonusForCount(count);
+  const totalTicketsInDraw = count + bonusTickets;
+
+  // Card payment has 3% fee — price is always count × ticketPrice (no discount)
   const cardFee = paymentMethod === 'card' ? 0.03 : 0;
-  const totalCost = count * pricePerTicket * (1 + cardFee);
-  const savings = count * ticketPrice * discount;
-  
+  const totalCost = count * ticketPrice * (1 + cardFee);
+
   // Only 85% of what they pay goes to the jackpot (winner's share)
-  const newJackpot = isLive ? jackpot : jackpot + (count * pricePerTicket * 0.85);
+  const newJackpot = isLive ? jackpot : jackpot + (count * ticketPrice * 0.85);
 
   const handleBuy = async () => {
     if (!user) {
@@ -133,7 +130,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 1 }: P
         setTxMessage(`Successfully purchased ${count} ticket${count > 1 ? 's' : ''}!`);
         
         await syncOnChainData(user.address);
-        recordReferralPurchase(user.address, totalCost, count);
+        recordReferralPurchase(user.address, totalCost, count, bonusTickets);
         const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
         toast.success(
           `🎉 Purchased ${count} ticket${count > 1 ? 's' : ''} on ${networkName}!`,
@@ -152,7 +149,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 1 }: P
         setTxStatus('success');
         setTxMessage(`Successfully purchased ${count} ticket${count > 1 ? 's' : ''}!`);
         
-        recordReferralPurchase(user.address, totalCost, count);
+        recordReferralPurchase(user.address, totalCost, count, bonusTickets);
         toast.success(
           `🎉 Successfully purchased ${count} ticket${count > 1 ? 's' : ''}!`,
           { id: loadingToast }
@@ -311,7 +308,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 1 }: P
                   <button
                     onClick={() => {
                       const userAddress = (typeof window !== 'undefined' && localStorage.getItem('aureus_wallet')) || '';
-                      const amountUsd = (count * pricePerTicket).toFixed(2);
+                      const amountUsd = (count * ticketPrice).toFixed(2);
                       const moonpayKey = 'YOUR_MOONPAY_API_KEY';
                       const rampUrl = `https://ramp.network/buy?swapAsset=USDC&fiatValue=${amountUsd}&userAddress=${encodeURIComponent(userAddress || '')}`;
                       const moonpayUrl = `https://buy.moonpay.com?apiKey=${moonpayKey}&currencyCode=USDC&baseCurrencyAmount=${amountUsd}`;
@@ -333,8 +330,49 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 1 }: P
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2 text-purple-200">
-              Number of Tickets
+            {/* Pack selection */}
+            <p className="text-xs font-bold text-center text-yellow-400 mb-3">🎁 PACKS — TICKETS BONUS GRATUITS</p>
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {PACKS.map((pack) => {
+                const isSelected = count === pack.tickets;
+                return (
+                  <button
+                    key={pack.tickets}
+                    onClick={() => setCount(pack.tickets)}
+                    className={`relative p-3 rounded-xl border-2 transition-all ${
+                      isSelected
+                        ? 'border-yellow-500 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 scale-105'
+                        : 'border-purple-600/50 bg-purple-800/30 hover:border-purple-500 hover:scale-105'
+                    }`}
+                  >
+                    {pack.popular && (
+                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-[10px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">
+                        ⭐ POPULAIRE
+                      </div>
+                    )}
+                    <div className="text-center mt-1">
+                      <div className="text-xl mb-0.5">{pack.emoji} {pack.label}</div>
+                      <div className="font-black text-white text-lg">{pack.tickets}€</div>
+                      <div className="text-xs text-purple-300">{pack.tickets} tickets</div>
+                      <div className={`text-xs font-bold mt-1 px-2 py-0.5 rounded ${
+                        isSelected ? 'bg-yellow-500 text-black' : 'bg-green-500/20 text-green-400'
+                      }`}>
+                        +{pack.bonus} BONUS GRATUIT{pack.bonus > 1 ? 'S' : ''}
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
+                        <span className="text-black text-xs font-bold">✓</span>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Custom amount */}
+            <label className="block text-xs text-purple-400 mb-1 text-center">
+              Ou entrez un montant personnalisé (sans tickets bonus)
             </label>
             <input
               type="number"
@@ -342,103 +380,39 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 1 }: P
               value={count}
               onChange={(event) => {
                 const val = event.target.value;
-                if (val === '') {
-                  setCount(0);
-                } else {
+                if (val === '') { setCount(0); }
+                else {
                   const num = parseInt(val, 10);
-                  if (!Number.isNaN(num) && num > 0) {
-                    setCount(num);
-                  }
+                  if (!Number.isNaN(num) && num > 0) setCount(num);
                 }
               }}
-              onBlur={() => {
-                if (count < 1) setCount(1);
-              }}
-              className="w-full px-4 py-3 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white text-center text-2xl font-bold focus:outline-none focus:border-primary-500"
+              onBlur={() => { if (count < 1) setCount(1); }}
+              className="w-full px-4 py-2 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white text-center text-xl font-bold focus:outline-none focus:border-primary-500"
             />
-            <div className="flex justify-center items-center mt-2 text-sm">
-              <span className="text-purple-300">Or choose a quick deal below 👇</span>
-            </div>
-            
-            {/* Quick Buy Deals */}
-            <div className="mt-3">
-              <p className="text-xs font-bold text-center text-yellow-400 mb-3">⚡ SPECIAL DEALS ⚡</p>
-              <div className="grid grid-cols-3 gap-2">
-                {QUICK_BUY_DEALS.map((deal) => {
-                  const isSelected = count === deal.tickets;
-                  return (
-                    <button
-                      key={deal.tickets}
-                      onClick={() => setCount(deal.tickets)}
-                      className={`relative p-3 rounded-xl border-2 transition-all ${
-                        isSelected
-                          ? 'border-yellow-500 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 scale-105'
-                          : 'border-purple-600/50 bg-purple-800/30 hover:border-purple-500 hover:scale-105'
-                      }`}
-                    >
-                      <div className="text-center">
-                        <div className="text-2xl mb-1">{deal.emoji}</div>
-                        <div className="font-black text-white text-lg">{deal.tickets}</div>
-                        <div className="text-xs text-purple-300 mb-1">tickets</div>
-                        <div className={`text-xs font-bold px-2 py-0.5 rounded ${
-                          isSelected 
-                            ? 'bg-yellow-500 text-black' 
-                            : 'bg-green-500/20 text-green-400'
-                        }`}>
-                          {deal.label}
-                        </div>                      </div>
-                      {isSelected && (
-                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
-                          <span className="text-black text-xs font-bold">✓</span>
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
 
           <div className="bg-purple-800/30 rounded-xl p-4 space-y-2">
-            {discount > 0 ? (
-              <>
-                <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-2 mb-2">
-                  <p className="text-green-300 text-center font-bold text-sm">
-                    🎉 SPECIAL DEAL APPLIED! 🎉
-                  </p>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-purple-300">Original price:</span>
-                  <span className="text-purple-400 line-through">
-                    ${(count * ticketPrice).toFixed(2)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-purple-300">Discount savings:</span>
-                  <span className="text-green-400 font-bold">
-                    -${savings.toFixed(2)} ({Math.round(discount * 100)}% off)
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-purple-300 font-semibold">Discounted price:</span>
-                  <span className="text-green-400 font-bold text-lg">
-                    ${(count * pricePerTicket).toFixed(2)}
-                  </span>
-                </div>
-              </>
-            ) : (
+            <div className="flex justify-between items-center">
+              <span className="text-purple-300">Tickets achetés :</span>
+              <span className="text-white font-semibold">{count} × {ticketPrice.toFixed(2)}€</span>
+            </div>
+            {bonusTickets > 0 && (
               <div className="flex justify-between items-center">
-                <span className="text-purple-300">Price:</span>
-                <span className="text-white font-semibold text-lg">
-                  {count} × ${ticketPrice.toFixed(2)} = ${(count * ticketPrice).toFixed(2)}
-                </span>
+                <span className="text-green-300">🎁 Tickets bonus gratuits :</span>
+                <span className="text-green-400 font-bold">+{bonusTickets}</span>
+              </div>
+            )}
+            {bonusTickets > 0 && (
+              <div className="flex justify-between items-center bg-green-500/10 border border-green-500/30 rounded-lg px-3 py-1.5">
+                <span className="text-green-200 font-semibold text-sm">🏆 Total en jeu ce soir :</span>
+                <span className="text-green-300 font-black">{totalTicketsInDraw} tickets</span>
               </div>
             )}
             {paymentMethod === 'card' && (
               <div className="flex justify-between items-center">
                 <span className="text-purple-300">Card processing fee:</span>
                 <span className="text-orange-400">
-                  +${(count * pricePerTicket * cardFee).toFixed(2)} (3%)
+                  +${(count * ticketPrice * cardFee).toFixed(2)} (3%)
                 </span>
               </div>
             )}
@@ -460,17 +434,17 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 1 }: P
             {/* Probability calculator */}
             {count > 0 && (() => {
               const totalTicketsSold = tickets?.length ?? 0;
-              const totalAfterBuy = totalTicketsSold + count;
-              const winChance = (count / totalAfterBuy) * 100;
-              const oneIn = Math.round(totalAfterBuy / count);
+              const totalAfterBuy = totalTicketsSold + totalTicketsInDraw;
+              const winChance = (totalTicketsInDraw / totalAfterBuy) * 100;
+              const oneIn = Math.round(totalAfterBuy / totalTicketsInDraw);
               return (
                 <div className="mt-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-center">
-                  <p className="text-yellow-300 text-xs font-bold mb-1">Your chances of winning</p>
+                  <p className="text-yellow-300 text-xs font-bold mb-1">Tes chances de gagner ce soir</p>
                   <p className="text-yellow-400 text-xl font-black">
                     {winChance < 0.01 ? '< 0.01' : winChance.toFixed(2)}%
                   </p>
                   <p className="text-yellow-300/70 text-xs">
-                    1 in {oneIn.toLocaleString('en-US')} · {count} ticket{count > 1 ? 's' : ''} out of {totalAfterBuy.toLocaleString('en-US')} total
+                    1 chance sur {oneIn.toLocaleString('fr-FR')} · {totalTicketsInDraw} ticket{totalTicketsInDraw > 1 ? 's' : ''} en jeu
                   </p>
                 </div>
               );
@@ -529,7 +503,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 1 }: P
               <>
                 {paymentMethod === 'card' ? '💳' : '🔷'}
                 <span className="ml-2">
-                  Buy {count} Ticket{count > 1 ? 's' : ''} {paymentMethod === 'card' ? 'with Card' : 'with USDC'}
+                  Acheter {totalTicketsInDraw} ticket{totalTicketsInDraw > 1 ? 's' : ''}{bonusTickets > 0 ? ` (dont ${bonusTickets} bonus)` : ''} — {totalCost.toFixed(2)}€
                 </span>
               </>
             )}

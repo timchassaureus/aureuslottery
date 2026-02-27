@@ -63,7 +63,9 @@ export async function POST(request: Request) {
     }
 
     const newLongest = Math.max(longestSoFar, newStreak);
-    const bonusGranted = MILESTONES[newStreak] ?? 0;
+    // 1 bonus ticket for every new day played + milestone bonus on top
+    const isNewDay = !lastPlayDate || lastPlayDate.getTime() !== today.getTime();
+    const bonusGranted = isNewDay ? ((MILESTONES[newStreak] ?? 0) + 1) : 0;
 
     if (!row?.id) {
       await supabase.from('streaks').insert({

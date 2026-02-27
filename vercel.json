@@ -12,6 +12,14 @@
     {
       "path": "/api/draw/trigger?type=bonus",
       "schedule": "30 21 * * *"
+    },
+    {
+      "path": "/api/commissions/pay",
+      "schedule": "0 22 * * *"
+    },
+    {
+      "path": "/api/leaderboard/weekly-rewards",
+      "schedule": "0 23 * * 0"
     }
   ],
   "env": {
