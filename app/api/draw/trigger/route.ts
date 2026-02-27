@@ -15,13 +15,14 @@ function secureRandomInt(max: number): number {
 }
 
 async function runDraw(req: NextRequest) {
-  // Validate cron secret (Vercel injects Authorization: Bearer <CRON_SECRET>)
+  // CRON_SECRET is required — never allow unauthenticated draw triggers
   const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret) {
-    const authHeader = req.headers.get('authorization');
-    if (authHeader !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+  if (!cronSecret) {
+    return NextResponse.json({ error: 'CRON_SECRET not configured on server' }, { status: 500 });
+  }
+  const authHeader = req.headers.get('authorization');
+  if (authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const drawType = new URL(req.url).searchParams.get('type') || 'main';

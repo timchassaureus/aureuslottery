@@ -29,9 +29,30 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    const count = Math.max(1, Number(ticketsCount) || 1);
+    // Hard cap: max $500 per single purchase
+    if (amount > 500) {
+      return NextResponse.json(
+        { error: 'Amount exceeds maximum per transaction ($500)' },
+        { status: 400 }
+      );
+    }
+    const count = Math.max(1, Math.min(500, Number(ticketsCount) || 1));
 
     const supabase = createServiceClient();
+
+    // Deduplication: reject identical wallet+amount within 60 seconds
+    const oneMinuteAgo = new Date(Date.now() - 60_000).toISOString();
+    const { data: recentDup } = await supabase
+      .from('purchases')
+      .select('id')
+      .eq('wallet_address', normalizedBuyer)
+      .eq('amount_usd', amount)
+      .gte('created_at', oneMinuteAgo)
+      .limit(1)
+      .maybeSingle();
+    if (recentDup) {
+      return NextResponse.json({ error: 'Duplicate purchase detected' }, { status: 409 });
+    }
 
     const codeToSave =
       referralCode && typeof referralCode === 'string'
