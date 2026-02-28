@@ -99,13 +99,14 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
       return;
     }
 
-    // Custodial users in live mode: open MoonPay to buy USDC
+    // Custodial users in live mode: open Coinbase Onramp to buy USDC
     if (isLive && user.isCustodial) {
       const amountUsd = (count * ticketPrice).toFixed(2);
-      const moonpayKey = process.env.NEXT_PUBLIC_MOONPAY_API_KEY || '';
-      const moonpayUrl = `https://buy.moonpay.com?apiKey=${moonpayKey}&currencyCode=usdc_base&baseCurrencyAmount=${amountUsd}&walletAddress=${encodeURIComponent(user.address)}`;
-      window.open(moonpayUrl, '_blank');
-      toast.success('MoonPay ouvert — revenez ici après le paiement 👍', { duration: 6000 });
+      const appId = process.env.NEXT_PUBLIC_COINBASE_APP_ID || '';
+      const destinationWallets = JSON.stringify([{ address: user.address, assets: ['USDC'], supportedNetworks: ['base'] }]);
+      const coinbaseUrl = `https://pay.coinbase.com/buy/select-asset?appId=${appId}&destinationWallets=${encodeURIComponent(destinationWallets)}&presetFiatAmount=${amountUsd}`;
+      window.open(coinbaseUrl, '_blank');
+      toast.success('Coinbase Pay ouvert — revenez ici après le paiement 👍', { duration: 6000 });
       recordReferralPurchase(user.address, Number(amountUsd), count, bonusTickets);
       return;
     }
@@ -332,12 +333,12 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
           </div>
           )}
 
-          {/* Custodial users in live mode: MoonPay info banner */}
+          {/* Custodial users in live mode: Coinbase Pay info banner */}
           {isLive && user?.isCustodial && (
-            <div className="bg-indigo-900/40 border border-indigo-500/30 rounded-xl p-4 text-center">
-              <p className="text-3xl mb-2">🌙</p>
-              <p className="text-indigo-200 text-sm font-bold mb-1">Paiement via MoonPay</p>
-              <p className="text-indigo-300/80 text-xs">Visa • Mastercard • Apple Pay — rapide et sécurisé.</p>
+            <div className="bg-blue-900/40 border border-blue-500/30 rounded-xl p-4 text-center">
+              <p className="text-3xl mb-2">🔵</p>
+              <p className="text-blue-200 text-sm font-bold mb-1">Paiement via Coinbase Pay</p>
+              <p className="text-blue-300/80 text-xs">Visa • Mastercard • Apple Pay • Google Pay — rapide et sécurisé.</p>
             </div>
           )}
 
@@ -503,9 +504,9 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         <div className="modal-footer">
           {/* Info banner for custodial users in live mode */}
           {isLive && user?.isCustodial && (
-            <div className="mb-3 bg-indigo-900/40 border border-indigo-500/30 rounded-xl p-3 text-center">
-              <p className="text-indigo-200 text-xs">
-                🌙 Paiement via <strong>MoonPay</strong> — s&apos;ouvre dans un nouvel onglet. Revenez ici après.
+            <div className="mb-3 bg-blue-900/40 border border-blue-500/30 rounded-xl p-3 text-center">
+              <p className="text-blue-200 text-xs">
+                🔵 Paiement via <strong>Coinbase Pay</strong> — s&apos;ouvre dans un nouvel onglet. Revenez ici après.
               </p>
             </div>
           )}
@@ -517,14 +518,14 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
             {processing ? (
               <>
                 <Coins className="w-5 h-5 animate-pulse" />
-                {isLive && user?.isCustodial ? 'Redirecting...' : paymentMethod === 'card' ? 'Processing card...' : 'Processing...'}
+                {isLive && user?.isCustodial ? 'Ouverture Coinbase Pay...' : paymentMethod === 'card' ? 'Processing card...' : 'Processing...'}
               </>
             ) : (
               <>
-                {isLive && user?.isCustodial ? '🌙' : paymentMethod === 'card' ? '💳' : '🔷'}
+                {isLive && user?.isCustodial ? '🔵' : paymentMethod === 'card' ? '💳' : '🔷'}
                 <span className="ml-2">
                   {isLive && user?.isCustodial
-                    ? `Payer ${totalCost.toFixed(2)}€ via MoonPay — ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}`
+                    ? `Payer ${totalCost.toFixed(2)}€ via Coinbase Pay — ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}`
                     : `Acheter ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}${bonusTickets > 0 ? ` (dont ${bonusTickets} bonus)` : ''} — ${totalCost.toFixed(2)}€`}
                 </span>
               </>
