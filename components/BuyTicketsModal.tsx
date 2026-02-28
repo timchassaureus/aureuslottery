@@ -99,36 +99,14 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
       return;
     }
 
-    // Custodial users in live mode: redirect to Stripe card checkout
+    // Custodial users in live mode: open MoonPay to buy USDC
     if (isLive && user.isCustodial) {
-      setProcessing(true);
-      setTxStatus('pending');
-      setTxMessage('Redirecting to payment...');
-      const loadingToast = toast.loading('Opening payment page...');
-      try {
-        const res = await fetch('/api/payment/stripe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            amount: Math.round(count * 100), // cents
-            ticketsCount: count,
-            walletAddress: user.address,
-          }),
-        });
-        const data = await res.json();
-        if (data.success && data.url) {
-          toast.dismiss(loadingToast);
-          window.location.href = data.url;
-        } else {
-          throw new Error(data.error || 'Could not create payment session');
-        }
-      } catch (err: any) {
-        toast.error(err.message || 'Payment failed', { id: loadingToast });
-        setTxStatus('error');
-        setTxMessage(err.message || 'Payment failed');
-      } finally {
-        setProcessing(false);
-      }
+      const amountUsd = (count * ticketPrice).toFixed(2);
+      const moonpayKey = process.env.NEXT_PUBLIC_MOONPAY_API_KEY || '';
+      const moonpayUrl = `https://buy.moonpay.com?apiKey=${moonpayKey}&currencyCode=usdc_base&baseCurrencyAmount=${amountUsd}&walletAddress=${encodeURIComponent(user.address)}`;
+      window.open(moonpayUrl, '_blank');
+      toast.success('MoonPay ouvert — revenez ici après le paiement 👍', { duration: 6000 });
+      recordReferralPurchase(user.address, Number(amountUsd), count, bonusTickets);
       return;
     }
 
@@ -256,7 +234,8 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         </div>
 
         <div className="space-y-6">
-          {/* Payment Method Selection */}
+          {/* Payment Method Selection — hidden for custodial (email) users who always pay by card */}
+          {!(isLive && user?.isCustodial) && (
           <div>
             <label className="block text-sm font-semibold mb-3 text-purple-200">
               Payment Method
@@ -309,14 +288,9 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
             {paymentMethod === 'card' && (
               <div className="mt-3 bg-blue-900/30 border border-blue-500/30 rounded-lg p-3">
                 <p className="text-blue-300 text-xs leading-relaxed">
-                  💡 <strong>Card payment:</strong> Your payment will be converted to USDC via our payment partner. 
+                  💡 <strong>Card payment:</strong> Your payment will be converted to USDC via our payment partner.
                   Supports Visa, Mastercard, Amex.
                 </p>
-                {isLive && (
-                  <p className="text-yellow-300 text-xs mt-2">
-                    ⚠️ Card checkout is available in demo mode. Use USDC wallet for live draws.
-                  </p>
-                )}
                 {/* Provider choice */}
                 <div className="mt-3 grid grid-cols-2 gap-2 max-w-xs mx-auto">
                   <button
@@ -356,6 +330,16 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
               </div>
             )}
           </div>
+          )}
+
+          {/* Custodial users in live mode: MoonPay info banner */}
+          {isLive && user?.isCustodial && (
+            <div className="bg-indigo-900/40 border border-indigo-500/30 rounded-xl p-4 text-center">
+              <p className="text-3xl mb-2">🌙</p>
+              <p className="text-indigo-200 text-sm font-bold mb-1">Paiement via MoonPay</p>
+              <p className="text-indigo-300/80 text-xs">Visa • Mastercard • Apple Pay — rapide et sécurisé.</p>
+            </div>
+          )}
 
           <div>
             {/* Pack selection */}
@@ -519,9 +503,9 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         <div className="modal-footer">
           {/* Info banner for custodial users in live mode */}
           {isLive && user?.isCustodial && (
-            <div className="mb-3 bg-blue-900/40 border border-blue-500/30 rounded-xl p-3 text-center">
-              <p className="text-blue-200 text-xs">
-                💳 Payment via <strong>secure card checkout</strong> — your tickets are automatically registered for tonight's draw.
+            <div className="mb-3 bg-indigo-900/40 border border-indigo-500/30 rounded-xl p-3 text-center">
+              <p className="text-indigo-200 text-xs">
+                🌙 Paiement via <strong>MoonPay</strong> — s&apos;ouvre dans un nouvel onglet. Revenez ici après.
               </p>
             </div>
           )}
@@ -537,10 +521,10 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
               </>
             ) : (
               <>
-                {isLive && user?.isCustodial ? '💳' : paymentMethod === 'card' ? '💳' : '🔷'}
+                {isLive && user?.isCustodial ? '🌙' : paymentMethod === 'card' ? '💳' : '🔷'}
                 <span className="ml-2">
                   {isLive && user?.isCustodial
-                    ? `Pay ${count}€ by card — ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}`
+                    ? `Payer ${totalCost.toFixed(2)}€ via MoonPay — ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}`
                     : `Acheter ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}${bonusTickets > 0 ? ` (dont ${bonusTickets} bonus)` : ''} — ${totalCost.toFixed(2)}€`}
                 </span>
               </>

@@ -65,6 +65,7 @@ export default function MobileHome() {
   const [referralOpen, setReferralOpen] = useState(false);
   const [viralShareOpen, setViralShareOpen] = useState(false);
   const [lastPurchaseCount, setLastPurchaseCount] = useState(0);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   // Local user state
   const [aureusUser, setAureusUser] = useState<AureusUser | null>(null);
@@ -188,9 +189,9 @@ export default function MobileHome() {
               <span className="text-base leading-none">💸</span>
             </button>
 
-            {/* Account button */}
+            {/* Account button — opens profile if logged in, auth if guest */}
             <button
-              onClick={() => setAuthModalOpen(true)}
+              onClick={() => isGuest ? setAuthModalOpen(true) : setProfileOpen(true)}
               className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all ${
                 isGuest
                   ? 'bg-slate-800/60 border-white/20 text-white/70'
@@ -201,7 +202,7 @@ export default function MobileHome() {
                 {displayName ? displayName[0].toUpperCase() : '?'}
               </div>
               <span className="max-w-[50px] truncate">
-                {displayName ?? 'Account'}
+                {displayName ?? 'Compte'}
               </span>
               <Settings className="w-3 h-3 opacity-60" />
             </button>
@@ -211,7 +212,7 @@ export default function MobileHome() {
               <button
                 onClick={handleSignOut}
                 className="p-2 bg-red-900/40 rounded-xl border border-red-700/30"
-                title="Sign out"
+                title="Se déconnecter"
               >
                 <LogOut className="w-4 h-4 text-red-300" />
               </button>
@@ -394,6 +395,70 @@ export default function MobileHome() {
         ticketCount={lastPurchaseCount}
         jackpot={jackpot}
       />
+
+      {/* Profile modal */}
+      {profileOpen && aureusUser && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm"
+          onClick={() => setProfileOpen(false)}
+        >
+          <div
+            className="w-full max-w-md bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-900 border border-white/10 rounded-t-3xl p-6 pb-10 shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Handle */}
+            <div className="w-12 h-1 bg-white/20 rounded-full mx-auto mb-6" />
+
+            {/* Avatar + name */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-xl font-black text-black">
+                {displayName ? displayName[0].toUpperCase() : '?'}
+              </div>
+              <div>
+                <p className="font-bold text-white text-lg">{displayName}</p>
+                {aureusUser.email && (
+                  <p className="text-sm text-slate-400">{aureusUser.email}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="bg-white/5 rounded-2xl p-4 text-center border border-white/10">
+                <p className="text-2xl font-black text-yellow-300">{userTicketsCount}</p>
+                <p className="text-xs text-slate-400 mt-1">Tickets actifs</p>
+              </div>
+              <div className="bg-white/5 rounded-2xl p-4 text-center border border-white/10">
+                <p className="text-2xl font-black text-green-300">${(aureusUser.usdcBalance ?? 0).toFixed(2)}</p>
+                <p className="text-xs text-slate-400 mt-1">Balance USDC</p>
+              </div>
+            </div>
+
+            {/* Wallet address */}
+            <div className="bg-white/5 rounded-2xl p-4 mb-4 border border-white/10">
+              <p className="text-xs text-slate-400 mb-1">Adresse portefeuille</p>
+              <p className="text-sm font-mono text-white/80 break-all">
+                {aureusUser.walletAddress?.slice(0, 10)}…{aureusUser.walletAddress?.slice(-8)}
+              </p>
+            </div>
+
+            {/* Actions */}
+            <button
+              onClick={() => { setProfileOpen(false); setBuyOpen(true); }}
+              className="w-full py-3 mb-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-2xl font-bold text-white"
+            >
+              🎫 Acheter des tickets
+            </button>
+            <button
+              onClick={() => { handleSignOut(); setProfileOpen(false); }}
+              className="w-full py-3 rounded-2xl text-sm text-slate-400 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              Se déconnecter
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Referral modal */}
       {referralOpen && (
