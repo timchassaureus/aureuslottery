@@ -5,6 +5,7 @@ import { Trophy, Timer, User, Award } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { FORCED_MODE } from '@/lib/config';
 import AuthModal from '@/components/AuthModal';
+import WalletButton from '@/components/WalletButton';
 import BuyTicketsModal from '@/components/BuyTicketsModal';
 import EnhancedWinnersHistory from '@/components/EnhancedWinnersHistory';
 import HowItWorksModal from '@/components/HowItWorksModal';
@@ -163,12 +164,7 @@ export default function MobileHome() {
                 <User className="w-5 h-5" />
               </button>
             )}
-            <button
-              onClick={() => setAuthModalOpen(true)}
-              className="px-4 py-2 bg-primary-500 hover:bg-primary-600 rounded-xl font-semibold transition-all"
-            >
-              Sign in
-            </button>
+            <WalletButton />
           </div>
         </div>
       </header>
