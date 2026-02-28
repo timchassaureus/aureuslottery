@@ -423,13 +423,17 @@ export default function Home() {
       <UsernameModal />
       
       <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 via-blue-950 to-slate-900 text-white relative overflow-x-hidden">
-      {/* Mobile UI hidden — desktop UI shown on all screens */}
+      {/* Mobile UI — shown only on small screens */}
+      <div className="md:hidden">
+        <MobileHome />
+      </div>
+
         {/* Animated gradient background */}
       <div className="fixed inset-0 bg-gradient-to-r from-violet-500/10 via-blue-500/10 to-indigo-500/10 animate-pulse opacity-50 pointer-events-none" style={{
         backgroundSize: '400% 400%',
         animation: 'gradient 20s ease infinite'
       }} />
-      <header className="block sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(5,5,15,0.75)', backdropFilter: 'blur(24px)' }}>
+      <header className="hidden md:block sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(5,5,15,0.75)', backdropFilter: 'blur(24px)' }}>
         <div className="container mx-auto px-3 md:px-6 h-14 md:h-20 flex items-center justify-between gap-2 md:gap-8">
 
           {/* ── Logo ── */}
@@ -559,7 +563,7 @@ export default function Home() {
       </header>
 
       {isLive && (
-        <div className="block container mx-auto px-4 mt-4">
+        <div className="hidden md:block container mx-auto px-4 mt-4">
           <AdminControls />
         </div>
       )}
@@ -586,11 +590,11 @@ export default function Home() {
       )}
 
       {/* Urgency Banner - desktop only */}
-      <div className="block">
+      <div className="hidden md:block">
         <UrgencyBanner timeLeft={timeLeft} />
       </div>
 
-      <main className="block container mx-auto px-2 md:px-4 py-4 md:py-8 pb-32">
+      <main className="hidden md:block container mx-auto px-4 py-8 pb-32">
         <div className="max-w-6xl mx-auto">
 
           {/* ── HERO — everything above the fold ─────────────────────────── */}
@@ -792,12 +796,12 @@ export default function Home() {
       <PremiumChat />
       
       {/* Invite & Viral Bar - desktop only to avoid overlap on phones */}
-      <div className="block">
+      <div className="hidden md:block">
         <InviteBar />
       </div>
 
       {/* Live Stats Bar - desktop only */}
-      <div className="block">
+      <div className="hidden md:block">
         <LiveStats />
       </div>
       
