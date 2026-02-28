@@ -42,6 +42,7 @@ import { AureusUser } from '@/lib/auth';
 import { getCurrentUser, updateUserBalance } from '@/lib/userStorage';
 import { sendBrowserNotification } from '@/lib/webNotifications';
 import { emitInAppNotification } from '@/lib/notificationBus';
+import WalletButton from '@/components/WalletButton';
 
 const QUICK_AMOUNTS = [1, 5, 10, 25, 50];
 
@@ -429,7 +430,7 @@ export default function Home() {
         animation: 'gradient 20s ease infinite'
       }} />
       <header className="block sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(5,5,15,0.75)', backdropFilter: 'blur(24px)' }}>
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between gap-8">
+        <div className="container mx-auto px-3 md:px-6 h-14 md:h-20 flex items-center justify-between gap-2 md:gap-8">
 
           {/* ── Logo ── */}
           <div className="flex items-center gap-3 shrink-0">
@@ -464,7 +465,7 @@ export default function Home() {
           </div>
 
           {/* ── Nav centre ── */}
-          <nav className="flex items-center gap-2">
+          <nav className="hidden md:flex items-center gap-2">
             {[
               { icon: '📖', label: 'How It Works', sub: 'Rules, draws & prize breakdown', action: () => setHowItWorksOpen(true) },
               { icon: '🏅', label: 'Leaderboard', sub: 'Top players this week', action: () => setLeaderboardOpen(true) },
@@ -536,24 +537,17 @@ export default function Home() {
               </div>
             )}
 
-            {/* Sign in */}
-            {!user && !aureusUser && (
-              <button
-                onClick={() => setAuthModalOpen(true)}
-                className="px-4 py-2 text-sm font-semibold text-white/70 hover:text-white border border-white/10 hover:border-white/20 rounded-full transition-all"
-              >
-                Sign in
-              </button>
-            )}
+            {/* Wallet connect */}
+            <WalletButton />
 
-            {/* Primary CTA */}
+            {/* Primary CTA — hidden on mobile, shown on desktop */}
             <button
               onClick={() => {
                 setBuyInitialCount(1);
                 if (aureusUser || user) setBuyModalOpen(true);
                 else setAuthModalOpen(true);
               }}
-              className="relative px-6 py-2.5 rounded-full font-bold text-sm text-black overflow-hidden group"
+              className="hidden md:block relative px-6 py-2.5 rounded-full font-bold text-sm text-black overflow-hidden group"
               style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}
             >
               <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'linear-gradient(135deg, #fbbf24, #f97316)' }} />
@@ -596,7 +590,7 @@ export default function Home() {
         <UrgencyBanner timeLeft={timeLeft} />
       </div>
 
-      <main className="block container mx-auto px-4 py-8 pb-32">
+      <main className="block container mx-auto px-2 md:px-4 py-4 md:py-8 pb-32">
         <div className="max-w-6xl mx-auto">
 
           {/* ── HERO — everything above the fold ─────────────────────────── */}
@@ -618,20 +612,20 @@ export default function Home() {
               </div>
 
               {/* Prize amounts */}
-              <div className="grid grid-cols-2 divide-x divide-white/[0.08] px-6 py-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-white/[0.08] px-4 md:px-6 py-6 md:py-10 gap-6 md:gap-0">
                 {/* Main jackpot */}
-                <div className="flex flex-col items-center text-center pr-8">
+                <div className="flex flex-col items-center text-center md:pr-8">
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-400/60 mb-3">🏆 Main Jackpot</p>
-                  <p className="text-7xl xl:text-8xl font-black text-white leading-none drop-shadow-[0_0_30px_rgba(251,191,36,0.25)]">
+                  <p className="text-5xl md:text-7xl xl:text-8xl font-black text-white leading-none drop-shadow-[0_0_30px_rgba(251,191,36,0.25)]">
                     ${jackpot.toLocaleString('en-US', { maximumFractionDigits: 0 })}
                   </p>
                   <p className="text-sm text-slate-500 mt-3">1 winner · Daily 9 PM UTC</p>
                 </div>
 
                 {/* Bonus draw */}
-                <div className="flex flex-col items-center text-center pl-8">
+                <div className="flex flex-col items-center text-center md:pl-8 border-t md:border-t-0 border-white/[0.08] pt-6 md:pt-0">
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-400/60 mb-3">💎 Bonus Draw</p>
-                  <p className="text-7xl xl:text-8xl font-black text-violet-300 leading-none drop-shadow-[0_0_30px_rgba(167,139,250,0.25)]">
+                  <p className="text-5xl md:text-7xl xl:text-8xl font-black text-violet-300 leading-none drop-shadow-[0_0_30px_rgba(167,139,250,0.25)]">
                     ${secondaryPot.toLocaleString('en-US', { maximumFractionDigits: 0 })}
                   </p>
                   <p className="text-sm text-slate-500 mt-3">25 winners · Daily 9:30 PM UTC</p>
