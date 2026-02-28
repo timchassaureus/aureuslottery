@@ -6,6 +6,7 @@ import { useAppStore } from '@/lib/store';
 import { FORCED_MODE } from '@/lib/config';
 import AuthModal from '@/components/AuthModal';
 import WalletButton from '@/components/WalletButton';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import BuyTicketsModal from '@/components/BuyTicketsModal';
 import EnhancedWinnersHistory from '@/components/EnhancedWinnersHistory';
 import HowItWorksModal from '@/components/HowItWorksModal';
@@ -24,6 +25,7 @@ import GroupDashboard from '@/components/GroupDashboard';
 
 export default function MobileHome() {
   const { jackpot, secondaryPot, user, initDemo, mode, setMode, syncOnChainData } = useAppStore();
+  const { openConnectModal } = useConnectModal();
 
   // Force live mode on mobile — one-shot, no polling
   useEffect(() => {
@@ -111,55 +113,21 @@ export default function MobileHome() {
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => {
-                if (isLive) {
-                  setMode('demo');
-                  toast.success('Demo mode enabled');
-                } else {
-                  setMode('live');
-                  syncOnChainData(user?.address);
-                  toast.success('Live mode enabled');
-                }
-              }}
-              className={`p-2 rounded-xl transition-all border ${
-                isLive
-                  ? 'bg-green-700/50 border-green-500/40'
-                  : 'bg-slate-800/60 border-slate-500/40'
-              }`}
-              title={isLive ? 'Live on Base Sepolia' : 'Activate live mode'}
-            >
-              <span className="text-lg">{isLive ? '🟢' : '🛰️'}</span>
-            </button>
-            {!isLive && (
-              <button
-                onClick={() => {
-                  initDemo();
-                  toast.success('🎮 Demo loaded!', { duration: 2000 });
-                }}
-                className="p-2 bg-green-700/50 hover:bg-green-700/70 rounded-xl transition-all border border-green-600/30"
-                title="Demo"
-              >
-                <span className="text-lg">🎮</span>
-              </button>
-            )}
-            <button
               onClick={() => setHowItWorksOpen(true)}
-              className="p-2 bg-violet-700/50 hover:bg-violet-700/70 rounded-xl transition-all border border-violet-600/30"
+              className="p-2 bg-violet-700/50 rounded-xl border border-violet-600/30"
             >
               <Award className="w-5 h-5 text-violet-300" />
             </button>
-            {user && (
-              <button
-                onClick={() => setLeaderboardOpen(true)}
-                className="p-2 bg-yellow-900/50 hover:bg-yellow-800/70 rounded-xl transition-all border border-yellow-700/30"
-              >
-                <Trophy className="w-5 h-5 text-yellow-400" />
-              </button>
-            )}
+            <button
+              onClick={() => setLeaderboardOpen(true)}
+              className="p-2 bg-yellow-900/50 rounded-xl border border-yellow-700/30"
+            >
+              <Trophy className="w-5 h-5 text-yellow-400" />
+            </button>
             {user && (
               <button
                 onClick={() => setProfileOpen(true)}
-                className="p-2 bg-blue-700/50 hover:bg-blue-700/70 rounded-xl transition-all"
+                className="p-2 bg-blue-700/50 rounded-xl"
               >
                 <User className="w-5 h-5" />
               </button>
@@ -269,7 +237,7 @@ export default function MobileHome() {
               if (user) {
                 setBuyOpen(true);
               } else {
-                toast.error('Please connect your wallet first! 👛');
+                openConnectModal?.();
               }
             }}
             className="group relative w-full overflow-hidden cursor-pointer"
