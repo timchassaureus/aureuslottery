@@ -90,24 +90,52 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
 
   const handleBuy = async () => {
     if (!user) {
-      toast.error('Please connect your wallet first!');
+      toast.error('Please create an account first!');
       return;
     }
-    
+
     if (count < 1) {
       toast.error('Please select at least 1 ticket');
       return;
     }
 
-    if (isLive && paymentMethod === 'card') {
-      toast.error('Card payments are coming soon. Please use USDC for live draws.');
+    // Custodial users in live mode: redirect to Stripe card checkout
+    if (isLive && user.isCustodial) {
+      setProcessing(true);
+      setTxStatus('pending');
+      setTxMessage('Redirecting to payment...');
+      const loadingToast = toast.loading('Opening payment page...');
+      try {
+        const res = await fetch('/api/payment/stripe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: Math.round(count * 100), // cents
+            ticketsCount: count,
+            walletAddress: user.address,
+          }),
+        });
+        const data = await res.json();
+        if (data.success && data.url) {
+          toast.dismiss(loadingToast);
+          window.location.href = data.url;
+        } else {
+          throw new Error(data.error || 'Could not create payment session');
+        }
+      } catch (err: any) {
+        toast.error(err.message || 'Payment failed', { id: loadingToast });
+        setTxStatus('error');
+        setTxMessage(err.message || 'Payment failed');
+      } finally {
+        setProcessing(false);
+      }
       return;
     }
-    
+
     setProcessing(true);
     setTxStatus('pending');
     setTxMessage('Preparing transaction...');
-    
+
     const loadingToast = toast.loading(
       isLive
         ? 'Submitting transaction...'
@@ -115,20 +143,20 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
           ? 'Processing card payment...'
           : 'Processing transaction...'
     );
-    
+
     try {
       if (isLive) {
         setTxStatus('pending');
         setTxMessage('Waiting for wallet confirmation...');
-        
+
         const receipt = await buyTicketsOnChain(count);
         setTxHash(receipt.hash);
         setTxStatus('confirming');
         setTxMessage('Transaction submitted! Confirming on blockchain...');
-        
+
         setTxStatus('success');
         setTxMessage(`Successfully purchased ${count} ticket${count > 1 ? 's' : ''}!`);
-        
+
         await syncOnChainData(user.address);
         recordReferralPurchase(user.address, totalCost, count, bonusTickets);
         const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
@@ -489,6 +517,14 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         
         {/* Modal Footer - Sticky button */}
         <div className="modal-footer">
+          {/* Info banner for custodial users in live mode */}
+          {isLive && user?.isCustodial && (
+            <div className="mb-3 bg-blue-900/40 border border-blue-500/30 rounded-xl p-3 text-center">
+              <p className="text-blue-200 text-xs">
+                💳 Payment via <strong>secure card checkout</strong> — your tickets are automatically registered for tonight's draw.
+              </p>
+            </div>
+          )}
           <button
             onClick={handleBuy}
             disabled={processing || !user}
@@ -497,13 +533,15 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
             {processing ? (
               <>
                 <Coins className="w-5 h-5 animate-pulse" />
-                {paymentMethod === 'card' ? 'Processing card...' : 'Processing...'}
+                {isLive && user?.isCustodial ? 'Redirecting...' : paymentMethod === 'card' ? 'Processing card...' : 'Processing...'}
               </>
             ) : (
               <>
-                {paymentMethod === 'card' ? '💳' : '🔷'}
+                {isLive && user?.isCustodial ? '💳' : paymentMethod === 'card' ? '💳' : '🔷'}
                 <span className="ml-2">
-                  Acheter {totalTicketsInDraw} ticket{totalTicketsInDraw > 1 ? 's' : ''}{bonusTickets > 0 ? ` (dont ${bonusTickets} bonus)` : ''} — {totalCost.toFixed(2)}€
+                  {isLive && user?.isCustodial
+                    ? `Pay ${count}€ by card — ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}`
+                    : `Acheter ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}${bonusTickets > 0 ? ` (dont ${bonusTickets} bonus)` : ''} — ${totalCost.toFixed(2)}€`}
                 </span>
               </>
             )}

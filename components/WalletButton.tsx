@@ -37,9 +37,11 @@ function WalletButton() {
     }
   }, [isConnected, address, mounted, mode, connectStore, syncOnChainData]);
 
-  // Déconnexion
+  // Déconnexion — skip if user is custodial (email auth), they don't use MetaMask
   useEffect(() => {
     if (!isConnected && !isConnecting && mounted) {
+      const currentUser = useAppStore.getState().user;
+      if (currentUser?.isCustodial) return;
       console.log('Disconnected');
       disconnectStore();
     }

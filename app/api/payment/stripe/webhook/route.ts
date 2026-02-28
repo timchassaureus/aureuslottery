@@ -34,9 +34,12 @@ export async function POST(request: NextRequest) {
     const amountCents = Number(session.metadata?.amount_cents) || 0;
     const amountUsd = amountCents / 100;
     const customerEmail = session.customer_details?.email ?? null;
+    const walletAddress = session.metadata?.wallet_address || null;
 
     try {
       const supabase = createServiceClient();
+
+      // Record Stripe payment
       await supabase.from('stripe_payments').insert({
         stripe_session_id: session.id,
         customer_email: customerEmail,
@@ -44,6 +47,21 @@ export async function POST(request: NextRequest) {
         tickets_count: ticketsCount,
         status: 'completed',
       });
+
+      // Also record tickets in purchases table so they enter the draw
+      if (walletAddress && /^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+        const today = new Date().toISOString().slice(0, 10);
+        const purchaseRows = Array.from({ length: ticketsCount }, () => ({
+          wallet_address: walletAddress.toLowerCase(),
+          amount_usd: 1,
+          draw_date: today,
+          payment_method: 'stripe',
+        }));
+        const { error: purchaseError } = await supabase.from('purchases').insert(purchaseRows);
+        if (purchaseError) {
+          console.error('Failed to record purchases from Stripe:', purchaseError);
+        }
+      }
     } catch (err) {
       console.error('Failed to record Stripe payment in DB:', err);
     }

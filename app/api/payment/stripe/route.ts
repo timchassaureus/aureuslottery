@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
     const amountCents = Number(body?.amount);
     const ticketsCount = Math.max(1, Number(body?.ticketsCount) || 1);
     const currency = typeof body?.currency === 'string' ? body.currency.toLowerCase() : 'usd';
+    const walletAddress = typeof body?.walletAddress === 'string' ? body.walletAddress : null;
 
     if (!Number.isFinite(amountCents) || amountCents < 50) {
       return NextResponse.json({ success: false, error: 'Invalid amount (min 50 cents)' }, { status: 400 });
@@ -49,6 +50,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         tickets_count: String(ticketsCount),
         amount_cents: String(amountCents),
+        wallet_address: walletAddress ?? '',
       },
     });
 

@@ -34,6 +34,7 @@ export interface SecondaryDraw {
 
 export interface User {
   address: string;
+  isCustodial?: boolean; // True when authenticated via email (no MetaMask)
   username?: string; // Optional username/pseudonyme
   telegramUsername?: string; // Future: Telegram integration
   tickets: Ticket[];
@@ -107,7 +108,7 @@ interface AppState {
   setJackpot: (amount: number) => void;
   buyTicket: (owner: string) => void;
   buyMultipleTickets: (owner: string, count: number) => void;
-  connectWallet: (address: string) => void;
+  connectWallet: (address: string, isCustodial?: boolean) => void;
   disconnectWallet: () => void;
   setUsername: (address: string, username: string) => void;
   performDraw: () => Promise<{ winner: string; prize: number } | undefined>;
@@ -223,28 +224,29 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
   },
 
-  connectWallet: (address) => {
+  connectWallet: (address, isCustodial = false) => {
     // PROTECTION SSR + LOGS
     if (typeof window === 'undefined') return;
-    console.log('connectStore called for', address);
+    console.log('connectStore called for', address, isCustodial ? '(custodial)' : '(wallet)');
 
     const { draws, tickets } = get();
     // Count total lifetime tickets
     const lifetimeTickets = tickets.filter(t => t.owner === address).length;
-    
+
     // Try to load username from localStorage
-    const savedUsername = typeof window !== 'undefined' 
+    const savedUsername = typeof window !== 'undefined'
       ? localStorage.getItem(`aureus_username_${address.toLowerCase()}`) || undefined
       : undefined;
-    
+
     // Try to load Telegram username (future integration)
     const telegramUsername = typeof window !== 'undefined'
       ? localStorage.getItem(`aureus_telegram_${address.toLowerCase()}`) || undefined
       : undefined;
-    
+
     const ticketsInDraw = tickets.filter(t => t.owner === address && t.drawNumber === get().currentDrawNumber);
     const user: User = {
       address,
+      isCustodial,
       username: savedUsername,
       telegramUsername: telegramUsername || undefined,
       tickets: ticketsInDraw,

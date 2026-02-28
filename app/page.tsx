@@ -42,7 +42,6 @@ import { AureusUser } from '@/lib/auth';
 import { getCurrentUser, updateUserBalance } from '@/lib/userStorage';
 import { sendBrowserNotification } from '@/lib/webNotifications';
 import { emitInAppNotification } from '@/lib/notificationBus';
-import WalletButton from '@/components/WalletButton';
 
 const QUICK_AMOUNTS = [1, 5, 10, 25, 50];
 
@@ -92,19 +91,20 @@ function PlayCard({ onPlay }: { onPlay: (n: number) => void }) {
 
 export default function Home() {
   const router = useRouter();
-  const { 
-    jackpot, 
-    secondaryPot, 
-    user, 
-    tickets, 
-    currentDrawNumber, 
-    performDraw, 
-    performSecondaryDraw, 
+  const {
+    jackpot,
+    secondaryPot,
+    user,
+    tickets,
+    currentDrawNumber,
+    performDraw,
+    performSecondaryDraw,
     initDemo,
     mode,
     setMode,
     syncOnChainData,
     isSyncing,
+    connectWallet,
   } = useAppStore();
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [buyModalOpen, setBuyModalOpen] = useState(false);
@@ -396,8 +396,10 @@ export default function Home() {
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
-        onSuccess={(user) => {
-          setAureusUser(user);
+        onSuccess={(authUser) => {
+          setAureusUser(authUser);
+          // Inject custodial wallet into store so BuyTicketsModal sees a user
+          connectWallet(authUser.walletAddress, true);
           setAuthModalOpen(false);
         }}
       />
@@ -541,8 +543,15 @@ export default function Home() {
               </div>
             )}
 
-            {/* Wallet connect */}
-            <WalletButton />
+            {/* Connect button — shown only when no user is logged in */}
+            {!user && !aureusUser && (
+              <button
+                onClick={() => setAuthModalOpen(true)}
+                className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black rounded-full font-bold text-sm transition-all"
+              >
+                Se connecter
+              </button>
+            )}
 
             {/* Primary CTA — hidden on mobile, shown on desktop */}
             <button
