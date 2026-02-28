@@ -422,16 +422,13 @@ export default function Home() {
       <UsernameModal />
       
       <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 via-blue-950 to-slate-900 text-white relative overflow-x-hidden">
-      {/* Mobile-first simplified UI */}
-      <div className="md:hidden">
-        <MobileHome />
-      </div>
+      {/* Mobile UI hidden — desktop UI shown on all screens */}
         {/* Animated gradient background */}
       <div className="fixed inset-0 bg-gradient-to-r from-violet-500/10 via-blue-500/10 to-indigo-500/10 animate-pulse opacity-50 pointer-events-none" style={{
         backgroundSize: '400% 400%',
         animation: 'gradient 20s ease infinite'
       }} />
-      <header className="hidden md:block sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(5,5,15,0.75)', backdropFilter: 'blur(24px)' }}>
+      <header className="block sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(5,5,15,0.75)', backdropFilter: 'blur(24px)' }}>
         <div className="container mx-auto px-6 h-20 flex items-center justify-between gap-8">
 
           {/* ── Logo ── */}
@@ -568,14 +565,14 @@ export default function Home() {
       </header>
 
       {isLive && (
-        <div className="hidden md:block container mx-auto px-4 mt-4">
+        <div className="block container mx-auto px-4 mt-4">
           <AdminControls />
         </div>
       )}
 
       {/* Test ceremony button — dev only (shown regardless of live/demo mode) */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="hidden md:flex justify-end container mx-auto px-6 mt-2">
+        <div className="flex justify-end container mx-auto px-6 mt-2">
           <button
             onClick={() => {
               const demo = [
@@ -595,11 +592,11 @@ export default function Home() {
       )}
 
       {/* Urgency Banner - desktop only */}
-      <div className="hidden md:block">
+      <div className="block">
         <UrgencyBanner timeLeft={timeLeft} />
       </div>
 
-      <main className="hidden md:block container mx-auto px-4 py-8 pb-32">
+      <main className="block container mx-auto px-4 py-8 pb-32">
         <div className="max-w-6xl mx-auto">
 
           {/* ── HERO — everything above the fold ─────────────────────────── */}
@@ -701,7 +698,7 @@ export default function Home() {
         </div>
       </main>
 
-      <div className="hidden md:block">
+      <div className="block">
       <BuyTicketsModal
         isOpen={buyModalOpen}
         initialCount={buyInitialCount}
@@ -801,12 +798,12 @@ export default function Home() {
       <PremiumChat />
       
       {/* Invite & Viral Bar - desktop only to avoid overlap on phones */}
-      <div className="hidden md:block">
+      <div className="block">
         <InviteBar />
       </div>
 
       {/* Live Stats Bar - desktop only */}
-      <div className="hidden md:block">
+      <div className="block">
         <LiveStats />
       </div>
       
