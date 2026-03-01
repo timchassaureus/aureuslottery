@@ -4,7 +4,6 @@ import "./globals.css";
 import ToastProvider from "@/components/ToastProvider";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ReferralDetect from "@/components/ReferralDetect";
-import { RainbowKitSetup } from "@/lib/rainbowkit";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,8 +59,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RainbowKitSetup>
-          <ErrorBoundary>
+        <ErrorBoundary>
             <ReferralDetect />
             <ToastProvider />
             <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-950 via-slate-950 to-slate-950">
@@ -88,7 +86,6 @@ export default function RootLayout({
               </footer>
             </div>
           </ErrorBoundary>
-        </RainbowKitSetup>
       </body>
     </html>
   );

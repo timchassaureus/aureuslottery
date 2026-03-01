@@ -51,6 +51,15 @@ function getBonusForCount(count: number): number {
   return PACKS.find(p => p.tickets === count)?.bonus ?? 0;
 }
 
+/** Détection mobile : on force toujours le paiement carte / Coinbase (jamais MetaMask). */
+function isMobileDevice(): boolean {
+  if (typeof window === 'undefined') return false;
+  const ua = navigator.userAgent || '';
+  const hasMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+  const isSmallScreen = typeof window.matchMedia !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+  return hasMobileUA || isSmallScreen;
+}
+
 export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: Props) {
   const [count, setCount] = useState(initialCount);
 
@@ -66,6 +75,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
   const [txStatus, setTxStatus] = useState<'pending' | 'confirming' | 'success' | 'error'>('pending');
   const [txMessage, setTxMessage] = useState<string>('');
   const isLive = mode === 'live';
+  const forceCustodial = isMobileDevice();
 
   useEffect(() => {
     if (!isOpen) {
@@ -99,14 +109,17 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
       return;
     }
 
-    // Custodial users in live mode: open Coinbase Onramp to buy USDC
-    if (isLive && user.isCustodial) {
+    // Custodial, mobile, ou pas de wallet externe : toujours Coinbase Pay (jamais MetaMask)
+    const hasExternalWallet = typeof window !== 'undefined' && !!(window as unknown as { ethereum?: unknown }).ethereum;
+    const useCustodialFlow = user.isCustodial || !hasExternalWallet || forceCustodial;
+    if (isLive && useCustodialFlow) {
       const amountUsd = (count * ticketPrice).toFixed(2);
       const appId = process.env.NEXT_PUBLIC_COINBASE_APP_ID || '';
       const destinationWallets = JSON.stringify([{ address: user.address, assets: ['USDC'], supportedNetworks: ['base'] }]);
       const coinbaseUrl = `https://pay.coinbase.com/buy/select-asset?appId=${appId}&destinationWallets=${encodeURIComponent(destinationWallets)}&presetFiatAmount=${amountUsd}`;
-      window.open(coinbaseUrl, '_blank');
-      toast.success('Coinbase Pay ouvert — revenez ici après le paiement 👍', { duration: 6000 });
+      // Use location.href (not window.open) — popup blocker kills window.open on mobile
+      window.location.href = coinbaseUrl;
+      toast.success('Redirection vers Coinbase Pay…', { duration: 3000 });
       recordReferralPurchase(user.address, Number(amountUsd), count, bonusTickets);
       return;
     }
@@ -176,7 +189,9 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
       if (error?.message || error?.shortMessage) {
         const msg = error.message || error.shortMessage || '';
         
-        if (msg.includes('insufficient funds') || msg.includes('balance')) {
+        if (msg.toLowerCase().includes('metamask') && !(typeof window !== 'undefined' && (window as unknown as { ethereum?: unknown }).ethereum)) {
+          errorMessage = 'On mobile, use the « Buy » button — payment opens in the browser. No wallet app needed.';
+        } else if (msg.includes('insufficient funds') || msg.includes('balance')) {
           errorMessage = 'Insufficient USDC balance. Please add more USDC to your wallet.';
         } else if (msg.includes('user rejected') || msg.includes('User denied')) {
           errorMessage = 'Transaction cancelled.';
@@ -235,8 +250,8 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         </div>
 
         <div className="space-y-6">
-          {/* Payment Method Selection — hidden for custodial (email) users who always pay by card */}
-          {!(isLive && user?.isCustodial) && (
+          {/* Payment Method Selection — hidden on mobile and for custodial users (only Coinbase Pay / card) */}
+          {!(isLive && (user?.isCustodial || forceCustodial)) && (
           <div>
             <label className="block text-sm font-semibold mb-3 text-purple-200">
               Payment Method
@@ -333,12 +348,12 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
           </div>
           )}
 
-          {/* Custodial users in live mode: Coinbase Pay info banner */}
-          {isLive && user?.isCustodial && (
+          {/* Custodial / mobile in live mode: Coinbase Pay only (no wallet) */}
+          {isLive && (user?.isCustodial || forceCustodial) && (
             <div className="bg-blue-900/40 border border-blue-500/30 rounded-xl p-4 text-center">
               <p className="text-3xl mb-2">🔵</p>
-              <p className="text-blue-200 text-sm font-bold mb-1">Paiement via Coinbase Pay</p>
-              <p className="text-blue-300/80 text-xs">Visa • Mastercard • Apple Pay • Google Pay — rapide et sécurisé.</p>
+              <p className="text-blue-200 text-sm font-bold mb-1">Paiement par carte ou Apple Pay / Google Pay</p>
+              <p className="text-blue-300/80 text-xs">Aucun wallet nécessaire — paiement sécurisé via Coinbase.</p>
             </div>
           )}
 
