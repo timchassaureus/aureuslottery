@@ -41,7 +41,7 @@ interface Props {
 // Packs with bonus tickets (no hidden % discount — simple and clear)
 const PACKS: Array<{ tickets: number; bonus: number; emoji: string; label: string; popular?: boolean }> = [
   { tickets: 5,  bonus: 1,  emoji: '⚡', label: 'Starter' },
-  { tickets: 10, bonus: 3,  emoji: '🔥', label: 'Populaire', popular: true },
+  { tickets: 10, bonus: 3,  emoji: '🔥', label: 'Popular', popular: true },
   { tickets: 25, bonus: 10, emoji: '💎', label: 'Elite' },
   { tickets: 50, bonus: 25, emoji: '👑', label: 'VIP' },
 ];
@@ -98,7 +98,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
       return;
     }
 
-    // En mode live : Coinbase Pay avec sessionToken (obligatoire côté Coinbase)
+    // Live mode: Coinbase Pay with sessionToken (required by Coinbase)
     if (isLive) {
       setProcessing(true);
       try {
@@ -121,7 +121,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         const tokenData = await tokenRes.json();
 
         if (!tokenData.token) {
-          const msg = tokenData.error || 'Impossible d\'obtenir le token de session';
+          const msg = tokenData.error || 'Unable to get session token';
           toast.error(msg, { duration: 8000 });
           setProcessing(false);
           return;
@@ -132,7 +132,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         window.location.href = coinbaseUrl;
       } catch (e) {
         console.error('Coinbase Pay error:', e);
-        toast.error('Erreur réseau. Réessaie.');
+        toast.error('Network error. Please try again.');
         setProcessing(false);
       }
       return;
@@ -234,7 +234,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         </div>
 
         <div className="space-y-6">
-          {/* En mode live : uniquement Coinbase Pay (pas de choix wallet). En demo : choix carte / crypto. */}
+          {/* Live mode: Coinbase Pay only (no wallet choice). Demo: card / crypto choice. */}
           {!isLive && (
           <div>
             <label className="block text-sm font-semibold mb-3 text-purple-200">
@@ -332,18 +332,18 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
           </div>
           )}
 
-          {/* En mode live : paiement uniquement par carte / Coinbase (aucun wallet externe) */}
+          {/* Live mode: card payment only via Coinbase (no external wallet) */}
           {isLive && (
             <div className="bg-blue-900/40 border border-blue-500/30 rounded-xl p-4 text-center">
               <p className="text-3xl mb-2">🔵</p>
-              <p className="text-blue-200 text-sm font-bold mb-1">Paiement par carte ou Apple Pay / Google Pay</p>
-              <p className="text-blue-300/80 text-xs">Aucun portefeuille externe — paiement sécurisé via Coinbase.</p>
+              <p className="text-blue-200 text-sm font-bold mb-1">Pay by card, Apple Pay or Google Pay</p>
+              <p className="text-blue-300/80 text-xs">No external wallet needed — secure payment via Coinbase.</p>
             </div>
           )}
 
           <div>
             {/* Pack selection */}
-            <p className="text-xs font-bold text-center text-yellow-400 mb-3">🎁 PACKS — TICKETS BONUS GRATUITS</p>
+            <p className="text-xs font-bold text-center text-yellow-400 mb-3">🎁 PACKS — FREE BONUS TICKETS</p>
             <div className="grid grid-cols-2 gap-2 mb-4">
               {PACKS.map((pack) => {
                 const isSelected = count === pack.tickets;
@@ -359,7 +359,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
                   >
                     {pack.popular && (
                       <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-[10px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">
-                        ⭐ POPULAIRE
+                        ⭐ POPULAR
                       </div>
                     )}
                     <div className="text-center mt-1">
@@ -369,7 +369,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
                       <div className={`text-xs font-bold mt-1 px-2 py-0.5 rounded ${
                         isSelected ? 'bg-yellow-500 text-black' : 'bg-green-500/20 text-green-400'
                       }`}>
-                        +{pack.bonus} BONUS GRATUIT{pack.bonus > 1 ? 'S' : ''}
+                        +{pack.bonus} FREE BONUS{pack.bonus > 1 ? 'ES' : ''}
                       </div>
                     </div>
                     {isSelected && (
@@ -384,7 +384,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
 
             {/* Custom amount */}
             <label className="block text-xs text-purple-400 mb-1 text-center">
-              Ou entrez un montant personnalisé (sans tickets bonus)
+              Or enter a custom amount (no bonus tickets)
             </label>
             <input
               type="number"
@@ -405,18 +405,18 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
 
           <div className="bg-purple-800/30 rounded-xl p-4 space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-purple-300">Tickets achetés :</span>
+              <span className="text-purple-300">Tickets purchased:</span>
               <span className="text-white font-semibold">{count} × {ticketPrice.toFixed(2)}€</span>
             </div>
             {bonusTickets > 0 && (
               <div className="flex justify-between items-center">
-                <span className="text-green-300">🎁 Tickets bonus gratuits :</span>
+                <span className="text-green-300">🎁 Free bonus tickets:</span>
                 <span className="text-green-400 font-bold">+{bonusTickets}</span>
               </div>
             )}
             {bonusTickets > 0 && (
               <div className="flex justify-between items-center bg-green-500/10 border border-green-500/30 rounded-lg px-3 py-1.5">
-                <span className="text-green-200 font-semibold text-sm">🏆 Total en jeu ce soir :</span>
+                <span className="text-green-200 font-semibold text-sm">🏆 Total in draw tonight:</span>
                 <span className="text-green-300 font-black">{totalTicketsInDraw} tickets</span>
               </div>
             )}
@@ -451,12 +451,12 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
               const oneIn = Math.round(totalAfterBuy / totalTicketsInDraw);
               return (
                 <div className="mt-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-center">
-                  <p className="text-yellow-300 text-xs font-bold mb-1">Tes chances de gagner ce soir</p>
+                  <p className="text-yellow-300 text-xs font-bold mb-1">Your chances of winning tonight</p>
                   <p className="text-yellow-400 text-xl font-black">
                     {winChance < 0.01 ? '< 0.01' : winChance.toFixed(2)}%
                   </p>
                   <p className="text-yellow-300/70 text-xs">
-                    1 chance sur {oneIn.toLocaleString('fr-FR')} · {totalTicketsInDraw} ticket{totalTicketsInDraw > 1 ? 's' : ''} en jeu
+                    1 in {oneIn.toLocaleString('en-US')} · {totalTicketsInDraw} ticket{totalTicketsInDraw > 1 ? 's' : ''} in draw
                   </p>
                 </div>
               );
@@ -505,7 +505,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
           {isLive && user?.isCustodial && (
             <div className="mb-3 bg-blue-900/40 border border-blue-500/30 rounded-xl p-3 text-center">
               <p className="text-blue-200 text-xs">
-                🔵 Paiement via <strong>Coinbase Pay</strong> — s&apos;ouvre dans un nouvel onglet. Revenez ici après.
+                🔵 Payment via <strong>Coinbase Pay</strong> — opens in a new tab. Come back here after.
               </p>
             </div>
           )}
@@ -517,15 +517,15 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
             {processing ? (
               <>
                 <Coins className="w-5 h-5 animate-pulse" />
-                {isLive && user?.isCustodial ? 'Ouverture Coinbase Pay...' : paymentMethod === 'card' ? 'Processing card...' : 'Processing...'}
+                {isLive && user?.isCustodial ? 'Opening Coinbase Pay...' : paymentMethod === 'card' ? 'Processing card...' : 'Processing...'}
               </>
             ) : (
               <>
                 {isLive && user?.isCustodial ? '🔵' : paymentMethod === 'card' ? '💳' : '🔷'}
                 <span className="ml-2">
                   {isLive && user?.isCustodial
-                    ? `Payer ${totalCost.toFixed(2)}€ via Coinbase Pay — ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}`
-                    : `Acheter ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}${bonusTickets > 0 ? ` (dont ${bonusTickets} bonus)` : ''} — ${totalCost.toFixed(2)}€`}
+                    ? `Pay $${totalCost.toFixed(2)} via Coinbase Pay — ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}`
+                    : `Buy ${totalTicketsInDraw} ticket${totalTicketsInDraw > 1 ? 's' : ''}${bonusTickets > 0 ? ` (incl. ${bonusTickets} bonus)` : ''} — $${totalCost.toFixed(2)}`}
                 </span>
               </>
             )}

@@ -46,10 +46,6 @@ const BASESCAN_URL = `https://basescan.org/address/${TREASURY}`;
 
 const FAQ_ITEMS = [
   {
-    q: 'Is this a scam?',
-    a: `No. All payments are made in USDC on the Base blockchain, a public blockchain by Coinbase. Every transaction is verifiable on BaseScan — there is nothing to hide.`,
-  },
-  {
     q: 'Will I actually get paid if I win?',
     a: `Yes. The USDC payout is sent automatically to your wallet within 45 minutes of the 9 PM draw. You receive it directly to your blockchain address, with no middleman.`,
   },

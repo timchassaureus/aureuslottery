@@ -15,7 +15,7 @@ function truncateAddress(addr: string): string {
   return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 }
 
-// Données démo pour le social proof quand il n'y a pas encore de vrais gagnants
+// Demo data for social proof when there are no real winners yet
 const DEMO_WINNERS: WinnerEntry[] = [
   { wallet_address: '0x7f3a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6b2c1', amount_usd: 47.5, draw_type: 'bonus', draw_date: new Date().toISOString(), demo: true },
   { wallet_address: '0xa1b2c3d4e5f6789012345678901234567890abcd', amount_usd: 125, draw_type: 'main', draw_date: new Date().toISOString(), demo: true },
@@ -52,7 +52,7 @@ export default function WinnersFeed() {
   if (loading) {
     return (
       <div className="rounded-xl border border-amber-500/30 bg-black/40 p-4 h-32 flex items-center justify-center">
-        <span className="text-amber-200/80 text-sm">Chargement des gagnants…</span>
+        <span className="text-amber-200/80 text-sm">Loading winners…</span>
       </div>
     );
   }
@@ -60,7 +60,7 @@ export default function WinnersFeed() {
   return (
     <div className="rounded-xl border border-amber-500/30 bg-black/40 overflow-hidden">
       <div className="px-4 py-2 border-b border-amber-500/20">
-        <h3 className="text-sm font-semibold text-amber-200">Derniers gagnants</h3>
+        <h3 className="text-sm font-semibold text-amber-200">Latest winners</h3>
       </div>
       <div className="max-h-48 overflow-y-auto divide-y divide-amber-500/10">
         {winners.map((w, i) => (
@@ -69,7 +69,7 @@ export default function WinnersFeed() {
             className="px-4 py-2 flex items-center justify-between gap-2 animate-in slide-in-from-top-2 duration-300"
           >
             <span className="text-gray-300 text-sm">
-              🎉 {truncateAddress(w.wallet_address)} vient de gagner{' '}
+              🎉 {truncateAddress(w.wallet_address)} just won{' '}
               <span
                 className={
                   w.draw_type === 'main'
@@ -77,9 +77,9 @@ export default function WinnersFeed() {
                     : 'text-gray-400 font-medium'
                 }
               >
-                {w.amount_usd.toFixed(2)}$
+                ${w.amount_usd.toFixed(2)}
               </span>{' '}
-              sur le {w.draw_type === 'main' ? 'Jackpot' : 'Bonus Draw'} !
+              on the {w.draw_type === 'main' ? 'Jackpot' : 'Bonus Draw'}!
             </span>
             {w.demo && (
               <span className="shrink-0 text-xs text-amber-500/80 border border-amber-500/40 rounded px-1.5 py-0.5">
