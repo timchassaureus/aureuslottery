@@ -102,8 +102,9 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
     if (isLive) {
       const amountUsd = (count * ticketPrice).toFixed(2);
       const appId = process.env.NEXT_PUBLIC_COINBASE_APP_ID || '';
-      const destinationWallets = JSON.stringify([{ address: user.address, assets: ['USDC'], supportedNetworks: ['base'] }]);
-      const coinbaseUrl = `https://pay.coinbase.com/buy/select-asset?appId=${appId}&destinationWallets=${encodeURIComponent(destinationWallets)}&presetFiatAmount=${amountUsd}`;
+      // Coinbase Pay URL format: addresses={"0xWallet":["USDC"]}
+      const addresses = encodeURIComponent(JSON.stringify({ [user.address]: ['USDC'] }));
+      const coinbaseUrl = `https://pay.coinbase.com/buy/select-asset?appId=${appId}&addresses=${addresses}&defaultAsset=USDC&defaultNetwork=base&presetFiatAmount=${amountUsd}`;
       window.location.href = coinbaseUrl;
       toast.success('Redirection vers Coinbase Pay…', { duration: 3000 });
       recordReferralPurchase(user.address, Number(amountUsd), count, bonusTickets);
