@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { Shield, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { requestBonusDrawOnChain, requestMainDrawOnChain } from '@/lib/blockchain';
 import { useAppStore } from '@/lib/store';
 import { OWNER_ADDRESS } from '@/lib/config';
 
@@ -17,15 +16,16 @@ export default function AdminControls() {
   const handleMainDraw = async () => {
     setLoading('main');
     try {
-      await requestMainDrawOnChain();
-      toast.success('Main draw requested');
-      await syncOnChainData(user.address);
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : (error as { shortMessage?: string })?.shortMessage || 'Failed to request main draw';
-      toast.error(message);
+      const res = await fetch('/api/draw/trigger?type=main');
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Main draw triggered');
+        await syncOnChainData(user.address);
+      } else {
+        toast.error(data.error || 'Failed to trigger main draw');
+      }
+    } catch {
+      toast.error('Failed to trigger main draw');
     } finally {
       setLoading(null);
     }
@@ -34,15 +34,16 @@ export default function AdminControls() {
   const handleBonusDraw = async () => {
     setLoading('bonus');
     try {
-      await requestBonusDrawOnChain();
-      toast.success('Bonus draw requested');
-      await syncOnChainData(user.address);
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : (error as { shortMessage?: string })?.shortMessage || 'Failed to request bonus draw';
-      toast.error(message);
+      const res = await fetch('/api/draw/trigger?type=bonus');
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Bonus draw triggered');
+        await syncOnChainData(user.address);
+      } else {
+        toast.error(data.error || 'Failed to trigger bonus draw');
+      }
+    } catch {
+      toast.error('Failed to trigger bonus draw');
     } finally {
       setLoading(null);
     }
@@ -75,4 +76,3 @@ export default function AdminControls() {
     </div>
   );
 }
-

@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react';
 import { X, Ticket, Coins } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import toast from 'react-hot-toast';
-import { buyTicketsOnChain } from '@/lib/blockchain';
-import { BASESCAN_TX_URL, DEFAULT_CHAIN_ID } from '@/lib/config';
+import { BASESCAN_TX_URL } from '@/lib/config';
 import { getStoredReferralCodeForPurchase } from '@/hooks/useReferral';
 import TransactionStatus from './TransactionStatus';
 
@@ -51,15 +50,6 @@ function getBonusForCount(count: number): number {
   return PACKS.find(p => p.tickets === count)?.bonus ?? 0;
 }
 
-/** Détection mobile : on force toujours le paiement carte / Coinbase (jamais MetaMask). */
-function isMobileDevice(): boolean {
-  if (typeof window === 'undefined') return false;
-  const ua = navigator.userAgent || '';
-  const hasMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-  const isSmallScreen = typeof window.matchMedia !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
-  return hasMobileUA || isSmallScreen;
-}
-
 export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: Props) {
   const [count, setCount] = useState(initialCount);
 
@@ -67,15 +57,14 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
     if (isOpen) setCount(initialCount);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
-  const [paymentMethod, setPaymentMethod] = useState<'crypto' | 'card'>('crypto');
+  const [paymentMethod, setPaymentMethod] = useState<'crypto' | 'card'>('card');
   const [cardProvider, setCardProvider] = useState<'moonpay' | 'ramp'>('moonpay');
-  const { jackpot, ticketPrice, user, tickets, buyMultipleTickets, setJackpot, mode, syncOnChainData } = useAppStore();
+  const { jackpot, ticketPrice, user, tickets, buyMultipleTickets, setJackpot, mode } = useAppStore();
   const [processing, setProcessing] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [txStatus, setTxStatus] = useState<'pending' | 'confirming' | 'success' | 'error'>('pending');
   const [txMessage, setTxMessage] = useState<string>('');
   const isLive = mode === 'live';
-  const forceCustodial = isMobileDevice();
 
   useEffect(() => {
     if (!isOpen) {
@@ -109,15 +98,12 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
       return;
     }
 
-    // Custodial, mobile, ou pas de wallet externe : toujours Coinbase Pay (jamais MetaMask)
-    const hasExternalWallet = typeof window !== 'undefined' && !!(window as unknown as { ethereum?: unknown }).ethereum;
-    const useCustodialFlow = user.isCustodial || !hasExternalWallet || forceCustodial;
-    if (isLive && useCustodialFlow) {
+    // En mode live : uniquement paiement carte / Coinbase Pay (aucun wallet externe)
+    if (isLive) {
       const amountUsd = (count * ticketPrice).toFixed(2);
       const appId = process.env.NEXT_PUBLIC_COINBASE_APP_ID || '';
       const destinationWallets = JSON.stringify([{ address: user.address, assets: ['USDC'], supportedNetworks: ['base'] }]);
       const coinbaseUrl = `https://pay.coinbase.com/buy/select-asset?appId=${appId}&destinationWallets=${encodeURIComponent(destinationWallets)}&presetFiatAmount=${amountUsd}`;
-      // Use location.href (not window.open) — popup blocker kills window.open on mobile
       window.location.href = coinbaseUrl;
       toast.success('Redirection vers Coinbase Pay…', { duration: 3000 });
       recordReferralPurchase(user.address, Number(amountUsd), count, bonusTickets);
@@ -129,34 +115,11 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
     setTxMessage('Preparing transaction...');
 
     const loadingToast = toast.loading(
-      isLive
-        ? 'Submitting transaction...'
-        : paymentMethod === 'card'
-          ? 'Processing card payment...'
-          : 'Processing transaction...'
+      paymentMethod === 'card' ? 'Processing card payment...' : 'Processing...'
     );
 
     try {
-      if (isLive) {
-        setTxStatus('pending');
-        setTxMessage('Waiting for wallet confirmation...');
-
-        const receipt = await buyTicketsOnChain(count);
-        setTxHash(receipt.hash);
-        setTxStatus('confirming');
-        setTxMessage('Transaction submitted! Confirming on blockchain...');
-
-        setTxStatus('success');
-        setTxMessage(`Successfully purchased ${count} ticket${count > 1 ? 's' : ''}!`);
-
-        await syncOnChainData(user.address);
-        recordReferralPurchase(user.address, totalCost, count, bonusTickets);
-        const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
-        toast.success(
-          `🎉 Purchased ${count} ticket${count > 1 ? 's' : ''} on ${networkName}!`,
-          { id: loadingToast }
-        );
-      } else {
+      {
         setTxStatus('pending');
         setTxMessage(paymentMethod === 'card' ? 'Processing card payment...' : 'Processing...');
         
@@ -189,21 +152,14 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
       if (error?.message || error?.shortMessage) {
         const msg = error.message || error.shortMessage || '';
         
-        if (msg.toLowerCase().includes('metamask') && !(typeof window !== 'undefined' && (window as unknown as { ethereum?: unknown }).ethereum)) {
-          errorMessage = 'On mobile, use the « Buy » button — payment opens in the browser. No wallet app needed.';
-        } else if (msg.includes('insufficient funds') || msg.includes('balance')) {
+        if (msg.includes('insufficient funds') || msg.includes('balance')) {
           errorMessage = 'Insufficient USDC balance. Please add more USDC to your wallet.';
         } else if (msg.includes('user rejected') || msg.includes('User denied')) {
           errorMessage = 'Transaction cancelled.';
-        } else if (msg.includes('network') || msg.includes('Chain ID')) {
-          const networkName = DEFAULT_CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia';
-          errorMessage = `Wrong network. Please switch to ${networkName}.`;
         } else if (msg.includes('allowance') || msg.includes('approve')) {
           errorMessage = 'Please approve USDC spending first, then try again.';
-        } else if (msg.includes('gas')) {
-          errorMessage = 'Transaction failed due to gas estimation. Please try again.';
         } else {
-          errorMessage = msg.length > 100 ? 'Transaction failed. Please check your wallet and try again.' : msg;
+          errorMessage = msg.length > 100 ? 'Transaction failed. Please try again.' : msg;
         }
       } else if (error instanceof Error) {
         errorMessage = error.message;
@@ -250,8 +206,8 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         </div>
 
         <div className="space-y-6">
-          {/* Payment Method Selection — hidden on mobile and for custodial users (only Coinbase Pay / card) */}
-          {!(isLive && (user?.isCustodial || forceCustodial)) && (
+          {/* En mode live : uniquement Coinbase Pay (pas de choix wallet). En demo : choix carte / crypto. */}
+          {!isLive && (
           <div>
             <label className="block text-sm font-semibold mb-3 text-purple-200">
               Payment Method
@@ -348,12 +304,12 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
           </div>
           )}
 
-          {/* Custodial / mobile in live mode: Coinbase Pay only (no wallet) */}
-          {isLive && (user?.isCustodial || forceCustodial) && (
+          {/* En mode live : paiement uniquement par carte / Coinbase (aucun wallet externe) */}
+          {isLive && (
             <div className="bg-blue-900/40 border border-blue-500/30 rounded-xl p-4 text-center">
               <p className="text-3xl mb-2">🔵</p>
               <p className="text-blue-200 text-sm font-bold mb-1">Paiement par carte ou Apple Pay / Google Pay</p>
-              <p className="text-blue-300/80 text-xs">Aucun wallet nécessaire — paiement sécurisé via Coinbase.</p>
+              <p className="text-blue-300/80 text-xs">Aucun portefeuille externe — paiement sécurisé via Coinbase.</p>
             </div>
           )}
 

@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useAccount } from 'wagmi';
 import { createClient } from '@/lib/supabase';
 import { useAppStore, type Group, type GroupMember } from '@/lib/store';
 import { emitInAppNotification } from '@/lib/notificationBus';
@@ -28,10 +27,10 @@ export interface GroupWithMembers extends Group {
 }
 
 export function useGroup(walletOverride?: string) {
-  const { address } = useAccount();
+  const storeUser = useAppStore((s) => s.user);
   const wallet = useMemo(
-    () => normalizeWallet(walletOverride || address),
-    [walletOverride, address]
+    () => normalizeWallet(walletOverride ?? storeUser?.address),
+    [walletOverride, storeUser?.address]
   );
   const getSupabaseClient = useCallback(() => createClient(), []);
   const setMyGroups = useAppStore((s) => s.setMyGroups);

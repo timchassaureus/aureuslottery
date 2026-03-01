@@ -76,7 +76,7 @@ const faqs = [
       },
       {
         q: "Is my Aureus account secure?",
-        a: "Your password is encrypted (bcrypt) server-side. Your custodial wallet private key is never transmitted to your browser. For maximum security, use a personal Web3 wallet (MetaMask, Ledger).",
+        a: "Your password is encrypted (bcrypt) server-side. Your custodial wallet private key is never transmitted to your browser.",
       },
     ],
   },
@@ -85,7 +85,7 @@ const faqs = [
     items: [
       {
         q: "Do I need a crypto wallet to play?",
-        a: "No. You can create an account with just your email and a password — Aureus automatically creates a custodial wallet for you. You can also connect your own MetaMask or Ledger wallet.",
+        a: "No. You create an account with your email and a password — Aureus creates a custodial wallet for you. You pay by card or Apple Pay / Google Pay via Coinbase.",
       },
       {
         q: "I forgot my password, what should I do?",
