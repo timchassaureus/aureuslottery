@@ -1,26 +1,20 @@
 {
   "name": "Aureus Lottery",
   "short_name": "Aureus",
-  "description": "Loterie crypto quotidienne sur Base. 1 USDC par ticket, jackpot chaque jour à 21h.",
+  "description": "Daily crypto lottery on Base blockchain. Buy tickets for $1 USDC and win jackpots every day at 9PM UTC.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a1a",
   "theme_color": "#7c3aed",
   "orientation": "portrait-primary",
+  "lang": "en",
   "icons": [
     {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icon-512.png",
+      "src": "/icon",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
   ],
-  "categories": ["games", "finance"],
-  "lang": "fr"
+  "categories": ["games", "finance"]
 }
