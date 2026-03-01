@@ -68,103 +68,100 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
   };
 
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="relative bg-[#0D0D1A] border border-gold-500/20 rounded-2xl p-7 max-w-md w-full shadow-2xl">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="relative bg-gradient-to-br from-purple-900 to-indigo-900 border-2 border-purple-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#8A8070] hover:text-[#F5F0E8] transition-colors"
+          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* Header */}
-        <div className="text-center mb-7">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gold-500/10 border border-gold-500/20 rounded-full mb-4">
-            <User className="w-5 h-5 text-gold-500" />
-          </div>
-          <h2 className="text-2xl font-bold text-[#F5F0E8] mb-1 tracking-wide">
-            {mode === 'login' ? 'Connexion' : 'Créer un compte'}
+        <div className="text-center mb-6">
+          <h2 className="text-3xl font-bold mb-2">
+            {mode === 'login' ? 'Sign in' : 'Create account'}
           </h2>
-          <p className="text-[#8A8070] text-sm">
+          <p className="text-purple-200">
             {mode === 'login'
-              ? 'Accédez à votre compte AUREUS'
-              : 'Rejoignez AUREUS en quelques secondes'}
+              ? 'Access your AUREUS account'
+              : 'Join AUREUS Lottery in seconds'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3" autoComplete="on">
+        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
           {mode === 'register' && (
             <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8070]" />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
               <input
                 type="text"
                 name="name"
                 value={name}
                 onChange={e => setName(e.target.value)}
-                placeholder="Votre prénom"
+                placeholder="Username"
                 autoComplete="name"
-                className="w-full pl-10 pr-4 py-3 bg-white/[0.04] border border-white/10 rounded-xl text-[#F5F0E8] placeholder-[#8A8070]/60 focus:outline-none focus:border-gold-500/50 transition-colors text-sm"
+                className="w-full pl-10 pr-4 py-3 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
           )}
 
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8070]" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
             <input
               type="email"
               name="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              placeholder="votre@email.com"
+              placeholder="your@email.com"
               autoComplete="email"
-              className="w-full pl-10 pr-4 py-3 bg-white/[0.04] border border-white/10 rounded-xl text-[#F5F0E8] placeholder-[#8A8070]/60 focus:outline-none focus:border-gold-500/50 transition-colors text-sm"
+              className="w-full pl-10 pr-4 py-3 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
 
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8070]" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              placeholder="Mot de passe (6 caractères min.)"
+              placeholder="Password (6 characters min.)"
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-              className="w-full pl-10 pr-12 py-3 bg-white/[0.04] border border-white/10 rounded-xl text-[#F5F0E8] placeholder-[#8A8070]/60 focus:outline-none focus:border-gold-500/50 transition-colors text-sm"
+              className="w-full pl-10 pr-12 py-3 bg-purple-800/50 border border-purple-600/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
             <button
               type="button"
               onClick={() => setShowPassword(v => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8A8070] hover:text-[#F5F0E8] transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-400 hover:text-white"
             >
-              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 mt-1 bg-gold-500 hover:bg-gold-400 text-black rounded-xl font-bold text-sm tracking-wide transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
+            className="w-full py-3 bg-yellow-500 hover:bg-yellow-400 text-black rounded-xl font-bold text-lg transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-2"
           >
+            <Mail className="w-5 h-5" />
             {loading
-              ? (mode === 'login' ? 'Connexion...' : 'Création...')
-              : (mode === 'login' ? 'Se connecter' : 'Créer mon compte')}
+              ? mode === 'login' ? 'Signing in...' : 'Creating...'
+              : mode === 'login' ? 'Sign in' : 'Create my account'}
           </button>
         </form>
 
         <div className="mt-5 text-center">
           <button
             onClick={switchMode}
-            className="text-[#8A8070] hover:text-gold-400 text-xs transition-colors"
+            className="text-purple-300 hover:text-white text-sm transition-colors"
           >
             {mode === 'login'
-              ? "Pas encore de compte ? Créer un compte"
-              : 'Déjà un compte ? Se connecter'}
+              ? "No account yet? → Create account"
+              : 'Already have an account? → Sign in'}
           </button>
         </div>
 
-        <p className="mt-4 text-[10px] text-[#8A8070]/50 text-center">
-          En utilisant AUREUS, vous acceptez nos conditions d&apos;utilisation.
+        <p className="mt-4 text-xs text-purple-400 text-center">
+          By using AUREUS, you agree to our terms of service.
         </p>
       </div>
     </div>

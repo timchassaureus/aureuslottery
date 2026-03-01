@@ -1,7 +1,7 @@
 'use client';
 
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
+import { WagmiProvider, createStorage, noopStorage } from 'wagmi';
 import { base, baseSepolia } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 
@@ -12,6 +12,9 @@ const config = getDefaultConfig({
     '944da06684d3948b1597121e5affe4c8',
   chains: [base, baseSepolia] as any,
   ssr: true,
+  // Disable auto-reconnect: prevents MetaMask popup on mobile browsers
+  // (mobile uses custodial auth, no wallet needed)
+  storage: createStorage({ storage: noopStorage }),
 });
 
 const queryClient = new QueryClient();

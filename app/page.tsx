@@ -48,9 +48,9 @@ const QUICK_AMOUNTS = [1, 5, 10, 25, 50];
 function PlayCard({ onPlay }: { onPlay: (n: number) => void }) {
   const [selected, setSelected] = useState(5);
   return (
-    <div className="mx-6 mb-8 rounded-2xl bg-[#0D0D1A] border border-gold-500/20 p-5">
-      <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#8A8070] mb-4 text-center">
-        Nombre de tickets
+    <div className="mx-6 mb-8 rounded-2xl bg-white/[0.03] border border-white/[0.08] p-5">
+      <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400 mb-4 text-center">
+        🎮 How many tickets?
       </p>
       {/* Amount chips */}
       <div className="flex justify-center gap-2 mb-5 flex-wrap">
@@ -58,10 +58,10 @@ function PlayCard({ onPlay }: { onPlay: (n: number) => void }) {
           <button
             key={n}
             onClick={() => setSelected(n)}
-            className={`px-5 py-2 rounded-full text-sm font-bold transition-all border ${
+            className={`px-5 py-2 rounded-full text-sm font-black transition-all border ${
               selected === n
-                ? 'bg-gold-500 border-gold-400 text-black scale-105'
-                : 'bg-white/[0.04] border-white/10 text-[#8A8070] hover:bg-gold-500/10 hover:border-gold-500/30 hover:text-gold-400'
+                ? 'bg-violet-600 border-violet-400 text-white scale-105 shadow-[0_0_16px_rgba(139,92,246,0.4)]'
+                : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10 hover:border-white/20'
             }`}
           >
             {n}
@@ -71,17 +71,19 @@ function PlayCard({ onPlay }: { onPlay: (n: number) => void }) {
       {/* Play button */}
       <button
         onClick={() => onPlay(selected)}
-        className="group relative w-full overflow-hidden rounded-xl bg-gold-500 hover:bg-gold-400 transition-colors"
+        className="group relative w-full overflow-hidden rounded-xl"
       >
-        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600 bg-[length:200%] transition-all duration-500 group-hover:bg-right" />
+        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
         <div className="relative py-3.5 flex items-center justify-center gap-3">
-          <span className="font-black text-black text-sm tracking-wide">
-            Jouer {selected} ticket{selected > 1 ? 's' : ''} — {selected}$
+          <span className="font-black text-white text-base">
+            Play {selected} ticket{selected > 1 ? 's' : ''} — ${selected}.00
           </span>
+          <span className="text-white/70 text-sm">→</span>
         </div>
       </button>
-      <p className="text-center text-[10px] text-[#8A8070]/60 mt-3 tracking-wider">
-        Chaque ticket participe aux deux tirages · 1$ USDC · Sécurisé sur Base
+      <p className="text-center text-[11px] text-slate-600 mt-3">
+        Every ticket enters both draws · $1 USDC each · Secured on Base
       </p>
     </div>
   );
@@ -422,28 +424,31 @@ export default function Home() {
       <DisclaimerModal />
       <UsernameModal />
       
-      <div className="min-h-screen bg-[#06060F] text-[#F5F0E8] relative overflow-x-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 via-blue-950 to-slate-900 text-white relative overflow-x-hidden">
       {/* Mobile UI — shown only on small screens */}
       <div className="md:hidden">
         <MobileHome />
       </div>
 
-      {/* Subtle gold ambient */}
-      <div className="fixed inset-0 bg-gradient-to-b from-gold-500/[0.03] via-transparent to-transparent pointer-events-none" />
-
-      <header className="hidden md:block sticky top-0 z-40 border-b border-gold-500/15" style={{ background: 'rgba(6,6,15,0.92)', backdropFilter: 'blur(24px)' }}>
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between gap-8">
+        {/* Animated gradient background */}
+      <div className="fixed inset-0 bg-gradient-to-r from-violet-500/10 via-blue-500/10 to-indigo-500/10 animate-pulse opacity-50 pointer-events-none" style={{
+        backgroundSize: '400% 400%',
+        animation: 'gradient 20s ease infinite'
+      }} />
+      <header className="hidden md:block sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(5,5,15,0.75)', backdropFilter: 'blur(24px)' }}>
+        <div className="container mx-auto px-3 md:px-6 h-14 md:h-20 flex items-center justify-between gap-2 md:gap-8">
 
           {/* ── Logo ── */}
           <div className="flex items-center gap-3 shrink-0">
-            <div className="flex items-center gap-2.5">
-              <Trophy className="w-6 h-6 text-gold-500" />
-              <span className="text-xl font-black tracking-[0.28em] text-gold-400">AUREUS</span>
+            <div className="flex items-center gap-2">
+              <Trophy className="w-7 h-7 text-yellow-400" />
+              <span className="text-2xl font-black tracking-tight text-white">AUREUS</span>
             </div>
+            {/* Status dot */}
             <div className="flex items-center gap-1.5 ml-1">
               <span
-                className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-gold-500' : 'bg-white/20'}`}
-                style={isLive ? { boxShadow: '0 0 5px rgba(201,168,76,0.8)' } : {}}
+                className={`w-2 h-2 rounded-full ${isLive ? 'bg-emerald-400' : 'bg-slate-600'}`}
+                style={isLive ? { boxShadow: '0 0 6px rgba(52,211,153,0.9)', animation: 'pulse 2s infinite' } : {}}
               />
               {!FORCED_MODE && (
                 <button
@@ -451,14 +456,14 @@ export default function Home() {
                     if (isLive) { setMode('demo'); toast.success('Demo mode'); }
                     else { setMode('live'); syncOnChainData(user?.address); toast.success('Live mode'); }
                   }}
-                  className="text-[10px] text-[#8A8070] hover:text-gold-400 uppercase tracking-widest font-medium transition-colors"
+                  className="text-[10px] text-slate-500 hover:text-slate-300 uppercase tracking-widest font-medium transition-colors"
                   title={isLive ? 'Switch to demo' : 'Switch to live'}
                 >
                   {isLive ? (isSyncing ? 'sync…' : 'live') : 'demo'}
                 </button>
               )}
               {FORCED_MODE && (
-                <span className="text-[10px] text-[#8A8070] uppercase tracking-widest font-medium">
+                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-medium">
                   {isSyncing ? 'sync…' : 'live'}
                 </span>
               )}
@@ -466,29 +471,29 @@ export default function Home() {
           </div>
 
           {/* ── Nav centre ── */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-2">
             {[
-              { label: 'Comment ça marche', sub: 'Règles, tirages & prix', action: () => setHowItWorksOpen(true) },
-              { label: 'Classement', sub: 'Top joueurs', action: () => setLeaderboardOpen(true) },
-              { label: 'Inviter & Gagner', sub: 'Gagnez de l\'USDC', action: () => setReferralOpen(true) },
+              { icon: '📖', label: 'How It Works', sub: 'Rules, draws & prize breakdown', action: () => setHowItWorksOpen(true) },
+              { icon: '🏅', label: 'Leaderboard', sub: 'Top players this week', action: () => setLeaderboardOpen(true) },
+              { icon: '💸', label: 'Invite & Earn', sub: 'Bring friends — earn USDC', action: () => setReferralOpen(true) },
             ].map(item => (
               <button
                 key={item.label}
                 onClick={item.action}
-                className="group flex flex-col items-start px-4 py-2.5 rounded-xl hover:bg-gold-500/[0.06] transition-all"
+                className="group flex flex-col items-start px-5 py-3 rounded-xl hover:bg-white/[0.07] transition-all"
               >
-                <span className="text-[#8A8070] group-hover:text-gold-400 text-sm font-semibold transition-colors whitespace-nowrap">
-                  {item.label}
+                <span className="text-white/85 group-hover:text-white text-base font-bold transition-colors whitespace-nowrap">
+                  {item.icon} {item.label}
                 </span>
-                <span className="text-[10px] text-white/20 group-hover:text-[#8A8070] transition-colors mt-0.5 whitespace-nowrap">
+                <span className="text-xs text-slate-500 group-hover:text-slate-300 transition-colors mt-0.5 whitespace-nowrap">
                   {item.sub}
                 </span>
               </button>
             ))}
             {!isLive && !FORCED_MODE && (
               <button
-                onClick={() => { initDemo(); toast.success('Demo initialized'); }}
-                className="ml-2 text-[#8A8070] hover:text-[#F5F0E8] text-xs font-medium transition-colors px-3 py-1 rounded-lg hover:bg-white/5"
+                onClick={() => { initDemo(); toast.success('🎮 Demo initialized'); }}
+                className="ml-2 text-slate-600 hover:text-slate-400 text-xs font-medium transition-colors px-3 py-1 rounded-lg hover:bg-white/5"
               >
                 ↺ reset demo
               </button>
@@ -501,15 +506,15 @@ export default function Home() {
             {user && (
               <button
                 onClick={() => setProfileOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gold-500/25 hover:border-gold-500/50 hover:bg-gold-500/[0.06] transition-all group"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all group"
               >
-                <div className="w-7 h-7 rounded-full bg-gold-500 flex items-center justify-center text-xs font-black text-black">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-xs font-black text-black">
                   {(user.username || user.address || '?')[0].toUpperCase()}
                 </div>
-                <span className="text-sm text-[#8A8070] group-hover:text-gold-400 transition-colors font-medium">
+                <span className="text-sm text-white/70 group-hover:text-white transition-colors font-medium">
                   {user.username || `${user.address?.slice(0,6)}…${user.address?.slice(-4)}`}
                 </span>
-                <ChevronDown className="w-3 h-3 text-[#8A8070]" />
+                <ChevronDown className="w-3 h-3 text-slate-500 group-hover:text-slate-300 transition-colors" />
               </button>
             )}
 
@@ -518,19 +523,19 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setCustodialProfileOpen(true)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gold-500/25 bg-gold-500/[0.06] hover:border-gold-500/50 transition-all group"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/5 transition-all group"
                 >
-                  <div className="w-7 h-7 rounded-full bg-gold-500 flex items-center justify-center text-xs font-black text-black">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-xs font-black text-white">
                     {(aureusUser.name || aureusUser.email || '?')[0].toUpperCase()}
                   </div>
-                  <span className="text-sm text-[#8A8070] group-hover:text-gold-400 transition-colors font-medium">
+                  <span className="text-sm text-white/70 group-hover:text-white transition-colors font-medium">
                     {aureusUser.name || aureusUser.email?.split('@')[0]}
                   </span>
-                  <ChevronDown className="w-3 h-3 text-[#8A8070]" />
+                  <ChevronDown className="w-3 h-3 text-slate-500 group-hover:text-slate-300 transition-colors" />
                 </button>
                 <button
                   onClick={() => setAureusUser(null)}
-                  className="p-1.5 text-[#8A8070] hover:text-[#F5F0E8] transition-colors rounded-lg hover:bg-white/5"
+                  className="p-1.5 text-slate-600 hover:text-slate-300 transition-colors rounded-lg hover:bg-white/5"
                   title="Sign out"
                 >
                   <LogOut className="w-4 h-4" />
@@ -538,26 +543,28 @@ export default function Home() {
               </div>
             )}
 
-            {/* Connect button */}
+            {/* Connect button — shown only when no user is logged in */}
             {!user && !aureusUser && (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="px-4 py-2 border border-gold-500/40 text-gold-400 hover:bg-gold-500/10 rounded-full font-semibold text-sm transition-all tracking-wide"
+                className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black rounded-full font-bold text-sm transition-all"
               >
                 Se connecter
               </button>
             )}
 
-            {/* Primary CTA */}
+            {/* Primary CTA — hidden on mobile, shown on desktop */}
             <button
               onClick={() => {
                 setBuyInitialCount(1);
                 if (aureusUser || user) setBuyModalOpen(true);
                 else setAuthModalOpen(true);
               }}
-              className="hidden md:block relative px-6 py-2.5 rounded-full font-bold text-sm text-black overflow-hidden group bg-gold-500 hover:bg-gold-400 transition-colors tracking-wide"
+              className="hidden md:block relative px-6 py-2.5 rounded-full font-bold text-sm text-black overflow-hidden group"
+              style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}
             >
-              Acheter des tickets
+              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'linear-gradient(135deg, #fbbf24, #f97316)' }} />
+              <span className="relative">🎫 Buy Ticket</span>
             </button>
           </div>
 
