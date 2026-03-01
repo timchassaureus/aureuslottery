@@ -196,31 +196,36 @@ export default function MobileHome() {
       <div className="fixed inset-0 bg-gradient-to-r from-violet-500/15 via-purple-500/20 via-violet-500/15 opacity-55 pointer-events-none" style={{ backgroundSize: '400% 400%', animation: 'gradient 20s ease infinite' }} />
 
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-indigo-700/40 backdrop-blur-sm bg-slate-900/80">
-        <div className="px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Trophy className="w-7 h-7 text-primary-400" />
-            <h1 className="text-xl font-black bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent">
-              AUREUS
-            </h1>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full border ${isLive ? 'bg-green-600/30 border-green-400/40 text-green-200' : 'bg-slate-800/60 border-white/20 text-white/80'}`}>
+      <header className="sticky top-0 z-30 border-b border-indigo-700/40 backdrop-blur-sm bg-slate-900/90">
+        <div className="px-4 pt-3 pb-1 flex items-center justify-between">
+          {/* Left: Live badge */}
+          <div className="w-16 flex items-center">
+            <span className={`text-[10px] px-2 py-0.5 rounded-full border font-semibold flex items-center gap-1 ${isLive ? 'bg-green-600/20 border-green-400/40 text-green-300' : 'bg-slate-800/60 border-white/20 text-white/70'}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-green-400' : 'bg-slate-400'}`} />
               {isLive ? 'Live' : 'Demo'}
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          {/* Center: AUREUS big */}
+          <h1 className="flex-1 text-center text-2xl font-black tracking-widest bg-gradient-to-r from-yellow-300 via-primary-400 to-violet-400 bg-clip-text text-transparent">
+            AUREUS
+          </h1>
+
+          {/* Right: Account button */}
+          <div className="w-16 flex justify-end">
             <button
               onClick={() => isGuest ? setAuthModalOpen(true) : setActiveTab('profile')}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all ${isGuest ? 'bg-slate-800/60 border-white/20 text-white/70' : 'bg-violet-700/50 border-violet-600/30 text-violet-200'}`}
+              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl border text-xs font-bold transition-all ${isGuest ? 'bg-slate-800/60 border-white/20 text-white/70' : 'bg-violet-700/50 border-violet-600/30 text-violet-200'}`}
             >
-              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-[9px] font-black text-black">
+              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-[9px] font-black text-black shrink-0">
                 {displayName ? displayName[0].toUpperCase() : '?'}
               </div>
-              <span className="max-w-[60px] truncate">{displayName ?? 'Sign In'}</span>
               <Settings className="w-3 h-3 opacity-60" />
             </button>
           </div>
         </div>
+        {/* Tagline */}
+        <p className="text-center text-[10px] text-slate-500 pb-2 tracking-widest uppercase">Daily Crypto Lottery · Base</p>
       </header>
 
       {/* Urgency Banner — only on home */}
