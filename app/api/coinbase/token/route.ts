@@ -1,60 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createPrivateKey, randomBytes, sign } from 'crypto';
+import { generateJwt } from '@coinbase/cdp-sdk/auth';
 
-function generateCDPJWT(keyId: string, privateKeyBase64: string): string {
-  const now = Math.floor(Date.now() / 1000);
-  const nonce = randomBytes(16).toString('hex');
-
-  const header = Buffer.from(
-    JSON.stringify({ alg: 'EdDSA', kid: keyId, nonce })
-  ).toString('base64url');
-
-  const payload = Buffer.from(
-    JSON.stringify({
-      iss: 'cdp',
-      sub: keyId,
-      nbf: now,
-      exp: now + 120,
-      uri: 'POST api.developer.coinbase.com/onramp/v1/token',
-    })
-  ).toString('base64url');
-
-  const message = `${header}.${payload}`;
-
-  // Ed25519: 64-byte keypair → take first 32 bytes (private scalar)
-  const rawKey = Buffer.from(privateKeyBase64, 'base64').slice(0, 32);
-
-  // Wrap in PKCS8 DER for Ed25519 (OID 1.3.101.112)
-  const pkcs8Prefix = Buffer.from('302e020100300506032b657004220420', 'hex');
-  const der = Buffer.concat([pkcs8Prefix, rawKey]);
-
-  const keyObject = createPrivateKey({ key: der, format: 'der', type: 'pkcs8' });
-  const signature = sign(null, Buffer.from(message), keyObject).toString('base64url');
-
-  return `${message}.${signature}`;
-}
+// Onramp token API: JWT must be generated with this exact method + host + path (CDP requirement)
+const ONRAMP_HOST = 'api.developer.coinbase.com';
+const ONRAMP_PATH = '/onramp/v1/token';
 
 export async function POST(req: NextRequest) {
   try {
-    const { walletAddress, amountUsd } = await req.json();
+    const { walletAddress } = await req.json();
 
     if (!walletAddress || !/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
       return NextResponse.json({ error: 'Invalid wallet address' }, { status: 400 });
     }
 
-    const keyId = process.env.CDP_API_KEY_NAME;
-    const privateKey = process.env.CDP_API_PRIVATE_KEY;
+    const apiKeyId = process.env.CDP_API_KEY_NAME;
+    const apiKeySecret = process.env.CDP_API_PRIVATE_KEY;
 
-    if (!keyId || !privateKey) {
+    if (!apiKeyId || !apiKeySecret) {
       return NextResponse.json(
-        { error: 'CDP API key not configured on server' },
+        { error: 'CDP API key not configured. Set CDP_API_KEY_NAME (Key ID) and CDP_API_PRIVATE_KEY (Key Secret).' },
         { status: 500 }
       );
     }
 
-    const jwt = generateCDPJWT(keyId, privateKey);
+    // Use official CDP SDK so JWT format and key handling match exactly (fixes 401)
+    const jwt = await generateJwt({
+      apiKeyId,
+      apiKeySecret,
+      requestMethod: 'POST',
+      requestHost: ONRAMP_HOST,
+      requestPath: ONRAMP_PATH,
+      expiresIn: 120,
+    });
 
-    const res = await fetch('https://api.developer.coinbase.com/onramp/v1/token', {
+    const res = await fetch(`https://${ONRAMP_HOST}${ONRAMP_PATH}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

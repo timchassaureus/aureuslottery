@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { Trophy, Ticket, Users, Clock, Share2, ExternalLink } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
@@ -86,15 +86,7 @@ export default function DrawPage() {
     load();
   }, []);
 
-  // Trigger draw animation when countdown hits 0
-  useEffect(() => {
-    if (secondsLeft === 0 && !drawTriggeredRef.current) {
-      drawTriggeredRef.current = true;
-      startDrawAnimation();
-    }
-  }, [secondsLeft]);
-
-  const startDrawAnimation = async () => {
+  const startDrawAnimation = useCallback(async () => {
     setPhase('rolling');
     const fakeNames = [
       'Alex S. #4821', 'Jordan K. #1337', 'Casey M. #9910', 'Morgan T. #2048',
@@ -122,7 +114,6 @@ export default function DrawPage() {
           setWinner({ address: data.winner, prize: data.prize ?? jackpot });
           setCurrentName(data.winner);
         } else {
-          // Fallback for demo: pick random
           setWinner({ address: fakeNames[0], prize: jackpot || 42 });
           setCurrentName(fakeNames[0]);
         }
@@ -131,7 +122,15 @@ export default function DrawPage() {
       }
       setPhase('winner');
     }, 12000);
-  };
+  }, [jackpot]);
+
+  // Trigger draw animation when countdown hits 0
+  useEffect(() => {
+    if (secondsLeft === 0 && !drawTriggeredRef.current) {
+      drawTriggeredRef.current = true;
+      startDrawAnimation();
+    }
+  }, [secondsLeft, startDrawAnimation]);
 
   const { h, m, s } = formatCountdown(secondsLeft);
   const isImminent = secondsLeft <= 60 && secondsLeft > 0;

@@ -11,9 +11,14 @@ const STRIPE_TEXT = `I just bought AUREUS Lottery tickets 🎰 Join me!`;
 
 function VictoryContent() {
   const searchParams = useSearchParams();
-  // ?session_id= comes from Stripe redirect; ?amount= from on-chain win
+  // ?session_id= from Stripe, ?tickets= from Ramp, ?amount= from on-chain win
   const sessionId = searchParams.get('session_id');
+  const ticketsParam = searchParams.get('tickets');
+  const bonusParam = searchParams.get('bonus');
   const isStripePayment = Boolean(sessionId);
+  const isRampPayment = Boolean(ticketsParam);
+  const rampTickets = Number(ticketsParam) || 0;
+  const rampBonus = Number(bonusParam) || 0;
   const amountParam = searchParams.get('amount');
   const amount = Math.max(0, Number(amountParam) || 0);
   const [displayAmount, setDisplayAmount] = useState(0);
@@ -87,7 +92,7 @@ function VictoryContent() {
   }, [confettiDone]);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://aureuslottery.app';
-  const shareText = isStripePayment ? STRIPE_TEXT : TWITTER_TEXT(amount);
+  const shareText = (isStripePayment || isRampPayment) ? STRIPE_TEXT : TWITTER_TEXT(amount);
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(origin)}`;
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(origin)}&text=${encodeURIComponent(shareText)}`;
 
@@ -95,7 +100,20 @@ function VictoryContent() {
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col items-center justify-center p-6 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-amber-500/5 to-transparent pointer-events-none" />
       <div className="relative z-10 text-center max-w-lg">
-        {isStripePayment ? (
+        {isRampPayment ? (
+          <>
+            <div className="text-6xl mb-4">🎟️</div>
+            <h1 className="text-4xl md:text-5xl font-bold text-amber-400 mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
+              Paiement confirmé !
+            </h1>
+            <p className="text-xl text-white mb-2">
+              {rampTickets + rampBonus > rampTickets
+                ? `${rampTickets} tickets + ${rampBonus} bonus enregistrés.`
+                : `${rampTickets} ticket${rampTickets > 1 ? 's' : ''} enregistré${rampTickets > 1 ? 's' : ''}.`}
+            </p>
+            <p className="text-amber-300/80 mt-1">Bonne chance au prochain tirage !</p>
+          </>
+        ) : isStripePayment ? (
           <>
             <h1 className="text-4xl md:text-5xl font-bold text-amber-400 mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
               Payment confirmed!
@@ -137,7 +155,7 @@ function VictoryContent() {
           href="/"
           className="inline-block mt-6 rounded-lg bg-amber-500 px-6 py-3 font-semibold text-black hover:bg-amber-400 transition-colors"
         >
-          {isStripePayment ? 'Back to game' : 'Play again'}
+          {(isStripePayment || isRampPayment) ? 'Retour au jeu' : 'Play again'}
         </Link>
       </div>
     </div>
