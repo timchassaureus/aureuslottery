@@ -109,20 +109,26 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         const tokenRes = await fetch('/api/coinbase/token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ walletAddress: treasury }),
+          body: JSON.stringify({
+            walletAddress: treasury,
+            userAddress: user.address,
+            count,
+            bonusTickets,
+            amountEur,
+          }),
         });
 
         const tokenData = await tokenRes.json();
 
         if (!tokenData.token) {
-          const msg = tokenData.error || (tokenRes.status === 401 ? 'Clé API CDP invalide (401). Vérifie CDP_API_KEY_NAME et CDP_API_PRIVATE_KEY dans .env.local' : 'Impossible d\'obtenir le token de session');
+          const msg = tokenData.error || 'Impossible d\'obtenir le token de session';
           toast.error(msg, { duration: 8000 });
           setProcessing(false);
           return;
         }
 
+        // recordReferralPurchase is called on /victory after payment completes
         const coinbaseUrl = `https://pay.coinbase.com/buy/select-asset?appId=${appId}&sessionToken=${encodeURIComponent(tokenData.token)}&defaultAsset=USDC&defaultNetwork=base&presetFiatAmount=${amountEur}`;
-        recordReferralPurchase(user.address, Number(amountEur), count, bonusTickets);
         window.location.href = coinbaseUrl;
       } catch (e) {
         console.error('Coinbase Pay error:', e);
