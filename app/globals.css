@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #06060F;
+  --foreground: #F5F0E8;
+  --color-gold: #C9A84C;
+  --color-gold-light: #E8C878;
+  --color-ivory: #F5F0E8;
+  --color-muted: #8A8070;
+  --color-luxury-bg: #06060F;
+  --color-luxury-card: #0D0D1A;
 }
 
 @theme inline {
@@ -14,15 +20,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #06060F;
+    --foreground: #F5F0E8;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
 @keyframes gradient {
@@ -39,15 +45,24 @@ body {
 
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(244, 114, 182, 0.5),
-                0 0 40px rgba(168, 85, 247, 0.5),
-                0 0 60px rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.3),
+                0 0 40px rgba(201, 168, 76, 0.15);
   }
   50% {
-    box-shadow: 0 0 30px rgba(244, 114, 182, 0.8),
-                0 0 60px rgba(168, 85, 247, 0.8),
-                0 0 90px rgba(139, 92, 246, 0.8);
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.5),
+                0 0 60px rgba(201, 168, 76, 0.25);
   }
+}
+
+@keyframes shimmer-gold {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-shimmer-gold {
+  background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.15) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer-gold 2.5s ease-in-out infinite;
 }
 
 @keyframes shimmer {

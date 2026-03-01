@@ -11,6 +11,7 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        // Legacy primary (amber) — kept for backward compat
         primary: {
           50: '#fef3c7',
           100: '#fde68a',
@@ -22,6 +23,24 @@ const config: Config = {
           700: '#92400e',
           800: '#78350f',
           900: '#451a03',
+        },
+        // Metallic gold — new premium accent
+        gold: {
+          100: '#FDF6E3',
+          200: '#FAE8B0',
+          300: '#F5DFA0',
+          400: '#E8C878',
+          500: '#C9A84C',
+          600: '#A67C32',
+          700: '#7A5A20',
+          800: '#4E3810',
+          900: '#2A1E08',
+        },
+        // Luxury dark backgrounds
+        luxury: {
+          800: '#131320',
+          900: '#0D0D1A',
+          950: '#06060F',
         },
         purple: {
           50: '#faf5ff',
