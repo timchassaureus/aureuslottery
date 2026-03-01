@@ -1,15 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Trophy, Timer, Home, Ticket, Shield, User, LogOut, Settings, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { Trophy, Timer, Home, Ticket, Shield, User, LogOut, Settings, ExternalLink, ChevronDown, ChevronUp, Share2, Twitter, Send } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { FORCED_MODE } from '@/lib/config';
 import AuthModal from '@/components/AuthModal';
 import BuyTicketsModal from '@/components/BuyTicketsModal';
 import EnhancedWinnersHistory from '@/components/EnhancedWinnersHistory';
 import UrgencyBanner from '@/components/UrgencyBanner';
-import LiveStats from '@/components/LiveStats';
-import InviteBar from '@/components/InviteBar';
 import toast from 'react-hot-toast';
 import StreakDisplay from '@/components/StreakDisplay';
 import WinnersFeed from '@/components/WinnersFeed';
@@ -107,6 +105,7 @@ export default function MobileHome() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [viralShareOpen, setViralShareOpen] = useState(false);
   const [lastPurchaseCount, setLastPurchaseCount] = useState(0);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const [aureusUser, setAureusUser] = useState<AureusUser | null>(null);
   const connectedRef = useRef<string | null>(null);
@@ -174,6 +173,18 @@ export default function MobileHome() {
     const newGuest = getOrCreateGuestUser();
     setAureusUser(newGuest);
     toast('Signed out');
+  };
+
+  const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://aureuslottery.app';
+  const shareText = `Join me on Aureus! $1 tickets · Draw every night at 9PM UTC. Let's push the jackpot to millions! 🏆`;
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(siteUrl);
+      setLinkCopied(true);
+      toast.success('Link copied!');
+      setTimeout(() => setLinkCopied(false), 2000);
+    } catch { toast.error('Could not copy link'); }
   };
 
   const tabs: { id: Tab; label: string; Icon: React.ElementType }[] = [
@@ -289,6 +300,18 @@ export default function MobileHome() {
 
             {/* Recent winners */}
             <EnhancedWinnersHistory />
+
+            {/* Compact share strip */}
+            <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+              <span className="text-yellow-300 text-sm">🚀</span>
+              <p className="text-xs text-slate-300 flex-1">Invite friends to grow the jackpot</p>
+              <button
+                onClick={handleCopyLink}
+                className="flex items-center gap-1 px-3 py-1.5 bg-yellow-500/20 border border-yellow-500/30 rounded-lg text-yellow-300 text-xs font-semibold shrink-0"
+              >
+                <Share2 className="w-3 h-3" /> {linkCopied ? 'Copied!' : 'Share'}
+              </button>
+            </div>
           </div>
         )}
 
@@ -483,6 +506,36 @@ export default function MobileHome() {
               </div>
             )}
 
+            {/* Share card */}
+            <div className="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-600/20 rounded-2xl p-4">
+              <p className="font-bold text-white text-sm mb-1">Invite friends 🚀</p>
+              <p className="text-xs text-slate-400 mb-3">The more people play, the bigger the jackpot!</p>
+              <div className="flex gap-2">
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(siteUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-white text-xs font-semibold"
+                >
+                  <Twitter className="w-3.5 h-3.5" /> Twitter
+                </a>
+                <a
+                  href={`https://t.me/share/url?url=${encodeURIComponent(siteUrl)}&text=${encodeURIComponent(shareText)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-blue-600/50 border border-blue-500/30 rounded-xl text-white text-xs font-semibold"
+                >
+                  <Send className="w-3.5 h-3.5" /> Telegram
+                </a>
+                <button
+                  onClick={handleCopyLink}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-yellow-500/20 border border-yellow-500/30 rounded-xl text-yellow-300 text-xs font-semibold"
+                >
+                  <Share2 className="w-3.5 h-3.5" /> {linkCopied ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+            </div>
+
             <ReferralDashboard />
             <GroupDashboard />
           </div>
@@ -543,8 +596,6 @@ export default function MobileHome() {
       />
 
       <PremiumChat />
-      <InviteBar />
-      <LiveStats />
     </div>
   );
 }
