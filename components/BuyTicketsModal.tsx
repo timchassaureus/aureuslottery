@@ -98,7 +98,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
       return;
     }
 
-    // En mode live : Coinbase Pay avec sessionToken (carte, Apple Pay, Google Pay)
+    // En mode live : Coinbase Pay avec sessionToken (obligatoire côté Coinbase)
     if (isLive) {
       setProcessing(true);
       try {
@@ -106,28 +106,27 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         const appId = process.env.NEXT_PUBLIC_COINBASE_APP_ID || '';
         const treasury = process.env.NEXT_PUBLIC_TREASURY_ADDRESS || '0x47d918C2e303855da1AD3e08A4128211284aD837';
 
-        // Fetch session token from server (requires CDP API JWT)
         const tokenRes = await fetch('/api/coinbase/token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ walletAddress: treasury, amountUsd: amountEur }),
+          body: JSON.stringify({ walletAddress: treasury }),
         });
 
         const tokenData = await tokenRes.json();
 
-        let coinbaseUrl: string;
-        if (tokenData.token) {
-          coinbaseUrl = `https://pay.coinbase.com/buy/select-asset?appId=${appId}&sessionToken=${encodeURIComponent(tokenData.token)}&defaultAsset=USDC&defaultNetwork=base&presetFiatAmount=${amountEur}`;
-        } else {
-          // Fallback: redirect without sessionToken (user may see an error on Coinbase side)
-          console.warn('No session token, falling back to basic URL:', tokenData.error);
-          const addresses = encodeURIComponent(JSON.stringify({ [treasury]: ['USDC'] }));
-          coinbaseUrl = `https://pay.coinbase.com/buy/select-asset?appId=${appId}&addresses=${addresses}&defaultAsset=USDC&defaultNetwork=base&presetFiatAmount=${amountEur}`;
+        if (!tokenData.token) {
+          const msg = tokenData.error || (tokenRes.status === 401 ? 'Clé API CDP invalide (401). Vérifie CDP_API_KEY_NAME et CDP_API_PRIVATE_KEY dans .env.local' : 'Impossible d\'obtenir le token de session');
+          toast.error(msg, { duration: 8000 });
+          setProcessing(false);
+          return;
         }
 
+        const coinbaseUrl = `https://pay.coinbase.com/buy/select-asset?appId=${appId}&sessionToken=${encodeURIComponent(tokenData.token)}&defaultAsset=USDC&defaultNetwork=base&presetFiatAmount=${amountEur}`;
         recordReferralPurchase(user.address, Number(amountEur), count, bonusTickets);
         window.location.href = coinbaseUrl;
-      } finally {
+      } catch (e) {
+        console.error('Coinbase Pay error:', e);
+        toast.error('Erreur réseau. Réessaie.');
         setProcessing(false);
       }
       return;
