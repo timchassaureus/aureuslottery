@@ -133,14 +133,14 @@ function VictoryContent() {
           <>
             <div className="text-6xl mb-4">🎟️</div>
             <h1 className="text-4xl md:text-5xl font-bold text-amber-400 mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
-              Paiement confirmé !
+              Payment confirmed!
             </h1>
             <p className="text-xl text-white mb-2">
               {totalTickets > tickets
-                ? `${tickets} tickets + ${bonus} bonus enregistrés.`
-                : `${tickets} ticket${tickets > 1 ? 's' : ''} enregistré${tickets > 1 ? 's' : ''}.`}
+                ? `${tickets} tickets + ${bonus} bonus tickets registered.`
+                : `${tickets} ticket${tickets > 1 ? 's' : ''} registered.`}
             </p>
-            <p className="text-amber-300/80 mt-1">Bonne chance au prochain tirage !</p>
+            <p className="text-amber-300/80 mt-1">Good luck in the next draw!</p>
           </>
         ) : isStripePayment ? (
           <>
@@ -156,14 +156,14 @@ function VictoryContent() {
           <>
             <div className="text-6xl mb-4">🎟️</div>
             <h1 className="text-4xl md:text-5xl font-bold text-amber-400 mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
-              Paiement confirmé !
+              Payment confirmed!
             </h1>
             <p className="text-xl text-white mb-2">
               {totalTickets > tickets
-                ? `${tickets} tickets + ${bonus} bonus enregistrés.`
-                : `${tickets} ticket${tickets > 1 ? 's' : ''} enregistré${tickets > 1 ? 's' : ''}.`}
+                ? `${tickets} tickets + ${bonus} bonus tickets registered.`
+                : `${tickets} ticket${tickets > 1 ? 's' : ''} registered.`}
             </p>
-            <p className="text-amber-300/80 mt-1">Bonne chance au prochain tirage !</p>
+            <p className="text-amber-300/80 mt-1">Good luck in the next draw!</p>
           </>
         ) : (
           <>
@@ -197,7 +197,7 @@ function VictoryContent() {
           href="/"
           className="inline-block mt-6 rounded-lg bg-amber-500 px-6 py-3 font-semibold text-black hover:bg-amber-400 transition-colors"
         >
-          {isPurchase ? 'Retour au jeu' : 'Play again'}
+          {isPurchase ? 'Back to game' : 'Play again'}
         </Link>
       </div>
     </div>

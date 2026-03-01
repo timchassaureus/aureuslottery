@@ -7,8 +7,6 @@ import { FORCED_MODE } from '@/lib/config';
 import AuthModal from '@/components/AuthModal';
 import BuyTicketsModal from '@/components/BuyTicketsModal';
 import EnhancedWinnersHistory from '@/components/EnhancedWinnersHistory';
-import HowItWorksModal from '@/components/HowItWorksModal';
-import Leaderboard from '@/components/Leaderboard';
 import UrgencyBanner from '@/components/UrgencyBanner';
 import LiveStats from '@/components/LiveStats';
 import InviteBar from '@/components/InviteBar';
@@ -50,24 +48,24 @@ const BASESCAN_URL = `https://basescan.org/address/${TREASURY}`;
 
 const FAQ_ITEMS = [
   {
-    q: 'Est-ce une arnaque ?',
-    a: `Non. Tous les paiements sont effectués en USDC sur la blockchain Base, une blockchain publique de Coinbase. Chaque transaction est vérifiable sur BaseScan — il n'y a rien à cacher.`,
+    q: 'Is this a scam?',
+    a: `No. All payments are made in USDC on the Base blockchain, a public blockchain by Coinbase. Every transaction is verifiable on BaseScan — there is nothing to hide.`,
   },
   {
-    q: 'Serai-je vraiment payé si je gagne ?',
-    a: `Oui. Le paiement USDC est envoyé automatiquement à ton wallet dans les 45 minutes suivant le tirage de 21h. Tu reçois directement sur ton adresse blockchain, sans intermédiaire.`,
+    q: 'Will I actually get paid if I win?',
+    a: `Yes. The USDC payout is sent automatically to your wallet within 45 minutes of the 9 PM draw. You receive it directly to your blockchain address, with no middleman.`,
   },
   {
-    q: "Qui gère Aureus ?",
-    a: `Aureus est géré par une équipe de développeurs blockchain. L'adresse de la trésorerie (${TREASURY.slice(0, 10)}…) est publique et consultable sur BaseScan. Tous les mouvements de fonds sont visibles.`,
+    q: 'Who runs Aureus?',
+    a: `Aureus is run by a blockchain development team. The treasury address (${TREASURY.slice(0, 10)}…) is public and viewable on BaseScan. All fund movements are visible to everyone.`,
   },
   {
-    q: 'Est-ce légal ?',
-    a: `Les loteries en ligne sont légales dans de nombreux pays mais réglementées différemment selon les juridictions. Il est de ta responsabilité de vérifier les lois en vigueur dans ton pays. Aureus ne cible pas les pays où c'est interdit.`,
+    q: 'Is this legal?',
+    a: `Online lotteries are legal in many countries but regulated differently across jurisdictions. It is your responsibility to verify the laws in your country. Aureus does not target countries where this is prohibited.`,
   },
   {
-    q: 'Mon argent est-il sécurisé ?',
-    a: `Les fonds sont conservés sur un wallet dédié sur la blockchain Base (par Coinbase). Les paiements entrants (Coinbase Pay → USDC) et sortants (vers les gagnants) sont tous visibles publiquement. USDC est un stablecoin 1:1 avec le dollar américain, il n'est pas volatil.`,
+    q: 'Is my money safe?',
+    a: `Funds are held in a dedicated wallet on the Base blockchain (by Coinbase). Incoming payments (Coinbase Pay → USDC) and outgoing payments (to winners) are all publicly visible. USDC is a 1:1 stablecoin with the US dollar — it is not volatile.`,
   },
 ];
 
@@ -106,7 +104,6 @@ export default function MobileHome() {
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [buyOpen, setBuyOpen] = useState(false);
-  const [howItWorksOpen, setHowItWorksOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [viralShareOpen, setViralShareOpen] = useState(false);
   const [lastPurchaseCount, setLastPurchaseCount] = useState(0);
@@ -180,11 +177,11 @@ export default function MobileHome() {
   };
 
   const tabs: { id: Tab; label: string; Icon: React.ElementType }[] = [
-    { id: 'home', label: 'Accueil', Icon: Home },
+    { id: 'home', label: 'Home', Icon: Home },
     { id: 'tickets', label: 'Tickets', Icon: Ticket },
-    { id: 'rank', label: 'Classement', Icon: Trophy },
+    { id: 'rank', label: 'Rankings', Icon: Trophy },
     { id: 'info', label: 'Info', Icon: Shield },
-    { id: 'profile', label: 'Profil', Icon: User },
+    { id: 'profile', label: 'Profile', Icon: User },
   ];
 
   return (
@@ -212,7 +209,7 @@ export default function MobileHome() {
               <div className="w-5 h-5 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-[9px] font-black text-black">
                 {displayName ? displayName[0].toUpperCase() : '?'}
               </div>
-              <span className="max-w-[60px] truncate">{displayName ?? 'Connexion'}</span>
+              <span className="max-w-[60px] truncate">{displayName ?? 'Sign In'}</span>
               <Settings className="w-3 h-3 opacity-60" />
             </button>
           </div>
@@ -234,7 +231,7 @@ export default function MobileHome() {
               <div className="relative bg-gradient-to-br from-indigo-950/95 via-purple-950/95 to-slate-950/95 backdrop-blur-2xl border-4 border-white/30 rounded-3xl p-6 shadow-2xl shadow-white/20 text-center">
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <Timer className="w-4 h-4 text-slate-400" />
-                  <span className="text-sm text-slate-400">Prochain tirage :</span>
+                  <span className="text-sm text-slate-400">Next draw:</span>
                   <div className="flex items-center gap-1 bg-black/30 px-3 py-1 rounded-lg">
                     <span className="text-lg font-bold text-white">{String(timeLeft.hours).padStart(2, '0')}</span>
                     <span className="text-slate-400">:</span>
@@ -243,13 +240,13 @@ export default function MobileHome() {
                     <span className="text-lg font-bold text-white">{String(timeLeft.seconds).padStart(2, '0')}</span>
                   </div>
                 </div>
-                <p className="text-base text-primary-400 font-bold uppercase tracking-wider mb-3">Jackpot du soir</p>
+                <p className="text-base text-primary-400 font-bold uppercase tracking-wider mb-3">Tonight&apos;s Jackpot</p>
                 <div className="flex justify-center">
                   <JackpotCounter />
                 </div>
                 {userTicketsCount > 0 && (
                   <div className="inline-block bg-gradient-to-r from-violet-500/20 to-blue-500/20 rounded-full px-5 py-1.5 border-2 border-white/30 mt-3">
-                    <p className="text-sm font-bold text-white">Tes tickets : <span className="text-yellow-300 font-black">{userTicketsCount}</span></p>
+                    <p className="text-sm font-bold text-white">Your tickets: <span className="text-yellow-300 font-black">{userTicketsCount}</span></p>
                   </div>
                 )}
               </div>
@@ -260,20 +257,20 @@ export default function MobileHome() {
               <div className="flex items-center justify-between gap-4">
                 <div className="flex-1 text-center">
                   <p className="text-xl mb-1">🏆</p>
-                  <p className="text-sm font-bold text-yellow-400">Jackpot principal</p>
+                  <p className="text-sm font-bold text-yellow-400">Main Jackpot</p>
                   <p className="text-2xl font-black text-white">${jackpot.toLocaleString('en-US')}</p>
-                  <p className="text-xs text-slate-400">1 gagnant</p>
+                  <p className="text-xs text-slate-400">1 winner</p>
                 </div>
                 <div className="w-px h-14 bg-white/20" />
                 <div className="flex-1 text-center">
                   <p className="text-xl mb-1">💎</p>
-                  <p className="text-sm font-bold text-violet-400">Tirage bonus</p>
+                  <p className="text-sm font-bold text-violet-400">Bonus Draw</p>
                   <p className="text-2xl font-black text-white">${secondaryPot.toLocaleString('en-US')}</p>
-                  <p className="text-xs text-slate-400">25 gagnants</p>
+                  <p className="text-xs text-slate-400">25 winners</p>
                 </div>
               </div>
               <p className="text-xs text-violet-200 text-center mt-3 border-t border-white/10 pt-2">
-                Chaque ticket participe aux 2 tirages
+                Every ticket enters both draws
               </p>
             </div>
 
@@ -284,8 +281,8 @@ export default function MobileHome() {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-blue-600" />
               <div className="relative py-5 px-6 text-center">
-                <p className="font-black text-2xl text-white drop-shadow-lg">Acheter des tickets</p>
-                <p className="text-yellow-300 font-bold text-xs mt-1">Instantané • Carte ou Crypto</p>
+                <p className="font-black text-2xl text-white drop-shadow-lg">Buy Tickets</p>
+                <p className="text-yellow-300 font-bold text-xs mt-1">Instant · Card or Crypto</p>
               </div>
               <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
             </button>
@@ -300,21 +297,21 @@ export default function MobileHome() {
           <div className="space-y-4">
             {isGuest ? (
               <div className="bg-yellow-900/30 border border-yellow-600/30 rounded-2xl px-4 py-4 text-center">
-                <p className="text-yellow-300 font-bold mb-1">Connecte-toi pour voir tes tickets</p>
-                <p className="text-yellow-200/70 text-sm mb-3">Crée un compte pour ne pas perdre tes tickets et gains.</p>
+                <p className="text-yellow-300 font-bold mb-1">Sign in to view your tickets</p>
+                <p className="text-yellow-200/70 text-sm mb-3">Create an account to keep your tickets and winnings safe.</p>
                 <button onClick={() => setAuthModalOpen(true)} className="px-5 py-2 bg-yellow-500 text-black rounded-xl font-bold text-sm">
-                  Se connecter / S&apos;inscrire
+                  Sign In / Register
                 </button>
               </div>
             ) : (
               <div className="bg-gradient-to-br from-indigo-950/80 to-purple-950/80 border border-white/10 rounded-2xl p-5 text-center">
                 <p className="text-4xl font-black text-yellow-300">{userTicketsCount}</p>
-                <p className="text-slate-400 text-sm mt-1">tickets actifs dans le prochain tirage</p>
+                <p className="text-slate-400 text-sm mt-1">active tickets in the next draw</p>
                 <button
                   onClick={() => setBuyOpen(true)}
                   className="mt-4 px-6 py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-xl font-bold text-sm text-white"
                 >
-                  + Acheter plus de tickets
+                  + Buy more tickets
                 </button>
               </div>
             )}
@@ -328,9 +325,13 @@ export default function MobileHome() {
           </div>
         )}
 
-        {/* ─── CLASSEMENT TAB ─── */}
+        {/* ─── RANKINGS TAB ─── */}
         {activeTab === 'rank' && (
           <div className="space-y-4">
+            <div className="text-center">
+              <p className="text-2xl font-black text-white">Leaderboard</p>
+              <p className="text-slate-400 text-sm mt-1">Recent winners &amp; jackpot history</p>
+            </div>
             <WinnersFeed />
             <JackpotHistoryChart />
           </div>
@@ -341,17 +342,17 @@ export default function MobileHome() {
           <div className="space-y-5">
             {/* Title */}
             <div className="text-center">
-              <p className="text-2xl font-black text-white">Comment ça marche</p>
-              <p className="text-slate-400 text-sm mt-1">Tout est transparent et vérifiable</p>
+              <p className="text-2xl font-black text-white">How It Works</p>
+              <p className="text-slate-400 text-sm mt-1">Everything is transparent and verifiable</p>
             </div>
 
             {/* Steps */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-4">
               {[
-                { n: '1', icon: '💳', title: 'Achète des tickets', desc: '1€ = 1 ticket. Paiement par carte bancaire via Coinbase Pay. Aucun wallet externe requis.' },
-                { n: '2', icon: '⏰', title: 'Tirage à 21h UTC', desc: 'Un tirage automatique a lieu chaque soir. Ton ticket participe aux 2 tirages simultanément.' },
-                { n: '3', icon: '🎲', title: 'Sélection aléatoire', desc: '1 gagnant principal est tiré au sort. 25 gagnants bonus parmi tous les tickets restants.' },
-                { n: '4', icon: '💸', title: 'Paiement automatique', desc: 'Le paiement USDC est envoyé automatiquement à ton wallet dans les 45 minutes suivant le tirage.' },
+                { n: '1', icon: '💳', title: 'Buy tickets', desc: '1€ = 1 ticket. Pay by card via Coinbase Pay. No external wallet required.' },
+                { n: '2', icon: '⏰', title: 'Draw at 9 PM UTC', desc: 'An automatic draw takes place every evening. Your ticket enters both draws simultaneously.' },
+                { n: '3', icon: '🎲', title: 'Random selection', desc: '1 main winner is drawn. 25 bonus winners are drawn from all remaining tickets.' },
+                { n: '4', icon: '💸', title: 'Automatic payout', desc: 'USDC payment is sent automatically to your wallet within 45 minutes of the draw.' },
               ].map(s => (
                 <div key={s.n} className="flex gap-3 items-start">
                   <div className="w-8 h-8 rounded-full bg-violet-600/40 border border-violet-500/50 flex items-center justify-center text-xs font-black text-violet-300 shrink-0">
@@ -367,13 +368,13 @@ export default function MobileHome() {
 
             {/* Distribution */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <p className="font-bold text-white text-sm mb-3">Distribution de la cagnotte</p>
+              <p className="font-bold text-white text-sm mb-3">Prize Distribution</p>
               <div className="space-y-2">
                 {[
-                  { pct: '85%', label: 'Gagnant principal', color: 'bg-yellow-500' },
-                  { pct: '5%', label: '25 gagnants bonus', color: 'bg-violet-500' },
-                  { pct: '3%', label: 'Programme de parrainage', color: 'bg-green-500' },
-                  { pct: '7%', label: 'Frais de fonctionnement', color: 'bg-slate-500' },
+                  { pct: '85%', label: 'Main winner', color: 'bg-yellow-500' },
+                  { pct: '5%', label: '25 bonus winners', color: 'bg-violet-500' },
+                  { pct: '3%', label: 'Referral program', color: 'bg-green-500' },
+                  { pct: '7%', label: 'Operating fees', color: 'bg-slate-500' },
                 ].map(r => (
                   <div key={r.label} className="flex items-center gap-3">
                     <span className="w-10 text-right font-black text-white text-sm shrink-0">{r.pct}</span>
@@ -388,8 +389,8 @@ export default function MobileHome() {
 
             {/* Treasury */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <p className="font-bold text-white text-sm mb-2">Trésorerie publique</p>
-              <p className="text-xs text-slate-400 mb-1">Adresse du wallet qui reçoit les paiements et paie les gagnants :</p>
+              <p className="font-bold text-white text-sm mb-2">Public Treasury</p>
+              <p className="text-xs text-slate-400 mb-1">Wallet address that receives payments and pays out winners:</p>
               <p className="font-mono text-xs text-violet-300 break-all mb-3">{TREASURY}</p>
               <a
                 href={BASESCAN_URL}
@@ -398,9 +399,9 @@ export default function MobileHome() {
                 className="flex items-center gap-2 px-4 py-2.5 bg-blue-900/40 border border-blue-500/30 rounded-xl text-blue-300 text-sm font-semibold hover:bg-blue-900/60 transition-colors"
               >
                 <ExternalLink className="w-4 h-4" />
-                Voir toutes les transactions sur BaseScan
+                View all transactions on BaseScan
               </a>
-              <p className="text-xs text-slate-500 mt-2">USDC = stablecoin 1:1 avec le dollar US. Pas de volatilité crypto.</p>
+              <p className="text-xs text-slate-500 mt-2">USDC = stablecoin 1:1 with USD. No crypto volatility.</p>
             </div>
 
             {/* TrustBadges */}
@@ -408,7 +409,7 @@ export default function MobileHome() {
 
             {/* FAQ */}
             <div>
-              <p className="font-bold text-white text-sm mb-3">Questions fréquentes</p>
+              <p className="font-bold text-white text-sm mb-3">Frequently Asked Questions</p>
               <div className="space-y-2">
                 {FAQ_ITEMS.map(item => (
                   <FaqItem key={item.q} q={item.q} a={item.a} />
@@ -418,7 +419,7 @@ export default function MobileHome() {
 
             {/* Contact */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-              <p className="text-sm text-slate-400">Des questions ? Contacte-nous à</p>
+              <p className="text-sm text-slate-400">Questions? Contact us at</p>
               <p className="text-violet-300 font-semibold text-sm mt-1">support@aureuslottery.app</p>
             </div>
           </div>
@@ -430,10 +431,10 @@ export default function MobileHome() {
             {isGuest ? (
               <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-2xl font-black text-black mx-auto mb-4">?</div>
-                <p className="font-bold text-white mb-1">Pas encore connecté</p>
-                <p className="text-slate-400 text-sm mb-4">Connecte-toi pour sauvegarder tes tickets et gérer ton compte.</p>
+                <p className="font-bold text-white mb-1">Not signed in yet</p>
+                <p className="text-slate-400 text-sm mb-4">Sign in to save your tickets and manage your account.</p>
                 <button onClick={() => setAuthModalOpen(true)} className="w-full py-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-2xl font-bold text-white">
-                  Se connecter / S&apos;inscrire
+                  Sign In / Register
                 </button>
               </div>
             ) : (
@@ -451,16 +452,16 @@ export default function MobileHome() {
                 <div className="grid grid-cols-2 gap-3 mb-5">
                   <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/10">
                     <p className="text-2xl font-black text-yellow-300">{userTicketsCount}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">Tickets actifs</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Active Tickets</p>
                   </div>
                   <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/10">
                     <p className="text-2xl font-black text-green-300">${(aureusUser?.usdcBalance ?? 0).toFixed(2)}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">Balance USDC</p>
+                    <p className="text-xs text-slate-400 mt-0.5">USDC Balance</p>
                   </div>
                 </div>
 
                 <div className="bg-white/5 rounded-2xl p-3 mb-4 border border-white/10">
-                  <p className="text-xs text-slate-400 mb-1">Adresse wallet</p>
+                  <p className="text-xs text-slate-400 mb-1">Wallet Address</p>
                   <p className="text-xs font-mono text-white/80 break-all">
                     {aureusUser?.walletAddress?.slice(0, 10)}…{aureusUser?.walletAddress?.slice(-8)}
                   </p>
@@ -470,14 +471,14 @@ export default function MobileHome() {
                   onClick={() => setBuyOpen(true)}
                   className="w-full py-3 mb-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-2xl font-bold text-white"
                 >
-                  Acheter des tickets
+                  Buy Tickets
                 </button>
                 <button
                   onClick={handleSignOut}
                   className="w-full py-2.5 rounded-2xl text-sm text-slate-400 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center gap-2"
                 >
                   <LogOut className="w-4 h-4" />
-                  Se déconnecter
+                  Sign Out
                 </button>
               </div>
             )}
@@ -491,7 +492,7 @@ export default function MobileHome() {
 
       {/* Bottom Navigation */}
       <nav
-        className="fixed bottom-0 inset-x-0 z-40 bg-slate-900/95 border-t border-white/10 backdrop-blur-xl"
+        className="fixed bottom-0 inset-x-0 z-40 bg-slate-950/98 border-t border-white/8 backdrop-blur-2xl"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="flex">
@@ -501,11 +502,17 @@ export default function MobileHome() {
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
-                className={`flex-1 flex flex-col items-center py-2.5 gap-0.5 transition-colors ${active ? 'text-primary-400' : 'text-slate-500'}`}
+                className="flex-1 flex flex-col items-center pt-1 pb-2 gap-1 relative transition-all duration-200"
               >
-                <Icon className={`w-5 h-5 ${active ? 'text-primary-400' : 'text-slate-500'}`} />
-                <span className={`text-[10px] font-medium ${active ? 'text-primary-400' : 'text-slate-500'}`}>{label}</span>
-                {active && <div className="w-1 h-1 rounded-full bg-primary-400 mt-0.5" />}
+                {active && (
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-0.5 rounded-full bg-violet-400" />
+                )}
+                <div className={`w-10 h-9 rounded-xl flex items-center justify-center transition-all duration-200 ${active ? 'bg-violet-500/20' : ''}`}>
+                  <Icon className={`w-5 h-5 transition-colors duration-200 ${active ? 'text-violet-400' : 'text-slate-500'}`} />
+                </div>
+                <span className={`text-[9px] font-semibold tracking-wide transition-colors duration-200 ${active ? 'text-violet-300' : 'text-slate-600'}`}>
+                  {label.toUpperCase()}
+                </span>
               </button>
             );
           })}
@@ -528,8 +535,6 @@ export default function MobileHome() {
           }, 500);
         }}
       />
-      <HowItWorksModal isOpen={howItWorksOpen} onClose={() => setHowItWorksOpen(false)} />
-      <Leaderboard isOpen={activeTab === 'rank'} onClose={() => setActiveTab('home')} />
       <ViralShareModal
         isOpen={viralShareOpen}
         onClose={() => setViralShareOpen(false)}
