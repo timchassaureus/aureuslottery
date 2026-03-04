@@ -460,6 +460,12 @@ export default function MobileHome() {
                 <p className="font-mono text-xs text-violet-300 break-all">{TREASURY}</p>
               </div>
               <p className="text-xs text-slate-500 mt-3 text-center">⚠️ Always send on the Base network — not Ethereum or other chains.</p>
+              <a
+                href="/guide"
+                className="mt-3 flex items-center justify-center gap-2 w-full py-2.5 bg-violet-600/30 border border-violet-500/40 rounded-xl text-violet-300 text-sm font-semibold hover:bg-violet-600/50 transition-colors"
+              >
+                📖 Full step-by-step guide →
+              </a>
             </div>
 
             {/* FAQ */}
