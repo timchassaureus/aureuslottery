@@ -283,10 +283,24 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
 
                 {/* Live mode: treasury address to copy */}
                 {isLive && (
-                  <div className="mt-3 bg-violet-900/40 border border-violet-500/40 rounded-xl p-3">
-                    <p className="text-xs text-violet-300 font-semibold mb-1">Send exactly <span className="text-white font-black">{totalCost.toFixed(2)} USDC</span> to:</p>
-                    <p className="font-mono text-xs text-violet-200 break-all mb-2">{TREASURY}</p>
-                    <p className="text-xs text-slate-400">⚠️ Base network only · Your tickets are registered automatically</p>
+                  <div className="mt-3 space-y-2">
+                    <div className="bg-red-500/15 border-2 border-red-500/50 rounded-xl p-3">
+                      <p className="text-red-300 font-black text-sm text-center">⚠️ SEND ON BASE NETWORK ONLY</p>
+                      <p className="text-red-200/80 text-xs text-center mt-0.5">Sending on Ethereum or any other network = funds lost forever</p>
+                    </div>
+                    <div className="bg-violet-900/40 border border-violet-500/40 rounded-xl p-3">
+                      <p className="text-xs text-violet-300 font-semibold mb-1">Send exactly <span className="text-white font-black">{totalCost.toFixed(2)} USDC</span> to this address:</p>
+                      <p className="font-mono text-xs text-violet-200 break-all mb-1">{TREASURY}</p>
+                      <p className="text-xs text-slate-400">Tickets are registered automatically within a few minutes.</p>
+                    </div>
+                    <div className="bg-orange-900/30 border border-orange-500/30 rounded-xl p-3 space-y-1.5">
+                      <p className="text-orange-300 font-bold text-xs">🦊 Using MetaMask?</p>
+                      <p className="text-orange-200/80 text-xs">Before sending, switch your network to <strong className="text-white">Base</strong>: tap the network name at the top of MetaMask → select &quot;Base&quot;. If it&apos;s not in the list, add it on <a href="https://chainlist.org/?search=base" target="_blank" rel="noopener noreferrer" className="underline text-orange-300">chainlist.org</a>.</p>
+                      <p className="text-orange-200/60 text-xs">💡 Easiest alternative: use <strong className="text-white">Coinbase Wallet</strong> — it handles Base automatically.</p>
+                    </div>
+                    <a href="/guide" className="flex items-center justify-center gap-2 text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                      🔰 First time? Read the full beginner guide →
+                    </a>
                   </div>
                 )}
 

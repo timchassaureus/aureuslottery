@@ -216,12 +216,35 @@ export default function GuidePage() {
           ))}
         </div>
 
+        {/* MetaMask block */}
+        <div className="mt-8 bg-orange-950/60 border-2 border-orange-500/40 rounded-2xl p-5">
+          <p className="font-black text-white text-base mb-1">🦊 Using MetaMask?</p>
+          <p className="text-orange-200/80 text-sm mb-4">MetaMask works, but you <strong className="text-white">must switch to Base network</strong> before sending. By default MetaMask is on Ethereum — if you send USDC on Ethereum it goes to the wrong place and can't be recovered.</p>
+          <ol className="space-y-2 list-none">
+            {[
+              'Open MetaMask and tap the network name at the top (e.g. "Ethereum Mainnet")',
+              'Select "Base" in the list — if it\'s not there, tap "Add network"',
+              'If Base is not in the list, go to chainlist.org, search "Base" and click "Add to MetaMask"',
+              'Once on Base, your USDC balance on Base will appear',
+              'Now tap Send → select USDC → paste the Aureus address → confirm',
+            ].map((step, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-orange-100/80">
+                <span className="w-5 h-5 rounded-full bg-orange-600/60 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">{i + 1}</span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-4 bg-orange-500/10 border border-orange-500/20 rounded-xl p-3">
+            <p className="text-orange-300 text-xs">💡 <strong>Important:</strong> USDC on Ethereum ≠ USDC on Base. If you bought USDC on Ethereum, you need to bridge it to Base first via <a href="https://bridge.base.org" target="_blank" rel="noopener noreferrer" className="underline text-orange-200">bridge.base.org</a>. The easiest option to avoid this: use <strong className="text-white">Coinbase Wallet</strong> which lets you buy USDC directly on Base.</p>
+          </div>
+        </div>
+
         {/* FAQ quick */}
         <div className="mt-8 bg-white/5 border border-white/10 rounded-2xl p-4">
           <p className="font-bold text-white mb-3">Quick questions</p>
           <div className="space-y-3 text-sm">
             {[
-              { q: 'Can I use MetaMask instead?', a: 'Yes. Any wallet that supports Base network and USDC works. Just switch to Base network and send to the treasury address.' },
+              { q: 'Can I use MetaMask instead?', a: 'Yes — but you must switch MetaMask to Base network first (see the MetaMask section above). If you send on Ethereum, the funds cannot be recovered.' },
               { q: 'What if I send on the wrong network?', a: 'Unfortunately funds sent on Ethereum or other networks cannot be recovered. Always double-check that you are on Base before sending.' },
               { q: 'How do I know my tickets are registered?', a: 'Your purchase appears on BaseScan (the blockchain explorer) within a few minutes. You can search by the treasury address to see all transactions.' },
               { q: 'What if I win and do not have a wallet?', a: 'Your winnings are sent to the wallet address from which you sent the USDC. Make sure you keep access to that wallet.' },

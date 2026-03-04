@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Timer, Trophy, CreditCard, ChevronDown, LogOut } from 'lucide-react';
+import { Timer, Trophy, Ticket, ChevronDown, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
 import AuthModal from '@/components/AuthModal';
 import DepositAddress from '@/components/DepositAddress';
-import CardPaymentModal from '@/components/CardPaymentModal';
 import BuyTicketsModal from '@/components/BuyTicketsModal';
 import PremiumChat from '@/components/PremiumChat';
 import PreDrawCountdown from '@/components/PreDrawCountdown';
@@ -39,7 +38,7 @@ import JackpotHistoryChart from '@/components/JackpotHistoryChart';
 import { useAppStore } from '@/lib/store';
 import { FORCED_MODE, DEFAULT_CHAIN_ID } from '@/lib/config';
 import { AureusUser } from '@/lib/auth';
-import { getCurrentUser, updateUserBalance } from '@/lib/userStorage';
+import { getCurrentUser } from '@/lib/userStorage';
 import { sendBrowserNotification } from '@/lib/webNotifications';
 import { emitInAppNotification } from '@/lib/notificationBus';
 
@@ -48,9 +47,9 @@ const QUICK_AMOUNTS = [1, 5, 10, 25, 50];
 function PlayCard({ onPlay }: { onPlay: (n: number) => void }) {
   const [selected, setSelected] = useState(5);
   return (
-    <div className="mx-6 mb-8 rounded-2xl bg-white/[0.03] border border-white/[0.08] p-5">
-      <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400 mb-4 text-center">
-        🎮 How many tickets?
+    <div className="mx-6 mb-8 rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-400/50 mb-4 text-center">
+        How many tickets?
       </p>
       {/* Amount chips */}
       <div className="flex justify-center gap-2 mb-5 flex-wrap">
@@ -60,9 +59,14 @@ function PlayCard({ onPlay }: { onPlay: (n: number) => void }) {
             onClick={() => setSelected(n)}
             className={`px-5 py-2 rounded-full text-sm font-black transition-all border ${
               selected === n
-                ? 'bg-violet-600 border-violet-400 text-white scale-105 shadow-[0_0_16px_rgba(139,92,246,0.4)]'
-                : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10 hover:border-white/20'
+                ? 'text-black scale-105'
+                : 'bg-white/[0.04] border-white/[0.08] text-slate-400 hover:bg-white/[0.07] hover:text-white'
             }`}
+            style={selected === n ? {
+              background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+              border: '1px solid rgba(245,158,11,0.5)',
+              boxShadow: '0 0 16px rgba(245,158,11,0.3)',
+            } : {}}
           >
             {n}
           </button>
@@ -72,14 +76,17 @@ function PlayCard({ onPlay }: { onPlay: (n: number) => void }) {
       <button
         onClick={() => onPlay(selected)}
         className="group relative w-full overflow-hidden rounded-xl"
+        style={{
+          background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+          boxShadow: '0 0 30px rgba(245,158,11,0.25)',
+        }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600 bg-[length:200%] transition-all duration-500 group-hover:bg-right" />
-        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
         <div className="relative py-3.5 flex items-center justify-center gap-3">
-          <span className="font-black text-white text-base">
+          <span className="font-black text-black text-base">
             Play {selected} ticket{selected > 1 ? 's' : ''} — ${selected}.00
           </span>
-          <span className="text-white/70 text-sm">→</span>
+          <span className="text-black/50 text-sm">→</span>
         </div>
       </button>
       <p className="text-center text-[11px] text-slate-600 mt-3">
@@ -134,7 +141,6 @@ export default function Home() {
   const [hasTriggered8PM, setHasTriggered8PM] = useState(false);
   const [hasTriggered10PM, setHasTriggered10PM] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [cardPaymentOpen, setCardPaymentOpen] = useState(false);
   // Defer localStorage read to client-only (avoids SSR hydration mismatch)
   const [aureusUser, setAureusUser] = useState<AureusUser | null>(null);
   const isLive = mode === 'live';
@@ -403,46 +409,35 @@ export default function Home() {
           setAuthModalOpen(false);
         }}
       />
-      <CardPaymentModal
-        isOpen={cardPaymentOpen}
-        onClose={() => setCardPaymentOpen(false)}
-        amount={10} // Example: 10 USDC
-        userWalletAddress={aureusUser?.walletAddress}
-        onSuccess={(amount) => {
-          // Update the user's balance
-          if (aureusUser) {
-            const newBalance = (aureusUser.usdcBalance || 0) + amount;
-            updateUserBalance(aureusUser.id, newBalance);
-            setAureusUser({
-              ...aureusUser,
-              usdcBalance: newBalance,
-            });
-          }
-          setCardPaymentOpen(false);
-        }}
-      />
       <DisclaimerModal />
       <UsernameModal />
       
-      <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 via-blue-950 to-slate-900 text-white relative overflow-x-hidden">
+      <div className="min-h-screen bg-[#07070f] text-white relative overflow-x-hidden">
       {/* Mobile UI — shown only on small screens */}
       <div className="md:hidden">
         <MobileHome />
       </div>
 
-        {/* Animated gradient background */}
-      <div className="fixed inset-0 bg-gradient-to-r from-violet-500/10 via-blue-500/10 to-indigo-500/10 animate-pulse opacity-50 pointer-events-none" style={{
-        backgroundSize: '400% 400%',
-        animation: 'gradient 20s ease infinite'
-      }} />
-      <header className="hidden md:block sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(5,5,15,0.75)', backdropFilter: 'blur(24px)' }}>
+      {/* Ambient background — desktop */}
+      <div className="fixed inset-0 pointer-events-none hidden md:block">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full opacity-25"
+          style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 65%)' }} />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-15"
+          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 65%)' }} />
+      </div>
+      <header className="hidden md:block sticky top-0 z-40 border-b border-white/[0.05]" style={{ background: 'rgba(7,7,15,0.92)', backdropFilter: 'blur(24px)' }}>
         <div className="container mx-auto px-3 md:px-6 h-14 md:h-20 flex items-center justify-between gap-2 md:gap-8">
 
           {/* ── Logo ── */}
           <div className="flex items-center gap-3 shrink-0">
-            <div className="flex items-center gap-2">
-              <Trophy className="w-7 h-7 text-yellow-400" />
-              <span className="text-2xl font-black tracking-tight text-white">AUREUS</span>
+            <div className="flex items-center gap-2.5">
+              <Trophy className="w-6 h-6 text-amber-400" />
+              <span
+                className="text-2xl font-black tracking-[0.15em] bg-clip-text text-transparent"
+                style={{ backgroundImage: 'linear-gradient(135deg, #fcd34d, #f59e0b, #fbbf24)' }}
+              >
+                AUREUS
+              </span>
             </div>
             {/* Status dot */}
             <div className="flex items-center gap-1.5 ml-1">
@@ -480,16 +475,28 @@ export default function Home() {
               <button
                 key={item.label}
                 onClick={item.action}
-                className="group flex flex-col items-start px-5 py-3 rounded-xl hover:bg-white/[0.07] transition-all"
+                className="group flex flex-col items-start px-4 py-2.5 rounded-xl hover:bg-white/[0.05] transition-all"
               >
-                <span className="text-white/85 group-hover:text-white text-base font-bold transition-colors whitespace-nowrap">
+                <span className="text-white/70 group-hover:text-white text-sm font-bold transition-colors whitespace-nowrap">
                   {item.icon} {item.label}
                 </span>
-                <span className="text-xs text-slate-500 group-hover:text-slate-300 transition-colors mt-0.5 whitespace-nowrap">
+                <span className="text-xs text-slate-600 group-hover:text-slate-400 transition-colors mt-0.5 whitespace-nowrap">
                   {item.sub}
                 </span>
               </button>
             ))}
+            <a
+              href="/guide"
+              className="group flex flex-col items-start px-4 py-2.5 rounded-xl border border-amber-500/20 hover:border-amber-500/40 transition-all"
+              style={{ background: 'rgba(245,158,11,0.06)' }}
+            >
+              <span className="text-amber-400/80 group-hover:text-amber-300 text-sm font-bold transition-colors whitespace-nowrap">
+                🔰 Beginner Guide
+              </span>
+              <span className="text-xs text-amber-500/40 group-hover:text-amber-400/60 transition-colors mt-0.5 whitespace-nowrap">
+                How to get USDC &amp; deposit
+              </span>
+            </a>
             {!isLive && !FORCED_MODE && (
               <button
                 onClick={() => { initDemo(); toast.success('🎮 Demo initialized'); }}
@@ -547,9 +554,10 @@ export default function Home() {
             {!user && !aureusUser && (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black rounded-full font-bold text-sm transition-all"
+                className="px-4 py-2 rounded-full font-bold text-sm transition-all text-black"
+                style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)', boxShadow: '0 0 16px rgba(245,158,11,0.25)' }}
               >
-                Se connecter
+                Sign In
               </button>
             )}
 
@@ -608,49 +616,62 @@ export default function Home() {
 
           {/* ── HERO — everything above the fold ─────────────────────────── */}
           <div className="relative mb-10">
-            <div className="absolute inset-0 bg-primary-500/30 blur-3xl rounded-full animate-pulse pointer-events-none" />
-            <div className="relative bg-gradient-to-br from-indigo-950/90 via-purple-950/90 to-slate-950/90 backdrop-blur-2xl border-2 border-white/15 rounded-3xl shadow-2xl shadow-black/40 overflow-hidden">
+            <div className="absolute inset-0 rounded-3xl pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(245,158,11,0.1) 0%, transparent 60%)' }} />
+            <div
+              className="relative backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden"
+              style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 60%, #0c0b10 100%)', border: '1px solid rgba(245,158,11,0.15)' }}
+            >
 
               {/* Top bar: countdown */}
-              <div className="flex items-center justify-center gap-3 px-8 py-4 border-b border-white/[0.06] bg-black/20">
-                <Timer className="w-4 h-4 text-slate-400 shrink-0" />
-                <span className="text-xs font-semibold uppercase tracking-widest text-slate-400">Next Draw in</span>
-                <div className="flex items-center gap-0.5 font-mono text-white font-bold text-lg">
-                  <span className="tabular-nums">{String(timeLeft.hours).padStart(2, '0')}</span>
-                  <span className="text-slate-500 mx-0.5">:</span>
-                  <span className="tabular-nums">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                  <span className="text-slate-500 mx-0.5">:</span>
-                  <span className="tabular-nums">{String(timeLeft.seconds).padStart(2, '0')}</span>
+              <div className="flex items-center justify-center gap-3 px-8 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.04)', background: 'rgba(0,0,0,0.2)' }}>
+                <Timer className="w-4 h-4 text-amber-400/50 shrink-0" />
+                <span className="text-xs font-black uppercase tracking-[0.25em] text-amber-400/40">Next Draw in</span>
+                <div className="flex items-center bg-black/40 border border-white/[0.07] px-4 py-1.5 rounded-xl">
+                  <span className="tabular-nums font-mono font-bold text-white text-lg">{String(timeLeft.hours).padStart(2, '0')}</span>
+                  <span className="text-amber-400/30 mx-1">:</span>
+                  <span className="tabular-nums font-mono font-bold text-white text-lg">{String(timeLeft.minutes).padStart(2, '0')}</span>
+                  <span className="text-amber-400/30 mx-1">:</span>
+                  <span className="tabular-nums font-mono font-bold text-white text-lg">{String(timeLeft.seconds).padStart(2, '0')}</span>
                 </div>
               </div>
 
               {/* Prize amounts */}
-              <div className="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-white/[0.08] px-4 md:px-6 py-6 md:py-10 gap-6 md:gap-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 px-4 md:px-8 py-8 md:py-12 gap-6 md:gap-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                 {/* Main jackpot */}
-                <div className="flex flex-col items-center text-center md:pr-8">
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-400/60 mb-3">🏆 Main Jackpot</p>
-                  <p className="text-5xl md:text-7xl xl:text-8xl font-black text-white leading-none drop-shadow-[0_0_30px_rgba(251,191,36,0.25)]">
+                <div className="flex flex-col items-center text-center md:pr-8 md:border-r" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+                  <p className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-400/50 mb-3">🏆 Main Jackpot</p>
+                  <p
+                    className="text-5xl md:text-7xl xl:text-8xl font-black text-white leading-none"
+                    style={{ textShadow: '0 0 60px rgba(245,158,11,0.2)' }}
+                  >
                     ${jackpot.toLocaleString('en-US', { maximumFractionDigits: 0 })}
                   </p>
-                  <p className="text-sm text-slate-500 mt-3">1 winner · Daily 9 PM UTC</p>
+                  <p className="text-sm text-slate-600 mt-3">1 winner · Daily 9 PM UTC</p>
                 </div>
 
                 {/* Bonus draw */}
-                <div className="flex flex-col items-center text-center md:pl-8 border-t md:border-t-0 border-white/[0.08] pt-6 md:pt-0">
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-400/60 mb-3">💎 Bonus Draw</p>
-                  <p className="text-5xl md:text-7xl xl:text-8xl font-black text-violet-300 leading-none drop-shadow-[0_0_30px_rgba(167,139,250,0.25)]">
+                <div className="flex flex-col items-center text-center md:pl-8 border-t md:border-t-0 pt-6 md:pt-0" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+                  <p className="text-[11px] font-black uppercase tracking-[0.3em] text-violet-400/50 mb-3">💎 Bonus Draw</p>
+                  <p
+                    className="text-5xl md:text-7xl xl:text-8xl font-black text-violet-300 leading-none"
+                    style={{ textShadow: '0 0 60px rgba(139,92,246,0.2)' }}
+                  >
                     ${secondaryPot.toLocaleString('en-US', { maximumFractionDigits: 0 })}
                   </p>
-                  <p className="text-sm text-slate-500 mt-3">25 winners · Daily 9:30 PM UTC</p>
+                  <p className="text-sm text-slate-600 mt-3">25 winners · Daily 9:30 PM UTC</p>
                 </div>
               </div>
 
               {/* User tickets badge */}
               {userTicketsCount > 0 && (
-                <div className="flex justify-center pb-2">
-                  <div className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-500/15 to-blue-500/15 border border-white/15 rounded-full px-6 py-2">
-                    <span className="text-sm text-slate-300">Your tickets this draw:</span>
-                    <span className="text-yellow-300 font-black text-lg">{userTicketsCount}</span>
+                <div className="flex justify-center pt-4 pb-2">
+                  <div
+                    className="inline-flex items-center gap-2 rounded-full px-6 py-2 border text-sm font-bold text-amber-300"
+                    style={{ background: 'rgba(245,158,11,0.08)', borderColor: 'rgba(245,158,11,0.2)' }}
+                  >
+                    <Ticket className="w-4 h-4" />
+                    {userTicketsCount} ticket{userTicketsCount !== 1 ? 's' : ''} in the next draw
                   </div>
                 </div>
               )}
@@ -664,10 +685,44 @@ export default function Home() {
                 }}
               />
 
+              {/* Beginner guide link — always visible below buy button */}
+              <div className="px-6 pb-5">
+                <a
+                  href="/guide"
+                  className="flex items-center justify-center gap-3 w-full bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 hover:border-blue-400/50 rounded-xl py-3 px-4 transition-all group"
+                >
+                  <span className="text-xl">🔰</span>
+                  <div className="text-left">
+                    <p className="text-sm font-bold text-blue-200 group-hover:text-white transition-colors">No USDC yet? Read the beginner guide</p>
+                    <p className="text-xs text-blue-400/70">How to get USDC on Base network · MetaMask &amp; Coinbase Wallet explained</p>
+                  </div>
+                  <span className="text-blue-400 text-sm ml-auto shrink-0">→</span>
+                </a>
+              </div>
+
             </div>
           </div>
 
           {/* ── BELOW FOLD — social proof & engagement ─────────────────── */}
+
+          {/* New to crypto? Guide banner */}
+          <a
+            href="/guide"
+            className="flex items-center gap-5 rounded-2xl px-6 py-5 mb-8 transition-all group border"
+            style={{ background: 'rgba(245,158,11,0.04)', borderColor: 'rgba(245,158,11,0.15)' }}
+          >
+            <span className="text-4xl shrink-0">🔰</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-black text-white text-lg">New to crypto? Don&apos;t have USDC yet?</p>
+              <p className="text-sm text-slate-500 mt-1">Complete beginner&apos;s guide — how to get USDC on <strong className="text-amber-300/80">Base network</strong> and buy your first ticket in 10 minutes.</p>
+            </div>
+            <div
+              className="shrink-0 px-4 py-2 rounded-xl font-bold text-sm text-black whitespace-nowrap"
+              style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}
+            >
+              Read guide →
+            </div>
+          </a>
 
           {/* Streak + Winners Feed */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -726,10 +781,14 @@ export default function Home() {
       <Leaderboard isOpen={leaderboardOpen} onClose={() => setLeaderboardOpen(false)} />
       <HowItWorksModal isOpen={howItWorksOpen} onClose={() => setHowItWorksOpen(false)} />
       {referralOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setReferralOpen(false)}>
-          <div className="bg-slate-900 border border-purple-500/30 rounded-2xl max-w-md w-full p-6 shadow-xl" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setReferralOpen(false)}>
+          <div
+            className="rounded-2xl max-w-md w-full p-6 shadow-2xl border"
+            style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)', borderColor: 'rgba(245,158,11,0.15)' }}
+            onClick={e => e.stopPropagation()}
+          >
             <ReferralDashboard />
-            <button onClick={() => setReferralOpen(false)} className="mt-4 w-full py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-medium">Close</button>
+            <button onClick={() => setReferralOpen(false)} className="mt-4 w-full py-2 rounded-xl text-sm text-slate-500 hover:text-white hover:bg-white/5 transition-all">Close</button>
           </div>
         </div>
       )}
@@ -741,13 +800,17 @@ export default function Home() {
           onClick={() => setCustodialProfileOpen(false)}
         >
           <div
-            className="bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-900 border border-white/10 rounded-2xl max-w-md w-full shadow-2xl overflow-hidden"
+            className="rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border"
+            style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)', borderColor: 'rgba(245,158,11,0.15)' }}
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
+            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-sm font-black text-white">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black text-black"
+                  style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)', boxShadow: '0 0 16px rgba(245,158,11,0.25)' }}
+                >
                   {(aureusUser.name || aureusUser.email || '?')[0].toUpperCase()}
                 </div>
                 <div>
@@ -766,10 +829,10 @@ export default function Home() {
             {/* Body */}
             <div className="p-6 space-y-4">
               {/* USDC balance */}
-              <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4 flex items-center justify-between">
+              <div className="rounded-xl border p-4 flex items-center justify-between" style={{ background: 'rgba(16,185,129,0.06)', borderColor: 'rgba(16,185,129,0.2)' }}>
                 <div>
-                  <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">USDC Balance</p>
-                  <p className="text-2xl font-black text-green-400">${(aureusUser.usdcBalance || 0).toFixed(2)}</p>
+                  <p className="text-[11px] text-slate-500 uppercase tracking-widest mb-1">USDC Balance</p>
+                  <p className="text-2xl font-black text-emerald-400">${(aureusUser.usdcBalance || 0).toFixed(2)}</p>
                 </div>
                 <span className="text-3xl">💰</span>
               </div>
@@ -779,15 +842,6 @@ export default function Home() {
                 walletAddress={aureusUser.walletAddress}
                 usdcBalance={aureusUser.usdcBalance || 0}
               />
-
-              {/* Buy with card */}
-              <button
-                onClick={() => { setCustodialProfileOpen(false); setCardPaymentOpen(true); }}
-                className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl font-semibold transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
-              >
-                <CreditCard className="w-5 h-5" />
-                Buy with bank card
-              </button>
 
               {/* Sign out */}
               <button

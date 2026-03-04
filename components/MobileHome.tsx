@@ -63,23 +63,27 @@ const FAQ_ITEMS = [
   },
   {
     q: "I don't have USDC — how do I get some?",
-    a: `See the "How to get USDC" guide below. In short: download Coinbase or Binance → buy USDC → withdraw to Base network → send to the Aureus treasury address.`,
+    a: `See the "How to get USDC" guide below. In short: download Coinbase Wallet → buy USDC → switch to Base network → send to the Aureus treasury address.`,
   },
 ];
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border border-white/10 rounded-2xl overflow-hidden">
+    <div className="border border-white/[0.07] rounded-2xl overflow-hidden bg-black/20">
       <button
-        className="w-full flex items-center justify-between px-4 py-4 text-left"
+        className="w-full flex items-center justify-between px-4 py-4 text-left gap-3"
         onClick={() => setOpen(!open)}
       >
-        <span className="font-semibold text-white text-sm pr-4">{q}</span>
-        {open ? <ChevronUp className="w-4 h-4 text-violet-400 shrink-0" /> : <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />}
+        <span className="font-semibold text-white text-sm leading-snug">{q}</span>
+        <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors ${open ? 'bg-amber-500/20 border border-amber-500/40' : 'bg-white/5 border border-white/10'}`}>
+          {open
+            ? <ChevronUp className="w-3 h-3 text-amber-400" />
+            : <ChevronDown className="w-3 h-3 text-slate-400" />}
+        </div>
       </button>
       {open && (
-        <div className="px-4 pb-4 text-sm text-slate-300 leading-relaxed border-t border-white/5 pt-3">
+        <div className="px-4 pb-4 text-sm text-slate-300 leading-relaxed border-t border-white/[0.05] pt-3">
           {a}
         </div>
       )}
@@ -188,158 +192,231 @@ export default function MobileHome() {
   };
 
   const tabs: { id: Tab; label: string; Icon: React.ElementType }[] = [
-    { id: 'home', label: 'Home', Icon: Home },
-    { id: 'tickets', label: 'Tickets', Icon: Ticket },
-    { id: 'rank', label: 'Rankings', Icon: Trophy },
-    { id: 'info', label: 'Info', Icon: Shield },
-    { id: 'profile', label: 'Profile', Icon: User },
+    { id: 'home',    label: 'Home',     Icon: Home   },
+    { id: 'tickets', label: 'Tickets',  Icon: Ticket },
+    { id: 'rank',    label: 'Rankings', Icon: Trophy },
+    { id: 'info',    label: 'Info',     Icon: Shield },
+    { id: 'profile', label: 'Profile',  Icon: User   },
   ];
 
   return (
-    <div className="md:hidden min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 via-purple-950 to-slate-900 text-white relative">
-      <div className="fixed inset-0 bg-gradient-to-r from-violet-500/15 via-purple-500/20 via-violet-500/15 opacity-55 pointer-events-none" style={{ backgroundSize: '400% 400%', animation: 'gradient 20s ease infinite' }} />
+    <div className="md:hidden min-h-screen bg-[#07070f] text-white relative overflow-x-hidden">
 
-      {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-indigo-700/40 backdrop-blur-sm bg-slate-900/90">
-        <div className="px-4 pt-3 pb-1 flex items-center justify-between">
-          {/* Left: Live badge */}
-          <div className="w-16 flex items-center">
-            <span className={`text-[10px] px-2 py-0.5 rounded-full border font-semibold flex items-center gap-1 ${isLive ? 'bg-green-600/20 border-green-400/40 text-green-300' : 'bg-slate-800/60 border-white/20 text-white/70'}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-green-400' : 'bg-slate-400'}`} />
-              {isLive ? 'Live' : 'Demo'}
-            </span>
+      {/* Ambient background glow */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full opacity-30"
+          style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%)' }} />
+        <div className="absolute bottom-20 -right-20 w-[300px] h-[300px] rounded-full opacity-20"
+          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%)' }} />
+      </div>
+
+      {/* ── Header ── */}
+      <header className="sticky top-0 z-30 bg-[#07070f]/90 backdrop-blur-xl border-b border-white/[0.05]">
+        <div className="px-4 py-3 flex items-center justify-between">
+
+          {/* Live badge */}
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-bold uppercase tracking-widest ${
+            isLive
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+              : 'bg-white/5 border-white/10 text-slate-500'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
+            {isLive ? 'Live' : 'Demo'}
           </div>
 
-          {/* Center: AUREUS big */}
-          <h1 className="flex-1 text-center text-2xl font-black tracking-widest bg-gradient-to-r from-yellow-300 via-primary-400 to-violet-400 bg-clip-text text-transparent">
+          {/* Logo */}
+          <h1
+            className="text-2xl font-black tracking-[0.25em] bg-clip-text text-transparent"
+            style={{ backgroundImage: 'linear-gradient(135deg, #fcd34d, #f59e0b, #fbbf24)' }}
+          >
             AUREUS
           </h1>
 
-          {/* Right: Account button */}
-          <div className="w-16 flex justify-end">
-            <button
-              onClick={() => isGuest ? setAuthModalOpen(true) : setActiveTab('profile')}
-              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl border text-xs font-bold transition-all ${isGuest ? 'bg-slate-800/60 border-white/20 text-white/70' : 'bg-violet-700/50 border-violet-600/30 text-violet-200'}`}
-            >
-              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-[9px] font-black text-black shrink-0">
-                {displayName ? displayName[0].toUpperCase() : '?'}
-              </div>
-              <Settings className="w-3 h-3 opacity-60" />
-            </button>
-          </div>
+          {/* Account button */}
+          <button
+            onClick={() => isGuest ? setAuthModalOpen(true) : setActiveTab('profile')}
+            className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black text-black shrink-0"
+            style={{
+              background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+              boxShadow: '0 0 16px rgba(245,158,11,0.35)',
+            }}
+          >
+            {displayName ? displayName[0].toUpperCase() : <Settings className="w-4 h-4 text-black" />}
+          </button>
         </div>
-        {/* Tagline */}
-        <p className="text-center text-[10px] text-slate-500 pb-2 tracking-widest uppercase">Daily Crypto Lottery · Base</p>
+        <p className="text-center text-[10px] text-slate-600 pb-2 tracking-[0.2em] uppercase">
+          Daily Crypto Lottery · Base Network
+        </p>
       </header>
 
-      {/* Urgency Banner — only on home */}
+      {/* Urgency Banner */}
       {activeTab === 'home' && <UrgencyBanner timeLeft={timeLeft} />}
 
-      {/* Main scrollable content */}
-      <main className="px-4 py-5 pb-24">
+      {/* ── Main scrollable content ── */}
+      <main className="px-4 py-5 pb-28">
 
-        {/* ─── HOME TAB ─── */}
+        {/* ─────────────── HOME TAB ─────────────── */}
         {activeTab === 'home' && (
-          <div className="space-y-5">
-            {/* Jackpot card */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary-500/40 blur-3xl rounded-full animate-pulse" />
-              <div className="relative bg-gradient-to-br from-indigo-950/95 via-purple-950/95 to-slate-950/95 backdrop-blur-2xl border-4 border-white/30 rounded-3xl p-6 shadow-2xl shadow-white/20 text-center">
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <Timer className="w-4 h-4 text-slate-400" />
-                  <span className="text-sm text-slate-400">Next draw:</span>
-                  <div className="flex items-center gap-1 bg-black/30 px-3 py-1 rounded-lg">
-                    <span className="text-lg font-bold text-white">{String(timeLeft.hours).padStart(2, '0')}</span>
-                    <span className="text-slate-400">:</span>
-                    <span className="text-lg font-bold text-white">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                    <span className="text-slate-400">:</span>
-                    <span className="text-lg font-bold text-white">{String(timeLeft.seconds).padStart(2, '0')}</span>
+          <div className="space-y-4">
+
+            {/* Jackpot hero card */}
+            <div
+              className="relative rounded-3xl overflow-hidden border border-amber-500/20"
+              style={{ background: 'linear-gradient(160deg, #0f0e1a 0%, #0a0a12 60%, #0c0b10 100%)' }}
+            >
+              {/* Glow behind number */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: 'radial-gradient(ellipse at 50% 60%, rgba(245,158,11,0.12) 0%, transparent 70%)' }}
+              />
+              <div className="relative p-6 text-center">
+                {/* Countdown */}
+                <div className="flex items-center justify-center gap-2 mb-5">
+                  <Timer className="w-3.5 h-3.5 text-amber-400/60" />
+                  <span className="text-xs text-amber-400/60 uppercase tracking-widest font-semibold">Next Draw</span>
+                  <div className="flex items-center gap-0.5 bg-black/50 border border-white/[0.07] px-3 py-1 rounded-lg">
+                    <span className="text-base font-mono font-bold text-white tabular-nums">{String(timeLeft.hours).padStart(2, '0')}</span>
+                    <span className="text-amber-400/40 mx-0.5">:</span>
+                    <span className="text-base font-mono font-bold text-white tabular-nums">{String(timeLeft.minutes).padStart(2, '0')}</span>
+                    <span className="text-amber-400/40 mx-0.5">:</span>
+                    <span className="text-base font-mono font-bold text-white tabular-nums">{String(timeLeft.seconds).padStart(2, '0')}</span>
                   </div>
                 </div>
-                <p className="text-base text-primary-400 font-bold uppercase tracking-wider mb-3">Tonight&apos;s Jackpot</p>
-                <div className="flex justify-center">
+
+                {/* Label */}
+                <p className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-400/50 mb-2">
+                  Tonight&apos;s Jackpot
+                </p>
+
+                {/* Big number */}
+                <div className="mb-4">
                   <JackpotCounter />
                 </div>
-                {userTicketsCount > 0 && (
-                  <div className="inline-block bg-gradient-to-r from-violet-500/20 to-blue-500/20 rounded-full px-5 py-1.5 border-2 border-white/30 mt-3">
-                    <p className="text-sm font-bold text-white">Your tickets: <span className="text-yellow-300 font-black">{userTicketsCount}</span></p>
+
+                {/* Ticket badge */}
+                {userTicketsCount > 0 ? (
+                  <div
+                    className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 border text-sm font-bold text-amber-300"
+                    style={{ background: 'rgba(245,158,11,0.08)', borderColor: 'rgba(245,158,11,0.25)' }}
+                  >
+                    <Ticket className="w-3.5 h-3.5" />
+                    {userTicketsCount} ticket{userTicketsCount !== 1 ? 's' : ''} in the draw
                   </div>
+                ) : (
+                  <p className="text-xs text-slate-600 italic">No tickets yet — buy below to enter</p>
                 )}
               </div>
             </div>
 
-            {/* Dual draw */}
-            <div className="bg-gradient-to-r from-purple-900/70 via-violet-900/70 to-purple-900/70 border-2 border-violet-500/50 rounded-2xl p-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 text-center">
-                  <p className="text-xl mb-1">🏆</p>
-                  <p className="text-sm font-bold text-yellow-400">Main Jackpot</p>
-                  <p className="text-2xl font-black text-white">${jackpot.toLocaleString('en-US')}</p>
-                  <p className="text-xs text-slate-400">1 winner</p>
-                </div>
-                <div className="w-px h-14 bg-white/20" />
-                <div className="flex-1 text-center">
-                  <p className="text-xl mb-1">💎</p>
-                  <p className="text-sm font-bold text-violet-400">Bonus Draw</p>
-                  <p className="text-2xl font-black text-white">${secondaryPot.toLocaleString('en-US')}</p>
-                  <p className="text-xs text-slate-400">25 winners</p>
-                </div>
+            {/* Dual draw pills */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-black/40 border border-amber-500/15 rounded-2xl p-4 text-center">
+                <p className="text-xl mb-1.5">🏆</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-amber-400/60 mb-1">Main Jackpot</p>
+                <p className="text-xl font-black text-white">${jackpot.toLocaleString('en-US')}</p>
+                <p className="text-[10px] text-slate-600 mt-1">1 winner · 9 PM UTC</p>
               </div>
-              <p className="text-xs text-violet-200 text-center mt-3 border-t border-white/10 pt-2">
-                Every ticket enters both draws
-              </p>
+              <div className="bg-black/40 border border-violet-500/15 rounded-2xl p-4 text-center">
+                <p className="text-xl mb-1.5">💎</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-violet-400/60 mb-1">Bonus Draw</p>
+                <p className="text-xl font-black text-white">${secondaryPot.toLocaleString('en-US')}</p>
+                <p className="text-[10px] text-slate-600 mt-1">25 winners · 9:30 PM</p>
+              </div>
             </div>
+
+            {/* Every ticket enters both */}
+            <p className="text-center text-xs text-slate-600 -mt-1">Every ticket enters both draws simultaneously</p>
 
             {/* Buy CTA */}
             <button
               onClick={() => isGuest ? setAuthModalOpen(true) : setBuyOpen(true)}
-              className="group relative w-full overflow-hidden rounded-3xl border-4 border-white/40"
+              className="group relative w-full overflow-hidden rounded-2xl"
+              style={{
+                background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+                boxShadow: '0 0 40px rgba(245,158,11,0.25), 0 4px 20px rgba(0,0,0,0.4)',
+              }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-blue-600" />
               <div className="relative py-5 px-6 text-center">
-                <p className="font-black text-2xl text-white drop-shadow-lg">Buy Tickets</p>
-                <p className="text-yellow-300 font-bold text-xs mt-1">Instant · Card or Crypto</p>
+                <p className="font-black text-xl text-black tracking-wide">Buy Tickets</p>
+                <p className="text-black/50 font-semibold text-xs mt-0.5">1 USDC = 1 ticket · Base network only</p>
               </div>
-              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 -translate-x-full group-active:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
             </button>
+
+            {/* Beginner guide */}
+            <a
+              href="/guide"
+              className="flex items-center gap-3 rounded-2xl px-4 py-3.5 border border-blue-500/25 transition-colors"
+              style={{ background: 'rgba(59,130,246,0.07)' }}
+            >
+              <span className="text-2xl shrink-0">🔰</span>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-white text-sm">No USDC yet? Start here</p>
+                <p className="text-xs text-blue-300/60 mt-0.5">
+                  How to get USDC on <strong className="text-blue-300">Base network</strong> in 10 min →
+                </p>
+              </div>
+            </a>
 
             {/* Recent winners */}
             <EnhancedWinnersHistory />
 
-            {/* Compact share strip */}
-            <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
-              <span className="text-yellow-300 text-sm">🚀</span>
-              <p className="text-xs text-slate-300 flex-1">Invite friends to grow the jackpot</p>
+            {/* Share strip */}
+            <div className="flex items-center gap-3 bg-black/30 border border-white/[0.05] rounded-2xl px-4 py-3">
+              <span className="text-amber-400 text-base">🚀</span>
+              <p className="text-xs text-slate-500 flex-1">Invite friends — grow the jackpot</p>
               <button
                 onClick={handleCopyLink}
-                className="flex items-center gap-1 px-3 py-1.5 bg-yellow-500/20 border border-yellow-500/30 rounded-lg text-yellow-300 text-xs font-semibold shrink-0"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-amber-400 border border-amber-500/25 transition-colors"
+                style={{ background: 'rgba(245,158,11,0.08)' }}
               >
-                <Share2 className="w-3 h-3" /> {linkCopied ? 'Copied!' : 'Share'}
+                <Share2 className="w-3 h-3" />
+                {linkCopied ? 'Copied!' : 'Share'}
               </button>
             </div>
           </div>
         )}
 
-        {/* ─── TICKETS TAB ─── */}
+        {/* ─────────────── TICKETS TAB ─────────────── */}
         {activeTab === 'tickets' && (
           <div className="space-y-4">
             {isGuest ? (
-              <div className="bg-yellow-900/30 border border-yellow-600/30 rounded-2xl px-4 py-4 text-center">
-                <p className="text-yellow-300 font-bold mb-1">Sign in to view your tickets</p>
-                <p className="text-yellow-200/70 text-sm mb-3">Create an account to keep your tickets and winnings safe.</p>
-                <button onClick={() => setAuthModalOpen(true)} className="px-5 py-2 bg-yellow-500 text-black rounded-xl font-bold text-sm">
+              <div className="bg-black/40 border border-amber-500/15 rounded-2xl p-6 text-center">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border border-amber-500/20"
+                  style={{ background: 'rgba(245,158,11,0.08)' }}
+                >
+                  🎟️
+                </div>
+                <p className="font-bold text-white mb-2">Sign in to view your tickets</p>
+                <p className="text-slate-500 text-sm mb-4">Create an account to keep your tickets and winnings safe.</p>
+                <button
+                  onClick={() => setAuthModalOpen(true)}
+                  className="w-full py-3 rounded-xl font-bold text-black"
+                  style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}
+                >
                   Sign In / Register
                 </button>
               </div>
             ) : (
-              <div className="bg-gradient-to-br from-indigo-950/80 to-purple-950/80 border border-white/10 rounded-2xl p-5 text-center">
-                <p className="text-4xl font-black text-yellow-300">{userTicketsCount}</p>
-                <p className="text-slate-400 text-sm mt-1">active tickets in the next draw</p>
+              <div
+                className="bg-black/40 border border-white/[0.07] rounded-2xl p-5 text-center"
+                style={{ boxShadow: '0 0 40px rgba(245,158,11,0.04)' }}
+              >
+                <p className="text-[11px] font-black uppercase tracking-[0.25em] text-amber-400/50 mb-2">Your Active Tickets</p>
+                <p
+                  className="text-7xl font-black mb-1"
+                  style={{ color: '#fcd34d', textShadow: '0 0 40px rgba(252,211,77,0.3)' }}
+                >
+                  {userTicketsCount}
+                </p>
+                <p className="text-slate-500 text-sm">entered in the next draw</p>
                 <button
                   onClick={() => setBuyOpen(true)}
-                  className="mt-4 px-6 py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-xl font-bold text-sm text-white"
+                  className="mt-4 px-6 py-2.5 rounded-xl font-bold text-xs text-amber-400 border border-amber-500/25"
+                  style={{ background: 'rgba(245,158,11,0.08)' }}
                 >
-                  + Buy more tickets
+                  + Get more tickets
                 </button>
               </div>
             )}
@@ -353,116 +430,132 @@ export default function MobileHome() {
           </div>
         )}
 
-        {/* ─── RANKINGS TAB ─── */}
+        {/* ─────────────── RANKINGS TAB ─────────────── */}
         {activeTab === 'rank' && (
           <div className="space-y-4">
-            <div className="text-center">
+            <div className="text-center pt-2">
+              <p className="text-[11px] font-black uppercase tracking-[0.25em] text-amber-400/50 mb-1">Hall of Fame</p>
               <p className="text-2xl font-black text-white">Leaderboard</p>
-              <p className="text-slate-400 text-sm mt-1">Recent winners &amp; jackpot history</p>
+              <p className="text-slate-500 text-sm mt-1">Recent winners &amp; jackpot history</p>
             </div>
             <WinnersFeed />
             <JackpotHistoryChart />
           </div>
         )}
 
-        {/* ─── INFO / TRANSPARENCE TAB ─── */}
+        {/* ─────────────── INFO TAB ─────────────── */}
         {activeTab === 'info' && (
-          <div className="space-y-5">
-            {/* Title */}
-            <div className="text-center">
+          <div className="space-y-4">
+            <div className="text-center pt-2">
+              <p className="text-[11px] font-black uppercase tracking-[0.25em] text-amber-400/50 mb-1">100% Transparent</p>
               <p className="text-2xl font-black text-white">How It Works</p>
-              <p className="text-slate-400 text-sm mt-1">Everything is transparent and verifiable</p>
+              <p className="text-slate-500 text-sm mt-1">Fully verifiable on the blockchain</p>
             </div>
 
             {/* Steps */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-4">
+            <div className="bg-black/40 border border-white/[0.06] rounded-2xl p-4 space-y-4">
               {[
-                { n: '1', icon: '💎', title: 'Buy tickets', desc: '1 USDC = 1 ticket. Send USDC directly to the treasury wallet on Base network. Tickets are registered automatically.' },
-                { n: '2', icon: '⏰', title: 'Draw at 9 PM UTC', desc: 'An automatic draw takes place every evening. Your ticket enters both draws simultaneously.' },
-                { n: '3', icon: '🎲', title: 'Random selection', desc: '1 main winner is drawn. 25 bonus winners are drawn from all remaining tickets.' },
-                { n: '4', icon: '💸', title: 'Automatic payout', desc: 'USDC payment is sent automatically to your wallet within 45 minutes of the draw.' },
+                { n: '1', icon: '💎', title: 'Buy tickets', desc: '1 USDC = 1 ticket. Send USDC to the treasury wallet on Base network. Tickets registered automatically.' },
+                { n: '2', icon: '⏰', title: 'Draw at 9 PM UTC', desc: 'Automatic draw every evening. Your ticket enters both the main and bonus draws.' },
+                { n: '3', icon: '🎲', title: 'Random selection', desc: '1 main winner + 25 bonus winners drawn from all active tickets.' },
+                { n: '4', icon: '💸', title: 'Automatic payout', desc: 'USDC sent automatically to your wallet within 45 minutes of the draw.' },
               ].map(s => (
                 <div key={s.n} className="flex gap-3 items-start">
-                  <div className="w-8 h-8 rounded-full bg-violet-600/40 border border-violet-500/50 flex items-center justify-center text-xs font-black text-violet-300 shrink-0">
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black text-amber-400 shrink-0 border border-amber-500/25"
+                    style={{ background: 'rgba(245,158,11,0.1)' }}
+                  >
                     {s.n}
                   </div>
                   <div>
                     <p className="font-bold text-white text-sm">{s.icon} {s.title}</p>
-                    <p className="text-slate-400 text-xs mt-0.5 leading-relaxed">{s.desc}</p>
+                    <p className="text-slate-500 text-xs mt-0.5 leading-relaxed">{s.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Distribution */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+            {/* Prize distribution */}
+            <div className="bg-black/40 border border-white/[0.06] rounded-2xl p-4">
               <p className="font-bold text-white text-sm mb-3">Prize Distribution</p>
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {[
-                  { pct: '85%', label: 'Main winner', color: 'bg-yellow-500' },
-                  { pct: '5%', label: '25 bonus winners', color: 'bg-violet-500' },
-                  { pct: '3%', label: 'Referral program', color: 'bg-green-500' },
-                  { pct: '7%', label: 'Operating fees', color: 'bg-slate-500' },
+                  { pct: '85%', label: 'Main winner',     color: '#f59e0b', w: '85%' },
+                  { pct: '5%',  label: '25 bonus winners', color: '#8b5cf6', w: '5%'  },
+                  { pct: '3%',  label: 'Referral program', color: '#10b981', w: '3%'  },
+                  { pct: '7%',  label: 'Operating fees',   color: '#475569', w: '7%'  },
                 ].map(r => (
                   <div key={r.label} className="flex items-center gap-3">
-                    <span className="w-10 text-right font-black text-white text-sm shrink-0">{r.pct}</span>
-                    <div className="flex-1 bg-white/10 rounded-full h-2">
-                      <div className={`${r.color} h-2 rounded-full`} style={{ width: r.pct }} />
+                    <span className="w-8 text-right font-black text-white text-sm shrink-0">{r.pct}</span>
+                    <div className="flex-1 bg-white/[0.05] rounded-full h-1.5">
+                      <div className="h-1.5 rounded-full" style={{ width: r.w, backgroundColor: r.color }} />
                     </div>
-                    <span className="text-slate-400 text-xs w-36 shrink-0">{r.label}</span>
+                    <span className="text-slate-500 text-xs w-32 shrink-0">{r.label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Treasury */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <p className="font-bold text-white text-sm mb-2">Public Treasury</p>
-              <p className="text-xs text-slate-400 mb-1">Wallet address that receives payments and pays out winners:</p>
-              <p className="font-mono text-xs text-violet-300 break-all mb-3">{TREASURY}</p>
+            {/* Public treasury */}
+            <div className="bg-black/40 border border-emerald-500/20 rounded-2xl p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-5 h-5 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
+                  <span className="text-emerald-400 text-[10px] font-black">✓</span>
+                </div>
+                <p className="font-bold text-white text-sm">Public Treasury — 100% Verifiable</p>
+              </div>
+              <p className="text-xs text-slate-500 mb-2">All payments flow through this public wallet on Base blockchain:</p>
+              <div className="bg-black/40 border border-white/[0.05] rounded-xl p-2.5 mb-3">
+                <p className="font-mono text-xs text-emerald-300/80 break-all">{TREASURY}</p>
+              </div>
               <a
                 href={BASESCAN_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2.5 bg-blue-900/40 border border-blue-500/30 rounded-xl text-blue-300 text-sm font-semibold hover:bg-blue-900/60 transition-colors"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-emerald-400 text-sm font-semibold border border-emerald-500/25"
+                style={{ background: 'rgba(16,185,129,0.08)' }}
               >
                 <ExternalLink className="w-4 h-4" />
                 View all transactions on BaseScan
               </a>
-              <p className="text-xs text-slate-500 mt-2">USDC = stablecoin 1:1 with USD. No crypto volatility.</p>
+              <p className="text-xs text-slate-600 mt-2">USDC = stablecoin pegged 1:1 to USD. No crypto volatility.</p>
             </div>
 
-            {/* TrustBadges */}
+            {/* Trust badges */}
             <TrustBadges />
 
             {/* How to get USDC */}
-            <div className="bg-white/5 border border-violet-500/20 rounded-2xl p-4">
+            <div className="bg-black/40 border border-blue-500/15 rounded-2xl p-4">
               <p className="font-bold text-white text-sm mb-1">💡 New to crypto? How to get USDC</p>
-              <p className="text-xs text-slate-400 mb-4">USDC is a digital dollar (1 USDC = $1). You need it to buy tickets. Here's how to get started in 4 steps:</p>
+              <p className="text-xs text-slate-500 mb-4">
+                USDC = digital dollar (1 USDC = $1 exactly). Here&apos;s how to get started:
+              </p>
               <div className="space-y-3">
                 {[
-                  { n: '1', title: 'Download a wallet', desc: 'Install Coinbase Wallet or MetaMask on your phone. These are free apps that hold your crypto.' },
-                  { n: '2', title: 'Buy USDC', desc: 'Inside Coinbase Wallet, tap "Buy" and select USDC. You can pay by card. Alternatively use Coinbase.com or Binance.com.' },
-                  { n: '3', title: 'Switch to Base network', desc: 'In your wallet, make sure you are on the "Base" network (not Ethereum). Base has much lower fees (~$0.01 per transaction).' },
-                  { n: '4', title: 'Send to Aureus', desc: `Send your USDC to the treasury address below. Each 1 USDC = 1 ticket. Your tickets are registered within a few minutes.` },
+                  { n: '1', title: 'Download a wallet', desc: 'Install Coinbase Wallet or MetaMask (free apps). Coinbase Wallet is easier for beginners.' },
+                  { n: '2', title: 'Buy USDC', desc: 'In Coinbase Wallet, tap "Buy" → select USDC → pay by card. Takes 2 minutes.' },
+                  { n: '3', title: 'Switch to Base network', desc: 'Switch to "Base" in your wallet — fees are ~$0.01 vs $5+ on Ethereum. 🦊 MetaMask: tap network name at top → select Base.' },
+                  { n: '4', title: 'Send to Aureus', desc: 'Send USDC to the treasury address below. 1 USDC = 1 ticket. Registered within minutes.' },
                 ].map(s => (
                   <div key={s.n} className="flex gap-3 items-start">
-                    <div className="w-7 h-7 rounded-full bg-violet-600/40 border border-violet-500/50 flex items-center justify-center text-xs font-black text-violet-300 shrink-0">{s.n}</div>
+                    <div className="w-6 h-6 rounded-full bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-[11px] font-black text-blue-400 shrink-0">
+                      {s.n}
+                    </div>
                     <div>
                       <p className="font-semibold text-white text-xs">{s.title}</p>
-                      <p className="text-slate-400 text-xs mt-0.5 leading-relaxed">{s.desc}</p>
+                      <p className="text-slate-500 text-xs mt-0.5 leading-relaxed">{s.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 p-3 bg-black/30 rounded-xl border border-white/10">
-                <p className="text-xs text-slate-400 mb-1">Treasury address (Base network):</p>
-                <p className="font-mono text-xs text-violet-300 break-all">{TREASURY}</p>
+              <div className="mt-3 p-2.5 bg-black/40 border border-red-500/15 rounded-xl">
+                <p className="text-xs text-red-300/70 font-semibold">⚠️ Base network only</p>
+                <p className="font-mono text-xs text-white/50 break-all mt-1">{TREASURY}</p>
               </div>
-              <p className="text-xs text-slate-500 mt-3 text-center">⚠️ Always send on the Base network — not Ethereum or other chains.</p>
               <a
                 href="/guide"
-                className="mt-3 flex items-center justify-center gap-2 w-full py-2.5 bg-violet-600/30 border border-violet-500/40 rounded-xl text-violet-300 text-sm font-semibold hover:bg-violet-600/50 transition-colors"
+                className="mt-3 flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-blue-300 text-sm font-semibold border border-blue-500/20"
+                style={{ background: 'rgba(59,130,246,0.07)' }}
               >
                 📖 Full step-by-step guide →
               </a>
@@ -479,64 +572,96 @@ export default function MobileHome() {
             </div>
 
             {/* Contact */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-              <p className="text-sm text-slate-400">Questions? Contact us at</p>
-              <p className="text-violet-300 font-semibold text-sm mt-1">support@aureuslottery.app</p>
+            <div className="bg-black/30 border border-white/[0.05] rounded-2xl p-4 text-center">
+              <p className="text-sm text-slate-500">Questions?</p>
+              <p className="text-violet-400 font-semibold text-sm mt-1">support@aureuslottery.app</p>
             </div>
           </div>
         )}
 
-        {/* ─── PROFIL TAB ─── */}
+        {/* ─────────────── PROFILE TAB ─────────────── */}
         {activeTab === 'profile' && (
           <div className="space-y-4">
             {isGuest ? (
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-2xl font-black text-black mx-auto mb-4">?</div>
-                <p className="font-bold text-white mb-1">Not signed in yet</p>
-                <p className="text-slate-400 text-sm mb-4">Sign in to save your tickets and manage your account.</p>
-                <button onClick={() => setAuthModalOpen(true)} className="w-full py-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-2xl font-bold text-white">
+              <div className="bg-black/40 border border-white/[0.07] rounded-2xl p-6 text-center">
+                <div
+                  className="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-black text-black mx-auto mb-5"
+                  style={{
+                    background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+                    boxShadow: '0 0 30px rgba(245,158,11,0.25)',
+                  }}
+                >
+                  ?
+                </div>
+                <p className="font-black text-white text-lg mb-1">Not signed in yet</p>
+                <p className="text-slate-500 text-sm mb-5">Create an account to save your tickets and claim winnings.</p>
+                <button
+                  onClick={() => setAuthModalOpen(true)}
+                  className="w-full py-3.5 rounded-2xl font-bold text-black text-base"
+                  style={{
+                    background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+                    boxShadow: '0 0 20px rgba(245,158,11,0.2)',
+                  }}
+                >
                   Sign In / Register
                 </button>
               </div>
             ) : (
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/[0.07] rounded-2xl p-5">
+                {/* Profile header */}
                 <div className="flex items-center gap-4 mb-5">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-xl font-black text-black shrink-0">
+                  <div
+                    className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-black text-black shrink-0"
+                    style={{
+                      background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+                      boxShadow: '0 0 20px rgba(245,158,11,0.25)',
+                    }}
+                  >
                     {displayName ? displayName[0].toUpperCase() : '?'}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-bold text-white text-lg truncate">{displayName}</p>
-                    {aureusUser?.email && <p className="text-sm text-slate-400 truncate">{aureusUser.email}</p>}
+                    <p className="font-black text-white text-lg truncate">{displayName}</p>
+                    {aureusUser?.email && <p className="text-sm text-slate-500 truncate">{aureusUser.email}</p>}
                   </div>
                 </div>
 
+                {/* Stats grid */}
                 <div className="grid grid-cols-2 gap-3 mb-5">
-                  <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/10">
-                    <p className="text-2xl font-black text-yellow-300">{userTicketsCount}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">Active Tickets</p>
+                  <div
+                    className="rounded-xl p-3 text-center border border-amber-500/15"
+                    style={{ background: 'rgba(245,158,11,0.06)' }}
+                  >
+                    <p className="text-2xl font-black text-amber-300">{userTicketsCount}</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5 uppercase tracking-wider">Active Tickets</p>
                   </div>
-                  <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/10">
-                    <p className="text-2xl font-black text-green-300">${(aureusUser?.usdcBalance ?? 0).toFixed(2)}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">USDC Balance</p>
+                  <div
+                    className="rounded-xl p-3 text-center border border-emerald-500/15"
+                    style={{ background: 'rgba(16,185,129,0.06)' }}
+                  >
+                    <p className="text-2xl font-black text-emerald-300">${(aureusUser?.usdcBalance ?? 0).toFixed(2)}</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5 uppercase tracking-wider">USDC Balance</p>
                   </div>
                 </div>
 
-                <div className="bg-white/5 rounded-2xl p-3 mb-4 border border-white/10">
-                  <p className="text-xs text-slate-400 mb-1">Wallet Address</p>
-                  <p className="text-xs font-mono text-white/80 break-all">
+                {/* Wallet address */}
+                <div className="bg-black/40 rounded-xl p-3 mb-4 border border-white/[0.05]">
+                  <p className="text-[10px] text-slate-600 uppercase tracking-widest mb-1">Wallet Address</p>
+                  <p className="text-xs font-mono text-white/50 break-all">
                     {aureusUser?.walletAddress?.slice(0, 10)}…{aureusUser?.walletAddress?.slice(-8)}
                   </p>
                 </div>
 
+                {/* Actions */}
                 <button
                   onClick={() => setBuyOpen(true)}
-                  className="w-full py-3 mb-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-2xl font-bold text-white"
+                  className="w-full py-3 mb-2.5 rounded-2xl font-bold text-black"
+                  style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}
                 >
                   Buy Tickets
                 </button>
                 <button
                   onClick={handleSignOut}
-                  className="w-full py-2.5 rounded-2xl text-sm text-slate-400 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2.5 rounded-2xl text-sm text-slate-600 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center gap-2"
                 >
                   <LogOut className="w-4 h-4" />
                   Sign Out
@@ -544,16 +669,16 @@ export default function MobileHome() {
               </div>
             )}
 
-            {/* Share card */}
-            <div className="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-600/20 rounded-2xl p-4">
-              <p className="font-bold text-white text-sm mb-1">Invite friends 🚀</p>
-              <p className="text-xs text-slate-400 mb-3">The more people play, the bigger the jackpot!</p>
+            {/* Invite / share */}
+            <div className="bg-black/40 border border-amber-500/10 rounded-2xl p-4">
+              <p className="font-bold text-white text-sm mb-1">🚀 Invite friends</p>
+              <p className="text-xs text-slate-500 mb-3">The more people play, the bigger the jackpot!</p>
               <div className="flex gap-2">
                 <a
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(siteUrl)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-white text-xs font-semibold"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-black/50 border border-white/[0.08] rounded-xl text-white text-xs font-semibold"
                 >
                   <Twitter className="w-3.5 h-3.5" /> Twitter
                 </a>
@@ -561,13 +686,14 @@ export default function MobileHome() {
                   href={`https://t.me/share/url?url=${encodeURIComponent(siteUrl)}&text=${encodeURIComponent(shareText)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-blue-600/50 border border-blue-500/30 rounded-xl text-white text-xs font-semibold"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-blue-600/20 border border-blue-500/20 rounded-xl text-blue-300 text-xs font-semibold"
                 >
                   <Send className="w-3.5 h-3.5" /> Telegram
                 </a>
                 <button
                   onClick={handleCopyLink}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-yellow-500/20 border border-yellow-500/30 rounded-xl text-yellow-300 text-xs font-semibold"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 border border-amber-500/20 rounded-xl text-amber-400 text-xs font-semibold"
+                  style={{ background: 'rgba(245,158,11,0.08)' }}
                 >
                   <Share2 className="w-3.5 h-3.5" /> {linkCopied ? 'Copied!' : 'Copy'}
                 </button>
@@ -581,10 +707,10 @@ export default function MobileHome() {
 
       </main>
 
-      {/* Bottom Navigation */}
+      {/* ── Bottom Navigation ── */}
       <nav
-        className="fixed bottom-0 inset-x-0 z-40 bg-slate-950/98 border-t border-white/8 backdrop-blur-2xl"
-        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        className="fixed bottom-0 inset-x-0 z-40 backdrop-blur-2xl border-t border-white/[0.05]"
+        style={{ background: 'rgba(7,7,15,0.97)', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="flex">
           {tabs.map(({ id, label, Icon }) => {
@@ -593,15 +719,22 @@ export default function MobileHome() {
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
-                className="flex-1 flex flex-col items-center pt-1 pb-2 gap-1 relative transition-all duration-200"
+                className="flex-1 flex flex-col items-center pt-2 pb-1.5 gap-0.5 relative transition-all duration-200"
               >
                 {active && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-0.5 rounded-full bg-violet-400" />
+                  <div
+                    className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
+                    style={{ background: 'linear-gradient(90deg, #f59e0b, #ef4444)' }}
+                  />
                 )}
-                <div className={`w-10 h-9 rounded-xl flex items-center justify-center transition-all duration-200 ${active ? 'bg-violet-500/20' : ''}`}>
-                  <Icon className={`w-5 h-5 transition-colors duration-200 ${active ? 'text-violet-400' : 'text-slate-500'}`} />
+                <div className={`w-9 h-8 rounded-xl flex items-center justify-center transition-all duration-200 ${active ? 'bg-amber-500/10' : ''}`}>
+                  <Icon
+                    className={`w-5 h-5 transition-colors duration-200 ${active ? 'text-amber-400' : 'text-slate-600'}`}
+                  />
                 </div>
-                <span className={`text-[9px] font-semibold tracking-wide transition-colors duration-200 ${active ? 'text-violet-300' : 'text-slate-600'}`}>
+                <span
+                  className={`text-[9px] font-bold tracking-wider transition-colors duration-200 ${active ? 'text-amber-400' : 'text-slate-600'}`}
+                >
                   {label.toUpperCase()}
                 </span>
               </button>
@@ -610,7 +743,7 @@ export default function MobileHome() {
         </div>
       </nav>
 
-      {/* Modals */}
+      {/* ── Modals ── */}
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} onSuccess={handleAuthSuccess} />
       <BuyTicketsModal
         isOpen={buyOpen}
