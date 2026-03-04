@@ -37,7 +37,7 @@ export default function DisclaimerModal() {
 
   return (
     <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="mx-auto w-full max-w-md rounded-xl border border-white/15 bg-gradient-to-br from-indigo-950 via-purple-950 to-blue-950 p-4 text-white shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div className="mx-auto w-full max-w-md rounded-xl border border-amber-500/20 p-4 text-white shadow-2xl max-h-[90vh] overflow-y-auto" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
         <div className="text-sm leading-relaxed mb-4">
           {/* Warning Icon */}
           <div className="flex justify-center mb-4">

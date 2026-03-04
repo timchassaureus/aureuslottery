@@ -42,17 +42,17 @@ export default function ReferralDashboard() {
 
   if (!wallet) {
     return (
-      <div className="rounded-xl border border-purple-500/30 bg-purple-900/20 p-6 text-center">
-        <p className="text-purple-300">Connect your wallet to get your referral link and earn 3% on every ticket your friends buy.</p>
+      <div className="rounded-xl border border-amber-500/20 bg-black/40 p-6 text-center">
+        <p className="text-amber-300/80">Connect your wallet to get your referral link and earn 3% on every ticket your friends buy.</p>
       </div>
     );
   }
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-purple-500/30 bg-purple-900/20 p-8">
-        <Loader2 className="h-6 w-6 animate-spin text-purple-400" />
-        <span className="text-purple-300">Loading referral data…</span>
+      <div className="flex items-center justify-center gap-2 rounded-xl border border-amber-500/20 bg-black/40 p-8">
+        <Loader2 className="h-6 w-6 animate-spin text-amber-400" />
+        <span className="text-amber-300/80">Loading referral data…</span>
       </div>
     );
   }
@@ -72,21 +72,21 @@ export default function ReferralDashboard() {
   }
 
   return (
-    <div className="rounded-xl border border-purple-500/30 bg-purple-900/20 p-6 space-y-6">
+    <div className="rounded-xl border border-amber-500/20 bg-black/40 p-6 space-y-6">
       <h3 className="text-lg font-bold text-white flex items-center gap-2">
         <Share2 className="w-5 h-5 text-primary-400" />
         Invite friends — grow the jackpot 🚀
       </h3>
 
       {/* How it works */}
-      <div className="rounded-xl border border-purple-500/20 bg-purple-800/10 p-4 space-y-3">
+      <div className="rounded-xl border border-amber-500/15 bg-amber-500/5 p-4 space-y-3">
         <p className="text-sm font-semibold text-white">How it works</p>
-        <ol className="space-y-2 text-sm text-purple-200">
+        <ol className="space-y-2 text-sm text-amber-200/80">
           <li className="flex gap-2"><span className="text-yellow-400 font-bold shrink-0">1.</span> Copy your unique referral link below.</li>
           <li className="flex gap-2"><span className="text-yellow-400 font-bold shrink-0">2.</span> Share it anywhere — WhatsApp, Telegram, X, Instagram...</li>
           <li className="flex gap-2"><span className="text-yellow-400 font-bold shrink-0">3.</span> When a friend opens your link and buys tickets, you automatically earn <strong className="text-white">3% of their purchase</strong>, paid directly to your wallet in USDC.</li>
         </ol>
-        <p className="text-xs text-purple-400 border-t border-purple-600/30 pt-2">
+        <p className="text-xs text-amber-400/70 border-t border-amber-500/20 pt-2">
           No cap, no expiry. The more friends you bring, the more you earn — even while you sleep.
         </p>
       </div>
@@ -103,7 +103,7 @@ export default function ReferralDashboard() {
               type="text"
               readOnly
               value={referralLink}
-              className="flex-1 rounded-lg border border-purple-600/50 bg-purple-800/50 px-4 py-3 text-sm text-white font-mono"
+              className="flex-1 rounded-lg border border-amber-500/30 bg-black/40 px-4 py-3 text-sm text-white font-mono"
             />
             <button
               onClick={handleCopy}
@@ -135,25 +135,25 @@ export default function ReferralDashboard() {
         </>
       )}
 
-      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-purple-600/40">
+      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-amber-500/20">
         <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-purple-800/50 p-3">
+          <div className="rounded-lg bg-black/40 p-3 border border-amber-500/15">
             <Users className="w-6 h-6 text-primary-400" />
           </div>
           <div>
             <p className="text-2xl font-bold text-white">{referredCount}</p>
-            <p className="text-xs text-purple-400">Friends referred</p>
+            <p className="text-xs text-amber-400/70">Friends referred</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-purple-800/50 p-3">
+          <div className="rounded-lg bg-black/40 p-3 border border-amber-500/15">
             <DollarSign className="w-6 h-6 text-green-400" />
           </div>
           <div>
             <p className="text-2xl font-bold text-white">
               ${totalEarned.toFixed(2)}
             </p>
-            <p className="text-xs text-purple-400">Total earned</p>
+            <p className="text-xs text-amber-400/70">Total earned</p>
           </div>
         </div>
       </div>

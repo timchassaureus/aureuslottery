@@ -13,7 +13,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[999] overflow-y-auto py-4 md:py-8">
       <div className="min-h-screen flex items-start justify-center p-4">
-        <div className="bg-gradient-to-br from-purple-900 to-indigo-900 border-2 border-purple-500/50 rounded-3xl p-6 md:p-8 max-w-3xl w-full relative">
+        <div className="border-2 border-amber-500/25 rounded-3xl p-6 md:p-8 max-w-3xl w-full relative" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
           {/* Close Button - Fixed at top right */}
           <button
             onClick={onClose}
@@ -31,7 +31,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
 
         <div className="space-y-6">
           {/* Basic Concept */}
-          <div className="bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 rounded-xl p-6 border-2 border-violet-400/50">
+          <div className="bg-gradient-to-r from-amber-500/15 to-orange-500/15 rounded-xl p-6 border-2 border-amber-400/40">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
                 <Zap className="w-6 h-6 text-white" />
@@ -45,11 +45,11 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-6 h-6 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong className="text-violet-300">2 CHANCES TO WIN</strong> every day - Main jackpot at <strong>9PM</strong> + Bonus draw at <strong>9:30PM</strong>! 💎</span>
+                    <span><strong className="text-amber-300">2 CHANCES TO WIN</strong> every day - Main jackpot at <strong>9PM</strong> + Bonus draw at <strong>9:30PM</strong>! 💎</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-6 h-6 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong className="text-fuchsia-300">More tickets = BETTER odds!</strong> Go ALL IN and increase your chances! 🔥</span>
+                    <span><strong className="text-orange-300">More tickets = BETTER odds!</strong> Go ALL IN and increase your chances! 🔥</span>
                   </li>
                 </ul>
               </div>
@@ -82,7 +82,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
           {/* Winner Selection */}
           <div className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-xl p-6 border-2 border-blue-400/50">
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full flex items-center justify-center animate-pulse">
+              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
                 <Users className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -142,27 +142,27 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
               Go BIG = Save BIG! <strong className="text-yellow-300">The more you buy, the more you SAVE!</strong> 💰
             </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              <div className="bg-purple-800/50 rounded-lg p-3 text-center border-2 border-purple-500/50 hover:scale-105 transition-transform">
+              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-amber-500/30 hover:scale-105 transition-transform">
                 <p className="text-yellow-300 font-black text-xl">5 tickets</p>
                 <p className="text-green-400 text-lg font-bold">$4.90</p>
                 <p className="text-white text-xs">Save $0.10!</p>
               </div>
-              <div className="bg-purple-800/50 rounded-lg p-3 text-center border-2 border-purple-500/50 hover:scale-105 transition-transform">
+              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-amber-500/30 hover:scale-105 transition-transform">
                 <p className="text-yellow-300 font-black text-xl">10 tickets</p>
                 <p className="text-green-400 text-lg font-bold">$9.50</p>
                 <p className="text-white text-xs">Save $0.50!</p>
               </div>
-              <div className="bg-purple-800/50 rounded-lg p-3 text-center border-2 border-purple-500/50 hover:scale-105 transition-transform">
+              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-amber-500/30 hover:scale-105 transition-transform">
                 <p className="text-yellow-300 font-black text-xl">20 tickets</p>
                 <p className="text-green-400 text-lg font-bold">$18.40</p>
                 <p className="text-white text-xs">Save $1.60!</p>
               </div>
-              <div className="bg-purple-800/50 rounded-lg p-3 text-center border-2 border-purple-500/50 hover:scale-105 transition-transform">
+              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-amber-500/30 hover:scale-105 transition-transform">
                 <p className="text-yellow-300 font-black text-xl">50 tickets</p>
                 <p className="text-green-400 text-lg font-bold">$44.00</p>
                 <p className="text-white text-xs">Save $6! 🔥</p>
               </div>
-              <div className="bg-purple-800/50 rounded-lg p-3 text-center border-2 border-purple-500/50 hover:scale-105 transition-transform">
+              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-amber-500/30 hover:scale-105 transition-transform">
                 <p className="text-yellow-300 font-black text-xl">100 tickets</p>
                 <p className="text-green-400 text-lg font-bold">$85.00</p>
                 <p className="text-white text-xs">Save $15! 💎</p>

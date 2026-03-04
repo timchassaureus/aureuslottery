@@ -90,7 +90,7 @@ export default function ViralShareModal({ isOpen, onClose, ticketCount, jackpot 
 
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[200] p-4">
-      <div className="bg-gradient-to-br from-purple-900 via-indigo-900 to-purple-900 border-4 border-yellow-400 rounded-3xl p-6 md:p-8 max-w-lg w-full relative overflow-hidden shadow-2xl">
+      <div className="border-4 border-yellow-400 rounded-3xl p-6 md:p-8 max-w-lg w-full relative overflow-hidden shadow-2xl" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
         {/* Animated sparkles background */}
         <div className="absolute inset-0 pointer-events-none">
           {[...Array(20)].map((_, i) => (
@@ -254,7 +254,7 @@ export default function ViralShareModal({ isOpen, onClose, ticketCount, jackpot 
               {!bonusClaimed && (
                 <button
                   onClick={() => setShowConfirmation(false)}
-                  className="w-full py-3 bg-purple-700 hover:bg-purple-600 rounded-xl font-semibold text-white transition-all"
+                  className="w-full py-3 bg-amber-900/40 hover:bg-amber-900/60 border border-amber-500/30 rounded-xl font-semibold text-white transition-all"
                 >
                   Not yet, let me share again
                 </button>

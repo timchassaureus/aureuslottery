@@ -61,7 +61,7 @@ export default function UsernameModal() {
 
   return (
     <div className="fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="mx-auto w-full max-w-md rounded-xl border border-white/15 bg-gradient-to-br from-indigo-950 via-purple-950 to-blue-950 p-6 text-white shadow-2xl">
+      <div className="mx-auto w-full max-w-md rounded-xl border border-amber-500/20 p-6 text-white shadow-2xl" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
 
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-r from-primary-500/20 to-primary-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -77,7 +77,7 @@ export default function UsernameModal() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold mb-2 text-purple-200">
+            <label className="block text-sm font-semibold mb-2 text-amber-200">
               Username
             </label>
             <input
@@ -86,7 +86,7 @@ export default function UsernameModal() {
               onChange={(e) => setUsernameInput(e.target.value)}
               placeholder="Enter your username"
               maxLength={20}
-              className="w-full px-4 py-3 bg-purple-900/50 border border-purple-600/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50"
+              className="w-full px-4 py-3 bg-black/40 border border-amber-500/30 rounded-xl text-white placeholder-amber-400/60 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50"
               autoFocus
             />
             <p className="mt-2 text-xs text-slate-400">
