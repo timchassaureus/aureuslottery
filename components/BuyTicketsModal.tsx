@@ -98,40 +98,31 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
       return;
     }
 
-    // Live mode: Coinbase Pay with sessionToken (required by Coinbase)
+    // Live mode: Stripe card payment
     if (isLive) {
       setProcessing(true);
       try {
-        const amountEur = (count * ticketPrice).toFixed(2);
-        const appId = process.env.NEXT_PUBLIC_COINBASE_APP_ID || '';
-        const treasury = process.env.NEXT_PUBLIC_TREASURY_ADDRESS || '0x47d918C2e303855da1AD3e08A4128211284aD837';
-
-        const tokenRes = await fetch('/api/coinbase/token', {
+        const amountCents = Math.round(totalCost * 100);
+        const res = await fetch('/api/payment/stripe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            walletAddress: treasury,
-            userAddress: user.address,
-            count,
+            amount: amountCents,
+            ticketsCount: count,
             bonusTickets,
-            amountEur,
+            currency: 'eur',
+            walletAddress: user.address,
           }),
         });
-
-        const tokenData = await tokenRes.json();
-
-        if (!tokenData.token) {
-          const msg = tokenData.error || 'Unable to get session token';
-          toast.error(msg, { duration: 8000 });
+        const data = await res.json();
+        if (!data.url) {
+          toast.error(data.error || 'Payment error. Please try again.');
           setProcessing(false);
           return;
         }
-
-        // recordReferralPurchase is called on /victory after payment completes
-        const coinbaseUrl = `https://pay.coinbase.com/buy/select-asset?appId=${appId}&sessionToken=${encodeURIComponent(tokenData.token)}&defaultAsset=USDC&defaultNetwork=base&presetFiatAmount=${amountEur}`;
-        window.location.href = coinbaseUrl;
+        window.location.href = data.url;
       } catch (e) {
-        console.error('Coinbase Pay error:', e);
+        console.error('Stripe error:', e);
         toast.error('Network error. Please try again.');
         setProcessing(false);
       }

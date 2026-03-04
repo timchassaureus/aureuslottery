@@ -31,6 +31,8 @@ export async function POST(request: NextRequest) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
     const ticketsCount = Number(session.metadata?.tickets_count) || 1;
+    const bonusTickets = Number(session.metadata?.bonus_tickets) || 0;
+    const totalTickets = ticketsCount + bonusTickets;
     const amountCents = Number(session.metadata?.amount_cents) || 0;
     const amountUsd = amountCents / 100;
     const customerEmail = session.customer_details?.email ?? null;
@@ -44,20 +46,17 @@ export async function POST(request: NextRequest) {
         stripe_session_id: session.id,
         customer_email: customerEmail,
         amount_usd: amountUsd,
-        tickets_count: ticketsCount,
+        tickets_count: totalTickets,
         status: 'completed',
       });
 
-      // Also record tickets in purchases table so they enter the draw
+      // Record tickets in purchases table so they enter the draw
       if (walletAddress && /^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
-        const today = new Date().toISOString().slice(0, 10);
-        const purchaseRows = Array.from({ length: ticketsCount }, () => ({
+        const { error: purchaseError } = await supabase.from('purchases').insert({
           wallet_address: walletAddress.toLowerCase(),
-          amount_usd: 1,
-          draw_date: today,
-          payment_method: 'stripe',
-        }));
-        const { error: purchaseError } = await supabase.from('purchases').insert(purchaseRows);
+          amount_usd: amountUsd,
+          tickets_count: totalTickets,
+        });
         if (purchaseError) {
           console.error('Failed to record purchases from Stripe:', purchaseError);
         }

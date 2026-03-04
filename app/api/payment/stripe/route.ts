@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
     // CardPaymentModal sends amount already in cents (amount * 100)
     const amountCents = Number(body?.amount);
     const ticketsCount = Math.max(1, Number(body?.ticketsCount) || 1);
+    const bonusTickets = Math.max(0, Number(body?.bonusTickets) || 0);
     const currency = typeof body?.currency === 'string' ? body.currency.toLowerCase() : 'usd';
     const walletAddress = typeof body?.walletAddress === 'string' ? body.walletAddress : null;
 
@@ -36,8 +37,8 @@ export async function POST(request: NextRequest) {
           price_data: {
             currency,
             product_data: {
-              name: `AUREUS Lottery — ${ticketsCount} ticket${ticketsCount > 1 ? 's' : ''}`,
-              description: `Participez au tirage AUREUS avec ${ticketsCount} ticket${ticketsCount > 1 ? 's' : ''}`,
+              name: `AUREUS Lottery — ${ticketsCount} ticket${ticketsCount > 1 ? 's' : ''}${bonusTickets > 0 ? ` + ${bonusTickets} bonus` : ''}`,
+              description: `Enter the AUREUS daily draw with ${ticketsCount + bonusTickets} ticket${ticketsCount + bonusTickets > 1 ? 's' : ''}`,
             },
             unit_amount: amountCents,
           },
@@ -49,6 +50,7 @@ export async function POST(request: NextRequest) {
       cancel_url: `${appUrl}/?payment=cancelled`,
       metadata: {
         tickets_count: String(ticketsCount),
+        bonus_tickets: String(bonusTickets),
         amount_cents: String(amountCents),
         wallet_address: walletAddress ?? '',
       },

@@ -59,7 +59,11 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Is my money safe?',
-    a: `Funds are held in a dedicated wallet on the Base blockchain (by Coinbase). Incoming payments (Coinbase Pay → USDC) and outgoing payments (to winners) are all publicly visible. USDC is a 1:1 stablecoin with the US dollar — it is not volatile.`,
+    a: `Funds are held in a dedicated wallet on the Base blockchain (by Coinbase). All incoming and outgoing transactions are publicly visible on BaseScan. USDC is a 1:1 stablecoin with the US dollar — it is not volatile.`,
+  },
+  {
+    q: "I don't have USDC — how do I get some?",
+    a: `See the "How to get USDC" guide below. In short: download Coinbase or Binance → buy USDC → withdraw to Base network → send to the Aureus treasury address.`,
   },
 ];
 
@@ -373,7 +377,7 @@ export default function MobileHome() {
             {/* Steps */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-4">
               {[
-                { n: '1', icon: '💳', title: 'Buy tickets', desc: '1€ = 1 ticket. Pay by card via Coinbase Pay. No external wallet required.' },
+                { n: '1', icon: '💎', title: 'Buy tickets', desc: '1 USDC = 1 ticket. Send USDC directly to the treasury wallet on Base network. Tickets are registered automatically.' },
                 { n: '2', icon: '⏰', title: 'Draw at 9 PM UTC', desc: 'An automatic draw takes place every evening. Your ticket enters both draws simultaneously.' },
                 { n: '3', icon: '🎲', title: 'Random selection', desc: '1 main winner is drawn. 25 bonus winners are drawn from all remaining tickets.' },
                 { n: '4', icon: '💸', title: 'Automatic payout', desc: 'USDC payment is sent automatically to your wallet within 45 minutes of the draw.' },
@@ -430,6 +434,33 @@ export default function MobileHome() {
 
             {/* TrustBadges */}
             <TrustBadges />
+
+            {/* How to get USDC */}
+            <div className="bg-white/5 border border-violet-500/20 rounded-2xl p-4">
+              <p className="font-bold text-white text-sm mb-1">💡 New to crypto? How to get USDC</p>
+              <p className="text-xs text-slate-400 mb-4">USDC is a digital dollar (1 USDC = $1). You need it to buy tickets. Here's how to get started in 4 steps:</p>
+              <div className="space-y-3">
+                {[
+                  { n: '1', title: 'Download a wallet', desc: 'Install Coinbase Wallet or MetaMask on your phone. These are free apps that hold your crypto.' },
+                  { n: '2', title: 'Buy USDC', desc: 'Inside Coinbase Wallet, tap "Buy" and select USDC. You can pay by card. Alternatively use Coinbase.com or Binance.com.' },
+                  { n: '3', title: 'Switch to Base network', desc: 'In your wallet, make sure you are on the "Base" network (not Ethereum). Base has much lower fees (~$0.01 per transaction).' },
+                  { n: '4', title: 'Send to Aureus', desc: `Send your USDC to the treasury address below. Each 1 USDC = 1 ticket. Your tickets are registered within a few minutes.` },
+                ].map(s => (
+                  <div key={s.n} className="flex gap-3 items-start">
+                    <div className="w-7 h-7 rounded-full bg-violet-600/40 border border-violet-500/50 flex items-center justify-center text-xs font-black text-violet-300 shrink-0">{s.n}</div>
+                    <div>
+                      <p className="font-semibold text-white text-xs">{s.title}</p>
+                      <p className="text-slate-400 text-xs mt-0.5 leading-relaxed">{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 p-3 bg-black/30 rounded-xl border border-white/10">
+                <p className="text-xs text-slate-400 mb-1">Treasury address (Base network):</p>
+                <p className="font-mono text-xs text-violet-300 break-all">{TREASURY}</p>
+              </div>
+              <p className="text-xs text-slate-500 mt-3 text-center">⚠️ Always send on the Base network — not Ethereum or other chains.</p>
+            </div>
 
             {/* FAQ */}
             <div>

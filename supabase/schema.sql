@@ -18,8 +18,22 @@ CREATE TABLE IF NOT EXISTS referrals (
   referred_wallet TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   total_earned NUMERIC(20, 6) NOT NULL DEFAULT 0,
+  total_paid NUMERIC(20, 6) NOT NULL DEFAULT 0,
+  last_paid_at TIMESTAMPTZ,
   UNIQUE(referrer_wallet, referred_wallet)
 );
+
+-- Migration: add total_paid / last_paid_at if missing
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'referrals' AND column_name = 'total_paid') THEN
+    ALTER TABLE referrals ADD COLUMN total_paid NUMERIC(20, 6) NOT NULL DEFAULT 0;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'referrals' AND column_name = 'last_paid_at') THEN
+    ALTER TABLE referrals ADD COLUMN last_paid_at TIMESTAMPTZ;
+  END IF;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
 CREATE INDEX IF NOT EXISTS idx_referrals_referrer ON referrals(referrer_wallet);
 CREATE INDEX IF NOT EXISTS idx_referrals_referred ON referrals(referred_wallet);
 
@@ -133,9 +147,19 @@ CREATE TABLE IF NOT EXISTS custodial_users (
   name TEXT,
   provider TEXT NOT NULL DEFAULT 'email',
   wallet_address TEXT NOT NULL UNIQUE,
+  password_hash TEXT,
   usdc_balance NUMERIC(20, 6) NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Migration: add password_hash if missing
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'custodial_users' AND column_name = 'password_hash') THEN
+    ALTER TABLE custodial_users ADD COLUMN password_hash TEXT;
+  END IF;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
 CREATE INDEX IF NOT EXISTS idx_custodial_users_email ON custodial_users(email);
 CREATE INDEX IF NOT EXISTS idx_custodial_users_wallet ON custodial_users(wallet_address);
 
