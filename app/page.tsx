@@ -412,7 +412,7 @@ export default function Home() {
       <DisclaimerModal />
       <UsernameModal />
       
-      <div className="min-h-screen bg-[#07070f] text-white relative overflow-x-hidden">
+      <div className="min-h-screen bg-[#08091a] text-white relative overflow-x-hidden">
       {/* Mobile UI — shown only on small screens */}
       <div className="md:hidden">
         <MobileHome />
@@ -420,12 +420,14 @@ export default function Home() {
 
       {/* Ambient background — desktop */}
       <div className="fixed inset-0 pointer-events-none hidden md:block">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full opacity-25"
-          style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 65%)' }} />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-15"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 65%)' }} />
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[900px] h-[700px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.14) 0%, rgba(139,92,246,0.06) 45%, transparent 68%)' }} />
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 65%)' }} />
+        <div className="absolute top-1/2 -left-20 w-[400px] h-[400px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 65%)' }} />
       </div>
-      <header className="hidden md:block sticky top-0 z-40 border-b border-white/[0.05]" style={{ background: 'rgba(7,7,15,0.92)', backdropFilter: 'blur(24px)' }}>
+      <header className="hidden md:block sticky top-0 z-40 border-b border-white/[0.05]" style={{ background: 'rgba(8,9,26,0.93)', backdropFilter: 'blur(24px)', borderColor: 'rgba(245,158,11,0.08)' }}>
         <div className="container mx-auto px-3 md:px-6 h-14 md:h-20 flex items-center justify-between gap-2 md:gap-8">
 
           {/* ── Logo ── */}
@@ -620,7 +622,7 @@ export default function Home() {
               style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(245,158,11,0.1) 0%, transparent 60%)' }} />
             <div
               className="relative backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden"
-              style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 60%, #0c0b10 100%)', border: '1px solid rgba(245,158,11,0.15)' }}
+              style={{ background: 'linear-gradient(160deg, #131228 0%, #0e0c22 50%, #110f1e 100%)', border: '1px solid rgba(245,158,11,0.28)', boxShadow: '0 0 80px rgba(245,158,11,0.08), 0 8px 60px rgba(0,0,0,0.6)' }}
             >
 
               {/* Top bar: countdown */}
@@ -784,7 +786,7 @@ export default function Home() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setReferralOpen(false)}>
           <div
             className="rounded-2xl max-w-md w-full p-6 shadow-2xl border"
-            style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)', borderColor: 'rgba(245,158,11,0.15)' }}
+            style={{ background: 'linear-gradient(160deg, #0e0d28 0%, #0b0a1e 100%)', borderColor: 'rgba(245,158,11,0.15)' }}
             onClick={e => e.stopPropagation()}
           >
             <ReferralDashboard />
@@ -801,7 +803,7 @@ export default function Home() {
         >
           <div
             className="rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border"
-            style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)', borderColor: 'rgba(245,158,11,0.15)' }}
+            style={{ background: 'linear-gradient(160deg, #0e0d28 0%, #0b0a1e 100%)', borderColor: 'rgba(245,158,11,0.15)' }}
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}

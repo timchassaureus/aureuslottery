@@ -200,18 +200,20 @@ export default function MobileHome() {
   ];
 
   return (
-    <div className="md:hidden min-h-screen bg-[#07070f] text-white relative overflow-x-hidden">
+    <div className="md:hidden min-h-screen bg-[#08091a] text-white relative overflow-x-hidden">
 
       {/* Ambient background glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full opacity-30"
-          style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%)' }} />
-        <div className="absolute bottom-20 -right-20 w-[300px] h-[300px] rounded-full opacity-20"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%)' }} />
+        <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.18) 0%, rgba(139,92,246,0.08) 50%, transparent 70%)' }} />
+        <div className="absolute bottom-0 -right-10 w-[350px] h-[350px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 65%)' }} />
+        <div className="absolute top-1/2 -left-20 w-[250px] h-[250px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 65%)' }} />
       </div>
 
       {/* ── Header ── */}
-      <header className="sticky top-0 z-30 bg-[#07070f]/90 backdrop-blur-xl border-b border-white/[0.05]">
+      <header className="sticky top-0 z-30 backdrop-blur-xl border-b border-amber-500/[0.08]" style={{ background: 'rgba(8,9,26,0.88)' }}>
         <div className="px-4 py-3 flex items-center justify-between">
 
           {/* Live badge */}
@@ -261,13 +263,17 @@ export default function MobileHome() {
 
             {/* Jackpot hero card */}
             <div
-              className="relative rounded-3xl overflow-hidden border border-amber-500/20"
-              style={{ background: 'linear-gradient(160deg, #0f0e1a 0%, #0a0a12 60%, #0c0b10 100%)' }}
+              className="relative rounded-3xl overflow-hidden"
+              style={{
+                background: 'linear-gradient(160deg, #131228 0%, #0e0c22 50%, #110f1e 100%)',
+                border: '1px solid rgba(245,158,11,0.3)',
+                boxShadow: '0 0 60px rgba(245,158,11,0.08), 0 4px 40px rgba(0,0,0,0.5)',
+              }}
             >
               {/* Glow behind number */}
               <div
                 className="absolute inset-0 pointer-events-none"
-                style={{ background: 'radial-gradient(ellipse at 50% 60%, rgba(245,158,11,0.12) 0%, transparent 70%)' }}
+                style={{ background: 'radial-gradient(ellipse at 50% 55%, rgba(245,158,11,0.18) 0%, rgba(139,92,246,0.06) 50%, transparent 75%)' }}
               />
               <div className="relative p-6 text-center">
                 {/* Countdown */}
@@ -310,17 +316,17 @@ export default function MobileHome() {
 
             {/* Dual draw pills */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-black/40 border border-amber-500/15 rounded-2xl p-4 text-center">
+              <div className="rounded-2xl p-4 text-center" style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)' }}>
                 <p className="text-xl mb-1.5">🏆</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-amber-400/60 mb-1">Main Jackpot</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-amber-400/80 mb-1">Main Jackpot</p>
                 <p className="text-xl font-black text-white">${jackpot.toLocaleString('en-US')}</p>
-                <p className="text-[10px] text-slate-600 mt-1">1 winner · 9 PM UTC</p>
+                <p className="text-[10px] text-slate-500 mt-1">1 winner · 9 PM UTC</p>
               </div>
-              <div className="bg-black/40 border border-violet-500/15 rounded-2xl p-4 text-center">
+              <div className="rounded-2xl p-4 text-center" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.25)' }}>
                 <p className="text-xl mb-1.5">💎</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-violet-400/60 mb-1">Bonus Draw</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-violet-400/80 mb-1">Bonus Draw</p>
                 <p className="text-xl font-black text-white">${secondaryPot.toLocaleString('en-US')}</p>
-                <p className="text-[10px] text-slate-600 mt-1">25 winners · 9:30 PM</p>
+                <p className="text-[10px] text-slate-500 mt-1">25 winners · 9:30 PM</p>
               </div>
             </div>
 
@@ -709,8 +715,8 @@ export default function MobileHome() {
 
       {/* ── Bottom Navigation ── */}
       <nav
-        className="fixed bottom-0 inset-x-0 z-40 backdrop-blur-2xl border-t border-white/[0.05]"
-        style={{ background: 'rgba(7,7,15,0.97)', paddingBottom: 'env(safe-area-inset-bottom)' }}
+        className="fixed bottom-0 inset-x-0 z-40 backdrop-blur-2xl border-t"
+        style={{ background: 'rgba(8,9,26,0.97)', borderColor: 'rgba(245,158,11,0.1)', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="flex">
           {tabs.map(({ id, label, Icon }) => {
