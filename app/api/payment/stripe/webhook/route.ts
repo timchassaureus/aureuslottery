@@ -41,6 +41,18 @@ export async function POST(request: NextRequest) {
     try {
       const supabase = createServiceClient();
 
+      // Idempotency: if this session was already processed, skip silently
+      const { data: existing } = await supabase
+        .from('stripe_payments')
+        .select('id')
+        .eq('stripe_session_id', session.id)
+        .maybeSingle();
+
+      if (existing) {
+        // Already processed — Stripe is retrying, acknowledge and stop
+        return NextResponse.json({ received: true });
+      }
+
       // Record Stripe payment
       await supabase.from('stripe_payments').insert({
         stripe_session_id: session.id,

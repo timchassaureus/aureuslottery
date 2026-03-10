@@ -117,6 +117,10 @@ async function runDraw(req: NextRequest) {
       });
 
       if (insertError) {
+        // 23505 = unique_violation — another cron already inserted this draw
+        if (insertError.code === '23505') {
+          return NextResponse.json({ error: 'Draw already run today', drawType }, { status: 409 });
+        }
         return NextResponse.json({ error: insertError.message }, { status: 500 });
       }
 
@@ -166,6 +170,10 @@ async function runDraw(req: NextRequest) {
 
       const { error: insertError } = await supabase.from('winners').insert(rows);
       if (insertError) {
+        // 23505 = unique_violation — another cron already inserted this draw
+        if (insertError.code === '23505') {
+          return NextResponse.json({ error: 'Draw already run today', drawType }, { status: 409 });
+        }
         return NextResponse.json({ error: insertError.message }, { status: 500 });
       }
 

@@ -280,49 +280,37 @@ export default function Home() {
     setShowPreDrawCountdown(false);
 
     if (isLive) {
-      // Live mode: delegate draw execution to server-side API (called by Vercel cron)
-      // Countdown is purely cosmetic; we just fetch the result after the cron fires
+      // Live mode: the draw is handled exclusively by the Vercel cron (CRON_SECRET protected).
+      // The countdown here is cosmetic. After it completes, poll /api/winners to display results.
       const drawApiType = preDrawType === '8pm' ? 'main' : 'bonus';
-      try {
-        const res = await fetch(`/api/draw/trigger?type=${drawApiType}`, { method: 'GET' });
-        const data = await res.json();
-        if (data.success && drawApiType === 'main' && data.winner) {
-          setEpicDraw({
-            participants: [],
-            winner: data.winner,
-            prize: data.prize ?? 0,
-            totalTickets: data.totalTickets ?? 0,
-          });
-          // Win notification
-          const userAddr = (aureusUser?.walletAddress || user?.address || '').toLowerCase();
-          if (userAddr && data.winner.toLowerCase() === userAddr) {
-            sendBrowserNotification('🏆 You won the jackpot!', `You just won $${data.prize?.toLocaleString('en-US')} USDC on Aureus!`);
-            emitInAppNotification({ type: 'winner', message: `🏆 You won the jackpot! $${data.prize?.toLocaleString('en-US')} USDC is on its way to your wallet.` });
-          } else {
-            emitInAppNotification({ type: 'jackpot', message: `🎰 Main draw complete! Winner: ${data.winner?.slice(0,6)}...${data.winner?.slice(-4)} won $${data.prize?.toLocaleString('en-US')}` });
+      emitInAppNotification({ type: 'jackpot', message: drawApiType === 'main' ? '🎰 Draw in progress… Results in a moment!' : '💎 Bonus draw in progress… Results in a moment!' });
+
+      // Poll for results — cron may take up to 60s; retry up to 6 times every 10s
+      let attempts = 0;
+      const poll = async () => {
+        attempts++;
+        try {
+          const today = new Date().toISOString().slice(0, 10);
+          const res = await fetch(`/api/winners?limit=30`);
+          if (!res.ok) return;
+          const winners: Array<{ wallet_address: string; amount_usd: number; draw_type: string; draw_date: string }> = await res.json();
+          const todayResults = winners.filter(w => w.draw_date?.startsWith(today) && w.draw_type === drawApiType);
+          if (todayResults.length > 0) {
+            if (drawApiType === 'main') {
+              const top = todayResults[0];
+              emitInAppNotification({ type: 'jackpot', message: `🎰 Main draw complete! Winner: ${top.wallet_address} won $${top.amount_usd.toLocaleString('en-US')}` });
+            } else {
+              const prizePerWinner = todayResults[0].amount_usd;
+              emitInAppNotification({ type: 'jackpot', message: `🎁 Bonus draw complete! ${todayResults.length} winners × $${prizePerWinner.toFixed(2)} each.` });
+            }
+            syncOnChainData(user?.address);
+            return; // Done
           }
-        } else if (data.success && drawApiType === 'bonus' && data.winners?.length > 0) {
-          const prizePerWinner = data.prizePerWinner ?? 0;
-          setDrawAnimation({
-            winners: (data.winners as string[]).map((addr: string) => ({ address: addr, prize: prizePerWinner })),
-            prize: prizePerWinner,
-            drawType: '10pm',
-          });
-          // Win notification for bonus draw
-          const userAddr = (aureusUser?.walletAddress || user?.address || '').toLowerCase();
-          const didWin = userAddr && (data.winners as string[]).some((addr: string) => addr.toLowerCase() === userAddr);
-          if (didWin) {
-            sendBrowserNotification('🎁 Bonus draw win!', `You won $${prizePerWinner.toFixed(2)} USDC in the bonus draw!`);
-            emitInAppNotification({ type: 'winner', message: `🎁 You won the bonus draw! $${prizePerWinner.toFixed(2)} USDC sent to your wallet.` });
-          } else {
-            emitInAppNotification({ type: 'jackpot', message: `🎁 Bonus draw complete! ${data.winners.length} winners × $${prizePerWinner.toFixed(2)} each.` });
-          }
-        }
-        // Refresh on-chain state after draw
-        syncOnChainData(user?.address);
-      } catch (err) {
-        console.error('Live draw trigger error:', err);
-      }
+        } catch { /* ignore */ }
+        if (attempts < 6) setTimeout(poll, 10000);
+      };
+      setTimeout(poll, 10000);
+
       setPreDrawType(null);
       return;
     }

@@ -22,13 +22,14 @@ async function run(req: NextRequest) {
 
   const sb = createServiceClient();
 
-  // Idempotency: check if rewards were already given this week
+  // Idempotency: check if ANY weekly reward was already given this week
+  // (checking rank1 alone was insufficient — rank2/3 could still be inserted on retry)
   const now = new Date();
   const weekStart = new Date(now.getTime() - 7 * 86400000).toISOString();
   const { data: alreadyRan } = await sb
     .from('bonus_tickets')
     .select('id')
-    .eq('reason', 'weekly_rank1')
+    .like('reason', 'weekly_rank%')
     .gte('created_at', weekStart)
     .limit(1)
     .maybeSingle();

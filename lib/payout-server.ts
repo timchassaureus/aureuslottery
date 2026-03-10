@@ -25,8 +25,13 @@ export async function sendUSDC(toAddress: string, amountUsd: number): Promise<st
   const wallet = getWallet();
   const usdc   = new ethers.Contract(USDC_ADDRESS, USDC_ABI, wallet);
   const amount = ethers.parseUnits(amountUsd.toFixed(USDC_DECIMALS), USDC_DECIMALS);
-  const tx     = await usdc.transfer(toAddress, amount) as ethers.ContractTransactionResponse;
-  const receipt = await tx.wait();
+  const tx = await usdc.transfer(toAddress, amount) as ethers.ContractTransactionResponse;
+
+  // Timeout after 90 seconds — Base avg block time is ~2s; 90s is generous
+  const timeout = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error('tx.wait() timed out after 90s')), 90_000)
+  );
+  const receipt = await Promise.race([tx.wait(), timeout]);
   if (!receipt) throw new Error('Transaction receipt not received');
   return receipt.hash;
 }
