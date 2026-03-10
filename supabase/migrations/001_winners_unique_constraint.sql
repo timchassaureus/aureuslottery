@@ -10,6 +10,14 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_winners_draw_type_day
 
 -- Also add a unique constraint on stripe_payments.stripe_session_id
 -- (Stripe can retry webhooks; we must never issue duplicate tickets)
-ALTER TABLE stripe_payments
-  ADD CONSTRAINT IF NOT EXISTS stripe_payments_session_id_unique
-  UNIQUE (stripe_session_id);
+-- IF NOT EXISTS is not supported for ADD CONSTRAINT — use DO block instead
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'stripe_payments_session_id_unique'
+  ) THEN
+    ALTER TABLE stripe_payments
+      ADD CONSTRAINT stripe_payments_session_id_unique UNIQUE (stripe_session_id);
+  END IF;
+END $$;
