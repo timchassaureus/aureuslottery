@@ -41,8 +41,8 @@ export async function POST(request: Request) {
 
     const supabase = createServiceClient();
 
-    // Deduplication: reject identical wallet+amount within 60 seconds
-    const oneMinuteAgo = new Date(Date.now() - 60_000).toISOString();
+    // Deduplication: reject identical wallet+amount within 5 minutes (covers payment retries)
+    const oneMinuteAgo = new Date(Date.now() - 300_000).toISOString();
     const { data: recentDup } = await supabase
       .from('purchases')
       .select('id')

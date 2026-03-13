@@ -33,7 +33,8 @@ export async function GET(req: NextRequest) {
       sb.from('purchases').select('*', { count: 'exact', head: true }),
       sb.from('purchases')
         .select('wallet_address, amount_usd, tickets_count, created_at')
-        .order('created_at', { ascending: true }),
+        .order('created_at', { ascending: true })
+        .limit(50000), // prevent OOM on large datasets
       sb.from('custodial_users')
         .select('created_at')
         .gte('created_at', thirtyAgo)
@@ -104,7 +105,7 @@ export async function GET(req: NextRequest) {
       const dt = new Date(date);
       return {
         date,
-        label:   dt.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }),
+        label:   dt.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', timeZone: 'UTC' }),
         revenue: Math.round(d.revenue  * 100) / 100,
         tickets: d.tickets,
         newUsers: d.newUsers,

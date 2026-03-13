@@ -22,21 +22,8 @@ async function run(req: NextRequest) {
 
   const sb = createServiceClient();
 
-  // Idempotency: check if ANY weekly reward was already given this week
-  // (checking rank1 alone was insufficient — rank2/3 could still be inserted on retry)
   const now = new Date();
   const weekStart = new Date(now.getTime() - 7 * 86400000).toISOString();
-  const { data: alreadyRan } = await sb
-    .from('bonus_tickets')
-    .select('id')
-    .like('reason', 'weekly_rank%')
-    .gte('created_at', weekStart)
-    .limit(1)
-    .maybeSingle();
-
-  if (alreadyRan) {
-    return NextResponse.json({ ok: true, skipped: true, reason: 'Already ran this week' });
-  }
 
   // Get all purchases over the past 7 days
   const { data: purchases } = await sb
@@ -60,13 +47,27 @@ async function run(req: NextRequest) {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3);
 
-  const results: Array<{ rank: number; wallet: string; weeklyTickets: number; bonus: number }> = [];
+  const results: Array<{ rank: number; wallet: string; weeklyTickets: number; bonus: number; skipped?: boolean }> = [];
 
   for (let i = 0; i < top3.length; i++) {
     const rank = i + 1;
     const [wallet, weeklyTickets] = top3[i];
     const cfg = RANK_CONFIG[rank];
     if (!cfg) continue;
+
+    // Per-rank idempotency: if this rank was already awarded this week, skip only this rank
+    // (allows retry to fill in missing ranks if a previous run partially failed)
+    const { data: alreadyThisRank } = await sb
+      .from('bonus_tickets')
+      .select('id')
+      .eq('reason', `weekly_rank${rank}`)
+      .gte('created_at', weekStart)
+      .limit(1)
+      .maybeSingle();
+    if (alreadyThisRank) {
+      results.push({ rank, wallet, weeklyTickets, bonus: 0, skipped: true });
+      continue;
+    }
 
     // Proportional: % of their weekly tickets, capped between min and max
     const bonus = Math.min(cfg.max, Math.max(cfg.min, Math.round(weeklyTickets * cfg.pct)));

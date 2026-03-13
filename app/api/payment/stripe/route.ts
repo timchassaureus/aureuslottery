@@ -3,6 +3,18 @@ import Stripe from 'stripe';
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
+// Server-side price table — must stay in sync with BuyTicketsModal packs
+const TICKET_PRICE_USD = 1.00;
+const PACK_DISCOUNTS: Record<number, number> = {
+  5: 0.02, 10: 0.05, 20: 0.08, 50: 0.12, 100: 0.15, 1000: 0.20,
+};
+
+/** Calculate expected price in cents from ticket count. Never trust client-sent amount. */
+function calculateExpectedCents(ticketsCount: number): number {
+  const discount = PACK_DISCOUNTS[ticketsCount] ?? 0;
+  return Math.round(ticketsCount * TICKET_PRICE_USD * (1 - discount) * 100);
+}
+
 export async function POST(request: NextRequest) {
   if (!stripeSecretKey) {
     return NextResponse.json(
@@ -15,15 +27,15 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    // CardPaymentModal sends amount already in cents (amount * 100)
-    const amountCents = Number(body?.amount);
-    const ticketsCount = Math.max(1, Number(body?.ticketsCount) || 1);
-    const bonusTickets = Math.max(0, Number(body?.bonusTickets) || 0);
+    const ticketsCount = Math.max(1, Math.min(1000, Number(body?.ticketsCount) || 1));
+    const bonusTickets = Math.max(0, Math.min(500, Number(body?.bonusTickets) || 0));
     const currency = typeof body?.currency === 'string' ? body.currency.toLowerCase() : 'usd';
     const walletAddress = typeof body?.walletAddress === 'string' ? body.walletAddress : null;
 
-    if (!Number.isFinite(amountCents) || amountCents < 50) {
-      return NextResponse.json({ success: false, error: 'Invalid amount (min 50 cents)' }, { status: 400 });
+    // Price is always calculated server-side — ignore client-sent amount entirely
+    const amountCents = calculateExpectedCents(ticketsCount);
+    if (amountCents < 50) {
+      return NextResponse.json({ success: false, error: 'Invalid ticket count' }, { status: 400 });
     }
 
     const appUrl =
@@ -69,5 +81,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-

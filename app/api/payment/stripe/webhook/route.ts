@@ -64,14 +64,34 @@ export async function POST(request: NextRequest) {
 
       // Record tickets in purchases table so they enter the draw
       if (walletAddress && /^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+        const normalizedWallet = walletAddress.toLowerCase();
+
         const { error: purchaseError } = await supabase.from('purchases').insert({
-          wallet_address: walletAddress.toLowerCase(),
+          wallet_address: normalizedWallet,
           amount_usd: amountUsd,
-          tickets_count: totalTickets,
+          tickets_count: ticketsCount, // purchased tickets only (not bonuses)
         });
         if (purchaseError) {
           console.error('Failed to record purchases from Stripe:', purchaseError);
         }
+
+        // Add pack bonus tickets to bonus_tickets (tracked separately for draw pool + display)
+        if (bonusTickets > 0) {
+          await supabase.from('bonus_tickets').insert({
+            wallet_address: normalizedWallet,
+            amount: bonusTickets,
+            reason: 'pack_bonus',
+            used: false,
+          });
+        }
+
+        // Update streak — fire-and-forget so webhook responds fast to Stripe
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+        fetch(`${baseUrl}/api/streak/update`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ walletAddress: normalizedWallet }),
+        }).catch((e) => console.warn('Stripe webhook: streak update failed (non-blocking):', e));
       }
     } catch (err) {
       console.error('Failed to record Stripe payment in DB:', err);

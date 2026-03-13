@@ -31,12 +31,27 @@ export async function GET(request: Request) {
     const nextMilestone = milestones.find((m) => m > currentStreak) ?? 30;
     const nextRewardAt = nextMilestone;
 
+    // Check for recent weekly rank reward (last 8 days) — used to show notification to user
+    const eightDaysAgo = new Date(Date.now() - 8 * 86400000).toISOString();
+    const { data: weeklyReward } = await supabase
+      .from('bonus_tickets')
+      .select('amount, reason, created_at')
+      .eq('wallet_address', normalized)
+      .like('reason', 'weekly_rank%')
+      .gte('created_at', eightDaysAgo)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
     return NextResponse.json({
       currentStreak,
       longestStreak,
       lastPlayDate: row?.last_play_date ?? null,
       totalBonusTickets: row?.total_bonus_tickets ?? 0,
       nextRewardAt,
+      weeklyRankReward: weeklyReward
+        ? { rank: Number(weeklyReward.reason.replace('weekly_rank', '')), amount: weeklyReward.amount, awardedAt: weeklyReward.created_at }
+        : null,
     });
   } catch (e) {
     console.error('Streak GET error:', e);

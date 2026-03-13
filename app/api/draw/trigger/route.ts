@@ -53,7 +53,7 @@ async function runDraw(req: NextRequest) {
     const [{ data: purchases, error: purchasesError }, { data: bonusTickets }] = await Promise.all([
       supabase
         .from('purchases')
-        .select('wallet_address, tickets_count')
+        .select('wallet_address, tickets_count, amount_usd')
         .gte('created_at', todayStart.toISOString())
         .lte('created_at', todayEnd.toISOString()),
       // Load all unused bonus tickets (streak rewards, welcome bonuses, etc.)
@@ -92,6 +92,8 @@ async function runDraw(req: NextRequest) {
 
     const totalTickets = ticketPool.length;
     const bonusTicketsCount = (bonusTickets || []).reduce((s, bt) => s + (Number(bt.amount) || 1), 0);
+    // Prize based on actual revenue (not ticket count) to handle discounted packs correctly
+    const totalRevenueUsd = purchases.reduce((s, p) => s + (Number(p.amount_usd) || 0), 0);
 
     // Mark bonus tickets as used (consumed in this draw)
     const markBonusUsed = async () => {
@@ -107,7 +109,7 @@ async function runDraw(req: NextRequest) {
       // Main jackpot — 1 winner gets 85% of the pot
       const winnerIndex = secureRandomInt(totalTickets);
       const winnerAddress = ticketPool[winnerIndex];
-      const prizeUsd = Math.floor(totalTickets * 0.85 * 100) / 100;
+      const prizeUsd = Math.floor(totalRevenueUsd * 0.85 * 100) / 100;
 
       const { error: insertError } = await supabase.from('winners').insert({
         wallet_address: winnerAddress,
@@ -139,7 +141,7 @@ async function runDraw(req: NextRequest) {
 
     if (drawType === 'bonus') {
       // Bonus draw — up to 25 unique winners share 5% of total
-      const bonusPot = Math.floor(totalTickets * 0.05 * 100) / 100;
+      const bonusPot = Math.floor(totalRevenueUsd * 0.05 * 100) / 100;
       const numWinners = Math.min(25, totalTickets);
       const prizePerWinner = Math.floor((bonusPot / numWinners) * 100) / 100;
 

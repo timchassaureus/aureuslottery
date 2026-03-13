@@ -5,16 +5,8 @@ import { createClient } from '@/lib/supabase';
 
 const REFERRAL_STORAGE_KEY = 'aureus_referral_code';
 const CODE_PREFIX = 'AUR-';
-const CODE_LENGTH = 5;
-const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O, 1/I
-
-function generateCode(): string {
-  let s = '';
-  for (let i = 0; i < CODE_LENGTH; i++) {
-    s += CHARS.charAt(Math.floor(Math.random() * CHARS.length));
-  }
-  return CODE_PREFIX + s;
-}
+// Valid referral code format: AUR- followed by 5 alphanumeric chars (no 0/O, 1/I)
+const CODE_RE = /^AUR-[A-Z2-9]{5}$/;
 
 function getStoredReferralCode(): string | null {
   if (typeof window === 'undefined') return null;
@@ -48,8 +40,11 @@ export function detectAndStoreReferralFromUrl(): void {
   if (typeof window === 'undefined') return;
   const params = new URLSearchParams(window.location.search);
   const ref = params.get('ref');
-  if (ref && ref.startsWith(CODE_PREFIX)) {
-    setStoredReferralCode(ref.trim().toUpperCase());
+  if (ref) {
+    const normalized = ref.trim().toUpperCase();
+    if (CODE_RE.test(normalized)) {
+      setStoredReferralCode(normalized);
+    }
   }
 }
 

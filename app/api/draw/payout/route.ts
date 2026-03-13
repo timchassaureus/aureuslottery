@@ -90,14 +90,15 @@ async function run(req: NextRequest) {
   todayStart.setUTCHours(0, 0, 0, 0);
   const { data: todayPurchases } = await sb
     .from('purchases')
-    .select('tickets_count')
+    .select('amount_usd')
     .gte('created_at', todayStart.toISOString());
 
   let ownerTxHash: string | null = null;
   let ownerShare = 0;
   if (todayPurchases && todayPurchases.length > 0) {
-    const totalTickets = todayPurchases.reduce((s, p) => s + (Number(p.tickets_count) || 1), 0);
-    ownerShare = Math.floor(totalTickets * 0.10 * 100) / 100;
+    // Use actual revenue (not ticket count) to handle discounted packs correctly
+    const totalRevenueUsd = todayPurchases.reduce((s, p) => s + (Number(p.amount_usd) || 0), 0);
+    ownerShare = Math.floor(totalRevenueUsd * 0.10 * 100) / 100;
     if (ownerShare >= MIN_PAYOUT_USD) {
       try {
         ownerTxHash = await sendUSDC(OWNER_WALLET, ownerShare);
