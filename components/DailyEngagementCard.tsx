@@ -20,10 +20,10 @@ const CHEST_STORAGE_KEY = 'aureus_daily_chest_v1';
 const XP_STORAGE_KEY = 'aureus_xp_points_v1';
 
 const VIP_TIERS = [
-  { name: 'Bronze', minTickets: 0, color: 'text-amber-300' },
+  { name: 'Bronze', minTickets: 0, color: 'text-violet-300' },
   { name: 'Silver', minTickets: 50, color: 'text-slate-200' },
   { name: 'Gold', minTickets: 200, color: 'text-yellow-300' },
-  { name: 'Legend', minTickets: 1000, color: 'text-amber-300' },
+  { name: 'Legend', minTickets: 1000, color: 'text-violet-300' },
 ] as const;
 
 function getTodayKey() {
@@ -210,19 +210,19 @@ export default function DailyEngagementCard({
   };
 
   return (
-    <div className="rounded-2xl border border-amber-500/20 bg-black/40 p-5">
+    <div className="rounded-2xl border border-violet-500/20 bg-black/40 p-5">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-yellow-300" />
           <h3 className="text-base font-bold text-white">Daily Missions</h3>
         </div>
-        <div className="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-500/10 px-2.5 py-1 text-xs text-amber-200">
+        <div className="inline-flex items-center gap-1 rounded-full border border-violet-400/30 bg-violet-500/10 px-2.5 py-1 text-xs text-violet-200">
           <Trophy className="h-3.5 w-3.5" />
           {state.streakDays} day streak
         </div>
       </div>
 
-      <p className="mt-2 text-sm text-amber-200/80">
+      <p className="mt-2 text-sm text-violet-200/80">
         Complete all 3 missions each day to keep your momentum and return streak alive.
       </p>
 
@@ -237,31 +237,31 @@ export default function DailyEngagementCard({
           {state.completed.buy ? (
             <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400" />
           ) : (
-            <span className="text-xs text-amber-300">Pending</span>
+            <span className="text-xs text-violet-300">Pending</span>
           )}
         </div>
 
         <button
           onClick={markShareDone}
-          className="flex w-full items-center justify-between rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-left hover:border-amber-400/40 transition-colors"
+          className="flex w-full items-center justify-between rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-left hover:border-violet-400/40 transition-colors"
         >
           <span className="text-sm text-white/90">Invite 1 friend / share link</span>
           {state.completed.share ? (
             <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400" />
           ) : (
-            <span className="text-xs text-amber-200">Tap to do</span>
+            <span className="text-xs text-violet-200">Tap to do</span>
           )}
         </button>
       </div>
 
       <div className="mt-4">
         <div className="mb-1.5 flex items-center justify-between text-xs">
-          <span className="text-amber-200/80">Daily progress</span>
+          <span className="text-violet-200/80">Daily progress</span>
           <span className="text-white">{progress}/3</span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-black/35">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-violet-400 transition-all duration-500"
             style={{ width: `${(progress / 3) * 100}%` }}
           />
         </div>
@@ -275,20 +275,20 @@ export default function DailyEngagementCard({
               VIP Tier: <span className={`font-semibold ${currentTier.color}`}>{currentTier.name}</span>
             </span>
           </div>
-          <span className="text-xs text-amber-200/80">{lifetimeTickets} lifetime tickets</span>
+          <span className="text-xs text-violet-200/80">{lifetimeTickets} lifetime tickets</span>
         </div>
         {nextTier ? (
-          <p className="mt-1 text-xs text-amber-200/80">
+          <p className="mt-1 text-xs text-violet-200/80">
             {toNextTier} tickets to reach <span className={nextTier.color}>{nextTier.name}</span>
           </p>
         ) : (
-          <p className="mt-1 text-xs text-amber-200">Max tier unlocked.</p>
+          <p className="mt-1 text-xs text-violet-200">Max tier unlocked.</p>
         )}
       </div>
 
       <div className="mt-3 rounded-lg border border-white/10 bg-black/20 p-3">
         <div className="mb-1.5 flex items-center justify-between text-xs">
-          <span className="inline-flex items-center gap-1 text-amber-200/80">
+          <span className="inline-flex items-center gap-1 text-violet-200/80">
             <Target className="h-3.5 w-3.5" />
             Today target
           </span>
@@ -296,7 +296,7 @@ export default function DailyEngagementCard({
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-black/35">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-red-500 transition-all duration-500"
             style={{ width: `${targetProgress}%` }}
           />
         </div>
@@ -315,7 +315,7 @@ export default function DailyEngagementCard({
           className={`inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs ${
             completedAll
               ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
-              : 'border-amber-400/30 bg-amber-500/10 text-amber-200'
+              : 'border-violet-400/30 bg-violet-500/10 text-violet-200'
           }`}
         >
           <Gift className="h-3.5 w-3.5" />
@@ -335,9 +335,9 @@ export default function DailyEngagementCard({
         </button>
       </div>
 
-      <p className="mt-2 text-[11px] text-amber-200/70">
+      <p className="mt-2 text-[11px] text-violet-200/70">
         XP: <span className="font-semibold text-white">{xpPoints}</span> •
-        {' '}Comeback bonus multiplier: <span className="font-semibold text-amber-200">x{Math.min(5, Math.max(1, state.streakDays))}</span>
+        {' '}Comeback bonus multiplier: <span className="font-semibold text-violet-200">x{Math.min(5, Math.max(1, state.streakDays))}</span>
       </p>
     </div>
   );

@@ -48,7 +48,7 @@ function PlayCard({ onPlay }: { onPlay: (n: number) => void }) {
   const [selected, setSelected] = useState(5);
   return (
     <div className="mx-6 mb-8 rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
-      <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-400/50 mb-4 text-center">
+      <p className="text-xs font-black uppercase tracking-[0.22em] text-violet-400/50 mb-4 text-center">
         How many tickets?
       </p>
       {/* Amount chips */}
@@ -421,7 +421,7 @@ export default function Home() {
           {/* ── Logo ── */}
           <div className="flex items-center gap-3 shrink-0">
             <div className="flex items-center gap-2.5">
-              <Trophy className="w-6 h-6 text-amber-400" />
+              <Trophy className="w-6 h-6 text-violet-400" />
               <span
                 className="text-2xl font-black tracking-[0.15em] bg-clip-text text-transparent"
                 style={{ backgroundImage: 'linear-gradient(135deg, #fcd34d, #f59e0b, #fbbf24)' }}
@@ -477,13 +477,13 @@ export default function Home() {
             ))}
             <a
               href="/guide"
-              className="group flex flex-col items-start px-4 py-2.5 rounded-xl border border-amber-500/20 hover:border-amber-500/40 transition-all"
+              className="group flex flex-col items-start px-4 py-2.5 rounded-xl border border-violet-500/20 hover:border-violet-500/40 transition-all"
               style={{ background: 'rgba(245,158,11,0.06)' }}
             >
-              <span className="text-amber-400/80 group-hover:text-amber-300 text-sm font-bold transition-colors whitespace-nowrap">
+              <span className="text-violet-400/80 group-hover:text-violet-300 text-sm font-bold transition-colors whitespace-nowrap">
                 🔰 Beginner Guide
               </span>
-              <span className="text-xs text-amber-500/40 group-hover:text-amber-400/60 transition-colors mt-0.5 whitespace-nowrap">
+              <span className="text-xs text-violet-500/40 group-hover:text-violet-400/60 transition-colors mt-0.5 whitespace-nowrap">
                 How to get USDC &amp; deposit
               </span>
             </a>
@@ -505,7 +505,7 @@ export default function Home() {
                 onClick={() => setProfileOpen(true)}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all group"
               >
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-xs font-black text-black">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-yellow-400 to-fuchsia-500 flex items-center justify-center text-xs font-black text-black">
                   {(user.username || user.address || '?')[0].toUpperCase()}
                 </div>
                 <span className="text-sm text-white/70 group-hover:text-white transition-colors font-medium">
@@ -615,13 +615,13 @@ export default function Home() {
 
               {/* Top bar: countdown */}
               <div className="flex items-center justify-center gap-3 px-8 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.04)', background: 'rgba(0,0,0,0.2)' }}>
-                <Timer className="w-4 h-4 text-amber-400/50 shrink-0" />
-                <span className="text-xs font-black uppercase tracking-[0.25em] text-amber-400/40">Next Draw in</span>
+                <Timer className="w-4 h-4 text-violet-400/50 shrink-0" />
+                <span className="text-xs font-black uppercase tracking-[0.25em] text-violet-400/40">Next Draw in</span>
                 <div className="flex items-center bg-black/40 border border-white/[0.07] px-4 py-1.5 rounded-xl">
                   <span className="tabular-nums font-mono font-bold text-white text-lg">{String(timeLeft.hours).padStart(2, '0')}</span>
-                  <span className="text-amber-400/30 mx-1">:</span>
+                  <span className="text-violet-400/30 mx-1">:</span>
                   <span className="tabular-nums font-mono font-bold text-white text-lg">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                  <span className="text-amber-400/30 mx-1">:</span>
+                  <span className="text-violet-400/30 mx-1">:</span>
                   <span className="tabular-nums font-mono font-bold text-white text-lg">{String(timeLeft.seconds).padStart(2, '0')}</span>
                 </div>
               </div>
@@ -630,7 +630,7 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-2 px-4 md:px-8 py-8 md:py-12 gap-6 md:gap-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                 {/* Main jackpot */}
                 <div className="flex flex-col items-center text-center md:pr-8 md:border-r" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-                  <p className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-400/50 mb-3">🏆 Main Jackpot</p>
+                  <p className="text-[11px] font-black uppercase tracking-[0.3em] text-violet-400/50 mb-3">🏆 Main Jackpot</p>
                   <p
                     className="text-5xl md:text-7xl xl:text-8xl font-black text-white leading-none"
                     style={{ textShadow: '0 0 60px rgba(245,158,11,0.2)' }}
@@ -657,7 +657,7 @@ export default function Home() {
               {userTicketsCount > 0 && (
                 <div className="flex justify-center pt-4 pb-2">
                   <div
-                    className="inline-flex items-center gap-2 rounded-full px-6 py-2 border text-sm font-bold text-amber-300"
+                    className="inline-flex items-center gap-2 rounded-full px-6 py-2 border text-sm font-bold text-violet-300"
                     style={{ background: 'rgba(245,158,11,0.08)', borderColor: 'rgba(245,158,11,0.2)' }}
                   >
                     <Ticket className="w-4 h-4" />
@@ -704,7 +704,7 @@ export default function Home() {
             <span className="text-4xl shrink-0">🔰</span>
             <div className="flex-1 min-w-0">
               <p className="font-black text-white text-lg">New to crypto? Don&apos;t have USDC yet?</p>
-              <p className="text-sm text-slate-500 mt-1">Complete beginner&apos;s guide — how to get USDC on <strong className="text-amber-300/80">Base network</strong> and buy your first ticket in 10 minutes.</p>
+              <p className="text-sm text-slate-500 mt-1">Complete beginner&apos;s guide — how to get USDC on <strong className="text-violet-300/80">Base network</strong> and buy your first ticket in 10 minutes.</p>
             </div>
             <div
               className="shrink-0 px-4 py-2 rounded-xl font-bold text-sm text-black whitespace-nowrap"

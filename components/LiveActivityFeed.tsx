@@ -66,9 +66,9 @@ export default function LiveActivityFeed() {
   const getActivityColor = (type: string) => {
     switch (type) {
       case 'big_purchase':
-        return 'from-orange-500/20 to-red-500/20 border-orange-500/40';
+        return 'from-fuchsia-500/20 to-red-500/20 border-fuchsia-500/40';
       case 'milestone':
-        return 'from-yellow-500/20 to-amber-500/20 border-yellow-500/40';
+        return 'from-yellow-500/20 to-violet-500/20 border-yellow-500/40';
       default:
         return 'from-blue-500/20 to-indigo-500/20 border-blue-500/40';
     }
@@ -110,7 +110,7 @@ export default function LiveActivityFeed() {
               </div>
               <div className="text-right">
                 {activity.type === 'big_purchase' && (
-                  <span className="text-xs bg-orange-500/20 px-2 py-1 rounded-full text-orange-400 font-bold">
+                  <span className="text-xs bg-fuchsia-500/20 px-2 py-1 rounded-full text-fuchsia-400 font-bold">
                     BIG BUY!
                   </span>
                 )}

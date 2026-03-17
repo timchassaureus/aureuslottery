@@ -69,7 +69,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="relative border-2 border-amber-500/30 rounded-2xl p-6 max-w-md w-full shadow-2xl" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
+      <div className="relative border-2 border-violet-500/30 rounded-2xl p-6 max-w-md w-full shadow-2xl" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
@@ -81,7 +81,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
           <h2 className="text-3xl font-bold mb-2">
             {mode === 'login' ? 'Sign in' : 'Create account'}
           </h2>
-          <p className="text-amber-200/80">
+          <p className="text-violet-200/80">
             {mode === 'login'
               ? 'Access your AUREUS account'
               : 'Join AUREUS Lottery in seconds'}
@@ -91,7 +91,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
         <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
           {mode === 'register' && (
             <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400" />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-violet-400" />
               <input
                 type="text"
                 name="name"
@@ -99,13 +99,13 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                 onChange={e => setName(e.target.value)}
                 placeholder="Username"
                 autoComplete="name"
-                className="w-full pl-10 pr-4 py-3 bg-black/40 border border-amber-500/30 rounded-xl text-white placeholder-amber-400/60 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full pl-10 pr-4 py-3 bg-black/40 border border-violet-500/30 rounded-xl text-white placeholder-violet-400/60 focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
           )}
 
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-violet-400" />
             <input
               type="email"
               name="email"
@@ -113,12 +113,12 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
               onChange={e => setEmail(e.target.value)}
               placeholder="your@email.com"
               autoComplete="email"
-              className="w-full pl-10 pr-4 py-3 bg-black/40 border border-amber-500/30 rounded-xl text-white placeholder-amber-400/60 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="w-full pl-10 pr-4 py-3 bg-black/40 border border-violet-500/30 rounded-xl text-white placeholder-violet-400/60 focus:outline-none focus:ring-2 focus:ring-violet-500"
             />
           </div>
 
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-violet-400" />
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
@@ -126,12 +126,12 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
               onChange={e => setPassword(e.target.value)}
               placeholder="Password (6 characters min.)"
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-              className="w-full pl-10 pr-12 py-3 bg-black/40 border border-amber-500/30 rounded-xl text-white placeholder-amber-400/60 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="w-full pl-10 pr-12 py-3 bg-black/40 border border-violet-500/30 rounded-xl text-white placeholder-violet-400/60 focus:outline-none focus:ring-2 focus:ring-violet-500"
             />
             <button
               type="button"
               onClick={() => setShowPassword(v => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-amber-400 hover:text-white"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-violet-400 hover:text-white"
             >
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
@@ -152,7 +152,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
         <div className="mt-5 text-center">
           <button
             onClick={switchMode}
-            className="text-amber-300 hover:text-white text-sm transition-colors"
+            className="text-violet-300 hover:text-white text-sm transition-colors"
           >
             {mode === 'login'
               ? "No account yet? → Create account"
@@ -160,7 +160,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
           </button>
         </div>
 
-        <p className="mt-4 text-xs text-amber-400/70 text-center">
+        <p className="mt-4 text-xs text-violet-400/70 text-center">
           By using AUREUS, you agree to our terms of service.
         </p>
       </div>

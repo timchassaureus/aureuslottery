@@ -39,8 +39,8 @@ export default function StreakDisplay() {
 
   if (!wallet) {
     return (
-      <div className="rounded-xl border border-amber-500/30 bg-amber-950/30 p-6 text-center">
-        <p className="text-amber-200/80">
+      <div className="rounded-xl border border-violet-500/30 bg-indigo-950/30 p-6 text-center">
+        <p className="text-violet-200/80">
           Connect your wallet to see your streak and earn bonus tickets.
         </p>
       </div>
@@ -49,9 +49,9 @@ export default function StreakDisplay() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-amber-500/30 bg-amber-950/30 p-8">
-        <Loader2 className="h-6 w-6 animate-spin text-amber-400" />
-        <span className="text-amber-200/80">Loading streak…</span>
+      <div className="flex items-center justify-center gap-2 rounded-xl border border-violet-500/30 bg-indigo-950/30 p-8">
+        <Loader2 className="h-6 w-6 animate-spin text-violet-400" />
+        <span className="text-violet-200/80">Loading streak…</span>
       </div>
     );
   }
@@ -68,18 +68,18 @@ export default function StreakDisplay() {
   const nextRewardTickets = MILESTONE_TICKETS[nextRewardAt] ?? 0;
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-amber-500/40 bg-gradient-to-br from-amber-950/50 to-orange-950/30 p-6">
+    <div className="relative overflow-hidden rounded-xl border border-violet-500/40 bg-gradient-to-br from-indigo-950/50 to-purple-950/30 p-6">
       {showConfetti && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-amber-400/10 animate-pulse" />
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-violet-400/10 animate-pulse" />
       )}
 
       <div className="flex items-center gap-3 mb-4">
-        <div className="rounded-full bg-amber-500/20 p-2">
-          <Flame className="h-8 w-8 text-amber-400 animate-pulse" />
+        <div className="rounded-full bg-violet-500/20 p-2">
+          <Flame className="h-8 w-8 text-violet-400 animate-pulse" />
         </div>
         <div>
           <h3 className="text-lg font-bold text-white">Streak</h3>
-          <p className="text-amber-200/90 text-sm">
+          <p className="text-violet-200/90 text-sm">
             {currentStreak === 0
               ? "Play today to start your streak! 🎯"
               : `${currentStreak} day${currentStreak > 1 ? 's' : ''} in a row`}
@@ -91,13 +91,13 @@ export default function StreakDisplay() {
         <>
           <div className="h-2 rounded-full bg-black/30 overflow-hidden mb-2">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-500"
+              className="h-full rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-500"
               style={{
                 width: `${Math.min(100, (currentStreak / nextRewardAt) * 100)}%`,
               }}
             />
           </div>
-          <p className="text-sm text-amber-200/80 mb-4">
+          <p className="text-sm text-violet-200/80 mb-4">
             {daysToNext > 0
               ? `Only ${daysToNext} more day${daysToNext > 1 ? 's' : ''} to earn ${nextRewardTickets} bonus ticket${nextRewardTickets > 1 ? 's' : ''}!`
               : `Milestone reached: ${nextRewardTickets} bonus ticket(s)!`}
@@ -105,14 +105,14 @@ export default function StreakDisplay() {
         </>
       )}
 
-      <div className="flex flex-wrap gap-4 pt-4 border-t border-amber-500/30">
+      <div className="flex flex-wrap gap-4 pt-4 border-t border-violet-500/30">
         <div className="flex items-center gap-2">
-          <Ticket className="h-5 w-5 text-amber-400" />
+          <Ticket className="h-5 w-5 text-violet-400" />
           <span className="text-white font-medium">{bonusTicketsAvailable}</span>
-          <span className="text-amber-200/80 text-sm">bonus tickets</span>
+          <span className="text-violet-200/80 text-sm">bonus tickets</span>
         </div>
-        <div className="text-amber-200/80 text-sm">
-          Record: <span className="text-amber-300 font-medium">{longestStreak}</span> days
+        <div className="text-violet-200/80 text-sm">
+          Record: <span className="text-violet-300 font-medium">{longestStreak}</span> days
         </div>
       </div>
     </div>

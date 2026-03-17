@@ -30,7 +30,7 @@ export default function DisclaimerBanner() {
           <a href="/disclaimer" className="underline ml-1">Learn more</a>.
         </div>
         <div className="mt-2 flex items-center gap-2">
-          <button onClick={accept} className="flex-1 rounded-lg bg-gradient-to-r from-yellow-400 to-orange-500 text-black text-sm font-bold py-2">I Accept</button>
+          <button onClick={accept} className="flex-1 rounded-lg bg-gradient-to-r from-yellow-400 to-fuchsia-500 text-black text-sm font-bold py-2">I Accept</button>
           <a href="/disclaimer" className="rounded-lg border border-white/20 px-3 py-2 text-sm">Open full notice</a>
         </div>
       </div>

@@ -13,31 +13,31 @@ export default function DailyStreak() {
   const maxStreak = 15;
   
   return (
-    <div className="bg-gradient-to-r from-orange-900/30 to-red-900/30 backdrop-blur-xl border-2 border-orange-500/30 rounded-2xl p-6 mb-8 animate-pulse">
+    <div className="bg-gradient-to-r from-purple-900/30 to-red-900/30 backdrop-blur-xl border-2 border-fuchsia-500/30 rounded-2xl p-6 mb-8 animate-pulse">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-orange-500/20 rounded-full">
-            <Flame className="w-6 h-6 text-orange-400" />
+          <div className="p-3 bg-fuchsia-500/20 rounded-full">
+            <Flame className="w-6 h-6 text-fuchsia-400" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-orange-400">Daily Streak</h3>
-            <p className="text-sm text-orange-300">Keep playing to maintain your streak!</p>
+            <h3 className="text-xl font-bold text-fuchsia-400">Daily Streak</h3>
+            <p className="text-sm text-fuchsia-300">Keep playing to maintain your streak!</p>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-3xl font-black text-orange-400">{currentStreak}</div>
-          <div className="text-xs text-orange-300">days in a row</div>
+          <div className="text-3xl font-black text-fuchsia-400">{currentStreak}</div>
+          <div className="text-xs text-fuchsia-300">days in a row</div>
         </div>
       </div>
       
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
-          <span className="text-orange-300">Progress to next reward:</span>
-          <span className="text-orange-400 font-bold">{currentStreak}/{maxStreak} days</span>
+          <span className="text-fuchsia-300">Progress to next reward:</span>
+          <span className="text-fuchsia-400 font-bold">{currentStreak}/{maxStreak} days</span>
         </div>
-        <div className="w-full bg-orange-900/50 rounded-full h-3 overflow-hidden">
+        <div className="w-full bg-purple-900/50 rounded-full h-3 overflow-hidden">
           <div 
-            className="h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all duration-500"
+            className="h-3 bg-gradient-to-r from-fuchsia-500 to-red-500 rounded-full transition-all duration-500"
             style={{ width: `${(currentStreak / maxStreak) * 100}%` }}
           />
         </div>

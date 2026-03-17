@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #08091a;
+  --background: #07070f;
   --foreground: #f0f0f0;
-  --gold: #f59e0b;
-  --gold-light: #fcd34d;
+  --accent: #8b5cf6;
+  --accent-light: #c4b5fd;
 }
 
 @theme inline {
@@ -31,11 +31,11 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(245, 158, 11, 0.2);
+  background: rgba(139, 92, 246, 0.25);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(245, 158, 11, 0.4);
+  background: rgba(139, 92, 246, 0.45);
 }
 
 @keyframes gradient {

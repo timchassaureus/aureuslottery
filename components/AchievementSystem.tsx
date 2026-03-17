@@ -91,7 +91,7 @@ export default function AchievementSystem() {
             key={idx}
             className={`p-4 rounded-xl text-center transition-all ${
               achievement.earned
-                ? 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-2 border-yellow-500/50 scale-100'
+                ? 'bg-gradient-to-br from-yellow-500/20 to-fuchsia-500/20 border-2 border-yellow-500/50 scale-100'
                 : 'bg-purple-900/20 border-2 border-purple-700/20 scale-90 opacity-60'
             }`}
           >

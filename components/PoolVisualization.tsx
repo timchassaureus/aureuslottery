@@ -41,8 +41,8 @@ export default function PoolVisualization() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Main Jackpot */}
-        <div className="bg-gradient-to-br from-yellow-900/30 to-orange-900/30 rounded-xl p-4 border-2 border-yellow-600/40 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 animate-pulse"></div>
+        <div className="bg-gradient-to-br from-yellow-900/30 to-purple-900/30 rounded-xl p-4 border-2 border-yellow-600/40 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-fuchsia-500/10 animate-pulse"></div>
           <div className="relative">
             <div className="flex items-center gap-2 mb-2">
               <div className="text-2xl">🏆</div>

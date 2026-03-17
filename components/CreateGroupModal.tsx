@@ -36,7 +36,7 @@ export default function CreateGroupModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-lg rounded-2xl border border-amber-500/30 bg-gradient-to-br from-slate-900 to-violet-950/50 p-6">
+      <div className="w-full max-w-lg rounded-2xl border border-violet-500/30 bg-gradient-to-br from-slate-900 to-violet-950/50 p-6">
         <div className="flex items-start justify-between">
           <h2 className="text-xl font-bold text-white">Create a group</h2>
           <button onClick={onClose} className="text-slate-300 hover:text-white">
@@ -96,10 +96,10 @@ export default function CreateGroupModal({
         </div>
 
         {inviteCode && (
-          <div className="mt-5 rounded-xl border border-amber-400/30 bg-amber-500/10 p-4">
-            <p className="text-xs text-amber-100">Invite code</p>
+          <div className="mt-5 rounded-xl border border-violet-400/30 bg-violet-500/10 p-4">
+            <p className="text-xs text-violet-100">Invite code</p>
             <div className="mt-1 flex items-center justify-between gap-2">
-              <p className="text-lg font-black text-amber-300">{inviteCode}</p>
+              <p className="text-lg font-black text-violet-300">{inviteCode}</p>
               <button
                 onClick={async () => {
                   await navigator.clipboard.writeText(inviteCode);

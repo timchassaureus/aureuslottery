@@ -76,9 +76,9 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         onClick={() => setOpen(!open)}
       >
         <span className="font-semibold text-white text-sm leading-snug">{q}</span>
-        <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors ${open ? 'bg-amber-500/20 border border-amber-500/40' : 'bg-white/5 border border-white/10'}`}>
+        <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors ${open ? 'bg-violet-500/20 border border-violet-500/40' : 'bg-white/5 border border-white/10'}`}>
           {open
-            ? <ChevronUp className="w-3 h-3 text-amber-400" />
+            ? <ChevronUp className="w-3 h-3 text-violet-400" />
             : <ChevronDown className="w-3 h-3 text-slate-400" />}
         </div>
       </button>
@@ -200,20 +200,21 @@ export default function MobileHome() {
   ];
 
   return (
-    <div className="md:hidden min-h-screen bg-[#08091a] text-white relative overflow-x-hidden">
+    <div className="md:hidden min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-900 text-white relative overflow-x-hidden">
 
       {/* Ambient background glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="fixed inset-0 bg-gradient-to-r from-violet-500/10 via-purple-500/15 to-violet-500/10 opacity-60 pointer-events-none" style={{ backgroundSize: '400% 400%', animation: 'gradient 20s ease infinite' }} />
         <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.18) 0%, rgba(139,92,246,0.08) 50%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.22) 0%, rgba(99,102,241,0.08) 50%, transparent 70%)' }} />
         <div className="absolute bottom-0 -right-10 w-[350px] h-[350px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 65%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.14) 0%, transparent 65%)' }} />
         <div className="absolute top-1/2 -left-20 w-[250px] h-[250px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 65%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 65%)' }} />
       </div>
 
       {/* ── Header ── */}
-      <header className="sticky top-0 z-30 backdrop-blur-xl border-b border-amber-500/[0.08]" style={{ background: 'rgba(8,9,26,0.88)' }}>
+      <header className="sticky top-0 z-30 backdrop-blur-xl border-b border-violet-500/[0.08]" style={{ background: 'rgba(8,9,26,0.88)' }}>
         <div className="px-4 py-3 flex items-center justify-between">
 
           {/* Live badge */}
@@ -278,19 +279,19 @@ export default function MobileHome() {
               <div className="relative p-6 text-center">
                 {/* Countdown */}
                 <div className="flex items-center justify-center gap-2 mb-5">
-                  <Timer className="w-3.5 h-3.5 text-amber-400/60" />
-                  <span className="text-xs text-amber-400/60 uppercase tracking-widest font-semibold">Next Draw</span>
+                  <Timer className="w-3.5 h-3.5 text-violet-400/60" />
+                  <span className="text-xs text-violet-400/60 uppercase tracking-widest font-semibold">Next Draw</span>
                   <div className="flex items-center gap-0.5 bg-black/50 border border-white/[0.07] px-3 py-1 rounded-lg">
                     <span className="text-base font-mono font-bold text-white tabular-nums">{String(timeLeft.hours).padStart(2, '0')}</span>
-                    <span className="text-amber-400/40 mx-0.5">:</span>
+                    <span className="text-violet-400/40 mx-0.5">:</span>
                     <span className="text-base font-mono font-bold text-white tabular-nums">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                    <span className="text-amber-400/40 mx-0.5">:</span>
+                    <span className="text-violet-400/40 mx-0.5">:</span>
                     <span className="text-base font-mono font-bold text-white tabular-nums">{String(timeLeft.seconds).padStart(2, '0')}</span>
                   </div>
                 </div>
 
                 {/* Label */}
-                <p className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-400/50 mb-2">
+                <p className="text-[11px] font-black uppercase tracking-[0.3em] text-violet-400/50 mb-2">
                   Tonight&apos;s Jackpot
                 </p>
 
@@ -302,7 +303,7 @@ export default function MobileHome() {
                 {/* Ticket badge */}
                 {userTicketsCount > 0 ? (
                   <div
-                    className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 border text-sm font-bold text-amber-300"
+                    className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 border text-sm font-bold text-violet-300"
                     style={{ background: 'rgba(245,158,11,0.08)', borderColor: 'rgba(245,158,11,0.25)' }}
                   >
                     <Ticket className="w-3.5 h-3.5" />
@@ -318,7 +319,7 @@ export default function MobileHome() {
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-2xl p-4 text-center" style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)' }}>
                 <p className="text-xl mb-1.5">🏆</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-amber-400/80 mb-1">Main Jackpot</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-violet-400/80 mb-1">Main Jackpot</p>
                 <p className="text-xl font-black text-white">${jackpot.toLocaleString('en-US')}</p>
                 <p className="text-[10px] text-slate-500 mt-1">1 winner · 9 PM UTC</p>
               </div>
@@ -369,11 +370,11 @@ export default function MobileHome() {
 
             {/* Share strip */}
             <div className="flex items-center gap-3 bg-black/30 border border-white/[0.05] rounded-2xl px-4 py-3">
-              <span className="text-amber-400 text-base">🚀</span>
+              <span className="text-violet-400 text-base">🚀</span>
               <p className="text-xs text-slate-500 flex-1">Invite friends — grow the jackpot</p>
               <button
                 onClick={handleCopyLink}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-amber-400 border border-amber-500/25 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-violet-400 border border-violet-500/25 transition-colors"
                 style={{ background: 'rgba(245,158,11,0.08)' }}
               >
                 <Share2 className="w-3 h-3" />
@@ -387,9 +388,9 @@ export default function MobileHome() {
         {activeTab === 'tickets' && (
           <div className="space-y-4">
             {isGuest ? (
-              <div className="bg-black/40 border border-amber-500/15 rounded-2xl p-6 text-center">
+              <div className="bg-black/40 border border-violet-500/15 rounded-2xl p-6 text-center">
                 <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border border-amber-500/20"
+                  className="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border border-violet-500/20"
                   style={{ background: 'rgba(245,158,11,0.08)' }}
                 >
                   🎟️
@@ -409,7 +410,7 @@ export default function MobileHome() {
                 className="bg-black/40 border border-white/[0.07] rounded-2xl p-5 text-center"
                 style={{ boxShadow: '0 0 40px rgba(245,158,11,0.04)' }}
               >
-                <p className="text-[11px] font-black uppercase tracking-[0.25em] text-amber-400/50 mb-2">Your Active Tickets</p>
+                <p className="text-[11px] font-black uppercase tracking-[0.25em] text-violet-400/50 mb-2">Your Active Tickets</p>
                 <p
                   className="text-7xl font-black mb-1"
                   style={{ color: '#fcd34d', textShadow: '0 0 40px rgba(252,211,77,0.3)' }}
@@ -419,7 +420,7 @@ export default function MobileHome() {
                 <p className="text-slate-500 text-sm">entered in the next draw</p>
                 <button
                   onClick={() => setBuyOpen(true)}
-                  className="mt-4 px-6 py-2.5 rounded-xl font-bold text-xs text-amber-400 border border-amber-500/25"
+                  className="mt-4 px-6 py-2.5 rounded-xl font-bold text-xs text-violet-400 border border-violet-500/25"
                   style={{ background: 'rgba(245,158,11,0.08)' }}
                 >
                   + Get more tickets
@@ -440,7 +441,7 @@ export default function MobileHome() {
         {activeTab === 'rank' && (
           <div className="space-y-4">
             <div className="text-center pt-2">
-              <p className="text-[11px] font-black uppercase tracking-[0.25em] text-amber-400/50 mb-1">Hall of Fame</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.25em] text-violet-400/50 mb-1">Hall of Fame</p>
               <p className="text-2xl font-black text-white">Leaderboard</p>
               <p className="text-slate-500 text-sm mt-1">Recent winners &amp; jackpot history</p>
             </div>
@@ -453,7 +454,7 @@ export default function MobileHome() {
         {activeTab === 'info' && (
           <div className="space-y-4">
             <div className="text-center pt-2">
-              <p className="text-[11px] font-black uppercase tracking-[0.25em] text-amber-400/50 mb-1">100% Transparent</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.25em] text-violet-400/50 mb-1">100% Transparent</p>
               <p className="text-2xl font-black text-white">How It Works</p>
               <p className="text-slate-500 text-sm mt-1">Fully verifiable on the blockchain</p>
             </div>
@@ -468,7 +469,7 @@ export default function MobileHome() {
               ].map(s => (
                 <div key={s.n} className="flex gap-3 items-start">
                   <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black text-amber-400 shrink-0 border border-amber-500/25"
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black text-violet-400 shrink-0 border border-violet-500/25"
                     style={{ background: 'rgba(245,158,11,0.1)' }}
                   >
                     {s.n}
@@ -634,10 +635,10 @@ export default function MobileHome() {
                 {/* Stats grid */}
                 <div className="grid grid-cols-2 gap-3 mb-5">
                   <div
-                    className="rounded-xl p-3 text-center border border-amber-500/15"
+                    className="rounded-xl p-3 text-center border border-violet-500/15"
                     style={{ background: 'rgba(245,158,11,0.06)' }}
                   >
-                    <p className="text-2xl font-black text-amber-300">{userTicketsCount}</p>
+                    <p className="text-2xl font-black text-violet-300">{userTicketsCount}</p>
                     <p className="text-[11px] text-slate-500 mt-0.5 uppercase tracking-wider">Active Tickets</p>
                   </div>
                   <div
@@ -676,7 +677,7 @@ export default function MobileHome() {
             )}
 
             {/* Invite / share */}
-            <div className="bg-black/40 border border-amber-500/10 rounded-2xl p-4">
+            <div className="bg-black/40 border border-violet-500/10 rounded-2xl p-4">
               <p className="font-bold text-white text-sm mb-1">🚀 Invite friends</p>
               <p className="text-xs text-slate-500 mb-3">The more people play, the bigger the jackpot!</p>
               <div className="flex gap-2">
@@ -698,7 +699,7 @@ export default function MobileHome() {
                 </a>
                 <button
                   onClick={handleCopyLink}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 border border-amber-500/20 rounded-xl text-amber-400 text-xs font-semibold"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 border border-violet-500/20 rounded-xl text-violet-400 text-xs font-semibold"
                   style={{ background: 'rgba(245,158,11,0.08)' }}
                 >
                   <Share2 className="w-3.5 h-3.5" /> {linkCopied ? 'Copied!' : 'Copy'}
@@ -733,13 +734,13 @@ export default function MobileHome() {
                     style={{ background: 'linear-gradient(90deg, #f59e0b, #ef4444)' }}
                   />
                 )}
-                <div className={`w-9 h-8 rounded-xl flex items-center justify-center transition-all duration-200 ${active ? 'bg-amber-500/10' : ''}`}>
+                <div className={`w-9 h-8 rounded-xl flex items-center justify-center transition-all duration-200 ${active ? 'bg-violet-500/10' : ''}`}>
                   <Icon
-                    className={`w-5 h-5 transition-colors duration-200 ${active ? 'text-amber-400' : 'text-slate-600'}`}
+                    className={`w-5 h-5 transition-colors duration-200 ${active ? 'text-violet-400' : 'text-slate-600'}`}
                   />
                 </div>
                 <span
-                  className={`text-[9px] font-bold tracking-wider transition-colors duration-200 ${active ? 'text-amber-400' : 'text-slate-600'}`}
+                  className={`text-[9px] font-bold tracking-wider transition-colors duration-200 ${active ? 'text-violet-400' : 'text-slate-600'}`}
                 >
                   {label.toUpperCase()}
                 </span>

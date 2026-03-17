@@ -11,14 +11,14 @@ interface Level {
 }
 
 const LEVELS: Level[] = [
-  { name: 'Novice', min: 0, icon: 'bronze', color: 'from-orange-400 to-orange-600' },
-  { name: 'Beginner', min: 50, icon: 'bronze', color: 'from-orange-500 to-amber-600' },
+  { name: 'Novice', min: 0, icon: 'bronze', color: 'from-fuchsia-400 to-fuchsia-600' },
+  { name: 'Beginner', min: 50, icon: 'bronze', color: 'from-fuchsia-500 to-violet-600' },
   { name: 'Amateur', min: 100, icon: 'silver', color: 'from-slate-300 to-slate-500' },
   { name: 'Dedicated', min: 300, icon: 'silver', color: 'from-slate-400 to-zinc-500' },
   { name: 'Skilled', min: 500, icon: 'silver', color: 'from-zinc-400 to-gray-600' },
   { name: 'Expert', min: 800, icon: 'gold', color: 'from-yellow-400 to-yellow-600' },
-  { name: 'Veteran', min: 1500, icon: 'gold', color: 'from-yellow-500 to-orange-500' },
-  { name: 'Pro', min: 2000, icon: 'gold', color: 'from-orange-400 to-red-500' },
+  { name: 'Veteran', min: 1500, icon: 'gold', color: 'from-yellow-500 to-fuchsia-500' },
+  { name: 'Pro', min: 2000, icon: 'gold', color: 'from-fuchsia-400 to-red-500' },
   { name: 'Master', min: 5000, icon: 'platinum', color: 'from-purple-400 to-violet-600' },
   { name: 'Elite', min: 8000, icon: 'platinum', color: 'from-violet-500 to-fuchsia-600' },
   { name: 'Supreme', min: 12000, icon: 'platinum', color: 'from-fuchsia-500 to-pink-600' },
@@ -32,7 +32,7 @@ function getLevel(ticketCount: number): Level {
 function getLevelIcon(icon: string) {
   switch (icon) {
     case 'bronze':
-      return <Trophy className="w-5 h-5 text-orange-500" />;
+      return <Trophy className="w-5 h-5 text-fuchsia-500" />;
     case 'silver':
       return <Star className="w-5 h-5 text-gray-400" />;
     case 'gold':

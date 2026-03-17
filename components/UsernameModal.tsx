@@ -61,7 +61,7 @@ export default function UsernameModal() {
 
   return (
     <div className="fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="mx-auto w-full max-w-md rounded-xl border border-amber-500/20 p-6 text-white shadow-2xl" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
+      <div className="mx-auto w-full max-w-md rounded-xl border border-violet-500/20 p-6 text-white shadow-2xl" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
 
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-r from-primary-500/20 to-primary-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -77,7 +77,7 @@ export default function UsernameModal() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold mb-2 text-amber-200">
+            <label className="block text-sm font-semibold mb-2 text-violet-200">
               Username
             </label>
             <input
@@ -86,7 +86,7 @@ export default function UsernameModal() {
               onChange={(e) => setUsernameInput(e.target.value)}
               placeholder="Enter your username"
               maxLength={20}
-              className="w-full px-4 py-3 bg-black/40 border border-amber-500/30 rounded-xl text-white placeholder-amber-400/60 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50"
+              className="w-full px-4 py-3 bg-black/40 border border-violet-500/30 rounded-xl text-white placeholder-violet-400/60 focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/50"
               autoFocus
             />
             <p className="mt-2 text-xs text-slate-400">
@@ -94,7 +94,7 @@ export default function UsernameModal() {
             </p>
           </div>
 
-          <div className="bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border border-yellow-700/30 rounded-lg p-3">
+          <div className="bg-gradient-to-r from-yellow-900/20 to-purple-900/20 border border-yellow-700/30 rounded-lg p-3">
             <p className="text-xs text-yellow-200 leading-relaxed">
               💡 <strong>Tip:</strong> In the future, if you connect via Telegram, your Telegram username will be used automatically!
             </p>
@@ -104,7 +104,7 @@ export default function UsernameModal() {
             <button
               type="submit"
               disabled={!username.trim() || isValidating || !validateUsername(username.trim())}
-              className="w-full py-3 rounded-lg text-sm font-bold bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:scale-105 transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-lg text-sm font-bold bg-gradient-to-r from-yellow-400 to-fuchsia-500 text-black hover:scale-105 transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isValidating ? 'Setting username...' : '✅ Continue to AUREUS'}
             </button>

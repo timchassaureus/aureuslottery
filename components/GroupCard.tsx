@@ -17,7 +17,7 @@ function colorFor(addr: string) {
     'bg-fuchsia-600',
     'bg-blue-600',
     'bg-emerald-600',
-    'bg-amber-600',
+    'bg-violet-600',
   ];
   let hash = 0;
   for (let i = 0; i < addr.length; i += 1) hash = (hash + addr.charCodeAt(i)) % colors.length;
@@ -48,7 +48,7 @@ export default function GroupCard({
   const isCreator = myWallet?.toLowerCase() === group.creator_wallet.toLowerCase();
 
   return (
-    <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-slate-900/90 to-violet-950/40 p-4">
+    <div className="rounded-2xl border border-violet-500/30 bg-gradient-to-br from-slate-900/90 to-violet-950/40 p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-white font-semibold">{group.name}</h3>
@@ -82,7 +82,7 @@ export default function GroupCard({
       </div>
 
       <div className="mt-3">
-        <p className="text-2xl font-black text-amber-300">${Number(group.total_pool || 0).toFixed(2)}</p>
+        <p className="text-2xl font-black text-violet-300">${Number(group.total_pool || 0).toFixed(2)}</p>
         <p className="text-xs text-slate-300">{memberCount} members • ${Number(group.total_pool || 0).toFixed(2)} at stake</p>
       </div>
 
@@ -92,12 +92,12 @@ export default function GroupCard({
           <span>{memberCount}/{group.max_members}</span>
         </div>
         <div className="h-2 rounded-full bg-black/35 overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-violet-500 to-amber-400" style={{ width: `${progress}%` }} />
+          <div className="h-full bg-gradient-to-r from-violet-500 to-violet-400" style={{ width: `${progress}%` }} />
         </div>
       </div>
 
       <div className="mt-3 text-xs text-violet-100/90">
-        <p>My share: <span className="text-amber-300 font-semibold">{myShare.toFixed(2)}%</span> (${myContribution.toFixed(2)})</p>
+        <p>My share: <span className="text-violet-300 font-semibold">{myShare.toFixed(2)}%</span> (${myContribution.toFixed(2)})</p>
         <p className="mt-1">Draw in ~{hoursLeft}h</p>
       </div>
 

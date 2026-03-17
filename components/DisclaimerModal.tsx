@@ -37,7 +37,7 @@ export default function DisclaimerModal() {
 
   return (
     <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="mx-auto w-full max-w-md rounded-xl border border-amber-500/20 p-4 text-white shadow-2xl max-h-[90vh] overflow-y-auto" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
+      <div className="mx-auto w-full max-w-md rounded-xl border border-violet-500/20 p-4 text-white shadow-2xl max-h-[90vh] overflow-y-auto" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
         <div className="text-sm leading-relaxed mb-4">
           {/* Warning Icon */}
           <div className="flex justify-center mb-4">
@@ -81,7 +81,7 @@ export default function DisclaimerModal() {
             </li>
           </ul>
 
-          <div className="bg-gradient-to-r from-red-900/30 to-orange-900/30 border-2 border-red-500/50 rounded-lg p-3 mt-4">
+          <div className="bg-gradient-to-r from-red-900/30 to-purple-900/30 border-2 border-red-500/50 rounded-lg p-3 mt-4">
             <p className="text-red-200 text-xs leading-relaxed">
               <strong className="text-red-300 text-sm">⚠️ Service Restrictions:</strong><br/>
               This platform may be restricted in certain regions including: <strong>United States, China, North Korea, Iran, Syria</strong> and other jurisdictions where online gambling is prohibited. By proceeding, you confirm you are <strong>NOT</strong> accessing from a restricted location and accept full responsibility for compliance with your local laws.
@@ -133,7 +133,7 @@ export default function DisclaimerModal() {
             disabled={!isOver18 || !understandsRisks}
             className={`w-full py-3 rounded-lg text-sm font-bold transition-all hover:scale-105 active:scale-95 ${
               isOver18 && understandsRisks
-                ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-black cursor-pointer'
+                ? 'bg-gradient-to-r from-yellow-400 to-fuchsia-500 text-black cursor-pointer'
                 : 'bg-gray-700 text-gray-500 cursor-not-allowed'
             }`}
           >

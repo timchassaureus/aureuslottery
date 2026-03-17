@@ -38,11 +38,11 @@ export default function JackpotCounter() {
   }, [jackpot, previousJackpot]);
 
   return (
-    <div className="rounded-xl border border-amber-500/40 bg-gradient-to-b from-amber-950/50 to-black/50 p-6 text-center">
-      <p className="text-amber-200/80 text-sm uppercase tracking-wider mb-1">Jackpot</p>
+    <div className="rounded-xl border border-violet-500/40 bg-gradient-to-b from-indigo-950/50 to-black/50 p-6 text-center">
+      <p className="text-violet-200/80 text-sm uppercase tracking-wider mb-1">Jackpot</p>
       <div
         className={`inline-flex items-baseline gap-1 text-4xl font-bold tracking-tight ${
-          isRising ? 'text-green-400' : 'text-amber-400'
+          isRising ? 'text-green-400' : 'text-violet-400'
         }`}
       >
         <span className="drop-shadow-[0_0_12px_rgba(251,191,36,0.4)]">

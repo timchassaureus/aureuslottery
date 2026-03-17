@@ -13,7 +13,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[999] overflow-y-auto py-4 md:py-8">
       <div className="min-h-screen flex items-start justify-center p-4">
-        <div className="border-2 border-amber-500/25 rounded-3xl p-6 md:p-8 max-w-3xl w-full relative" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
+        <div className="border-2 border-violet-500/25 rounded-3xl p-6 md:p-8 max-w-3xl w-full relative" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
           {/* Close Button - Fixed at top right */}
           <button
             onClick={onClose}
@@ -23,7 +23,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
           </button>
 
           <div className="text-center mb-8 clear-both">
-            <h2 className="text-5xl font-black bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent mb-3">
+            <h2 className="text-5xl font-black bg-gradient-to-r from-yellow-400 via-fuchsia-500 to-red-500 bg-clip-text text-transparent mb-3">
               HOW TO WIN BIG! 🎰💰
             </h2>
             <p className="text-yellow-300 text-xl font-bold">It's RIDICULOUSLY simple. Let's GO! 🚀</p>
@@ -31,9 +31,9 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
 
         <div className="space-y-6">
           {/* Basic Concept */}
-          <div className="bg-gradient-to-r from-amber-500/15 to-orange-500/15 rounded-xl p-6 border-2 border-amber-400/40">
+          <div className="bg-gradient-to-r from-violet-500/15 to-fuchsia-500/15 rounded-xl p-6 border-2 border-violet-400/40">
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
+              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-yellow-400 to-fuchsia-500 rounded-full flex items-center justify-center animate-pulse">
                 <Zap className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -45,11 +45,11 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-6 h-6 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong className="text-amber-300">2 CHANCES TO WIN</strong> every day - Main jackpot at <strong>9PM</strong> + Bonus draw at <strong>9:30PM</strong>! 💎</span>
+                    <span><strong className="text-violet-300">2 CHANCES TO WIN</strong> every day - Main jackpot at <strong>9PM</strong> + Bonus draw at <strong>9:30PM</strong>! 💎</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-6 h-6 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong className="text-orange-300">More tickets = BETTER odds!</strong> Go ALL IN and increase your chances! 🔥</span>
+                    <span><strong className="text-fuchsia-300">More tickets = BETTER odds!</strong> Go ALL IN and increase your chances! 🔥</span>
                   </li>
                 </ul>
               </div>
@@ -70,7 +70,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
                 <p className="text-white/90 text-lg leading-relaxed mt-3">
                   More players = <strong className="text-yellow-400">BIGGER PRIZES!</strong> Watch the pot EXPLODE in real-time as thousands join the rush! This could be YOUR life-changing moment! 💎🚀
                 </p>
-                <div className="mt-4 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-yellow-400/60 rounded-xl p-4">
+                <div className="mt-4 bg-gradient-to-r from-yellow-500/20 to-fuchsia-500/20 border-2 border-yellow-400/60 rounded-xl p-4">
                   <p className="text-yellow-300 text-base md:text-lg font-black text-center">
                     📣 Tell your friends! If everyone joins, this jackpot can hit <span className="text-white">MILLIONS</span> — <span className="text-white">EVERY SINGLE DAY</span>. Bring the crowd, grow the pot! 🔥
                   </p>
@@ -82,7 +82,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
           {/* Winner Selection */}
           <div className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-xl p-6 border-2 border-blue-400/50">
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
+              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-violet-400 to-fuchsia-500 rounded-full flex items-center justify-center animate-pulse">
                 <Users className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -107,9 +107,9 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
           </div>
 
           {/* Guaranteed Winner */}
-          <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-xl p-6 border-2 border-yellow-400/50">
+          <div className="bg-gradient-to-r from-yellow-500/20 to-fuchsia-500/20 rounded-xl p-6 border-2 border-yellow-400/50">
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
+              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-yellow-400 to-fuchsia-500 rounded-full flex items-center justify-center animate-pulse">
                 <Shield className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -136,38 +136,38 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
           </div>
 
           {/* Special Deals */}
-          <div className="bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-xl p-6 border-2 border-orange-400/50">
-            <h3 className="text-3xl font-black text-orange-400 mb-3">🔥 INSANE BULK DEALS!</h3>
+          <div className="bg-gradient-to-r from-fuchsia-500/20 to-red-500/20 rounded-xl p-6 border-2 border-fuchsia-400/50">
+            <h3 className="text-3xl font-black text-fuchsia-400 mb-3">🔥 INSANE BULK DEALS!</h3>
             <p className="text-white text-lg font-bold mb-4">
               Go BIG = Save BIG! <strong className="text-yellow-300">The more you buy, the more you SAVE!</strong> 💰
             </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-amber-500/30 hover:scale-105 transition-transform">
+              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-violet-500/30 hover:scale-105 transition-transform">
                 <p className="text-yellow-300 font-black text-xl">5 tickets</p>
                 <p className="text-green-400 text-lg font-bold">$4.90</p>
                 <p className="text-white text-xs">Save $0.10!</p>
               </div>
-              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-amber-500/30 hover:scale-105 transition-transform">
+              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-violet-500/30 hover:scale-105 transition-transform">
                 <p className="text-yellow-300 font-black text-xl">10 tickets</p>
                 <p className="text-green-400 text-lg font-bold">$9.50</p>
                 <p className="text-white text-xs">Save $0.50!</p>
               </div>
-              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-amber-500/30 hover:scale-105 transition-transform">
+              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-violet-500/30 hover:scale-105 transition-transform">
                 <p className="text-yellow-300 font-black text-xl">20 tickets</p>
                 <p className="text-green-400 text-lg font-bold">$18.40</p>
                 <p className="text-white text-xs">Save $1.60!</p>
               </div>
-              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-amber-500/30 hover:scale-105 transition-transform">
+              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-violet-500/30 hover:scale-105 transition-transform">
                 <p className="text-yellow-300 font-black text-xl">50 tickets</p>
                 <p className="text-green-400 text-lg font-bold">$44.00</p>
                 <p className="text-white text-xs">Save $6! 🔥</p>
               </div>
-              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-amber-500/30 hover:scale-105 transition-transform">
+              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-violet-500/30 hover:scale-105 transition-transform">
                 <p className="text-yellow-300 font-black text-xl">100 tickets</p>
                 <p className="text-green-400 text-lg font-bold">$85.00</p>
                 <p className="text-white text-xs">Save $15! 💎</p>
               </div>
-              <div className="bg-gradient-to-r from-yellow-500/30 to-orange-500/30 border-4 border-yellow-400 rounded-lg p-3 text-center animate-pulse-slow hover:scale-110 transition-transform">
+              <div className="bg-gradient-to-r from-yellow-500/30 to-fuchsia-500/30 border-4 border-yellow-400 rounded-lg p-3 text-center animate-pulse-slow hover:scale-110 transition-transform">
                 <p className="text-yellow-300 font-black text-xl">1000 tickets</p>
                 <p className="text-yellow-400 text-lg font-black">$800.00</p>
                 <p className="text-white text-xs font-bold">Save $200! 🚀🔥</p>
@@ -176,7 +176,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
           </div>
 
           {/* Final CTA */}
-          <div className="bg-gradient-to-r from-red-600 to-orange-600 rounded-xl p-6 text-center border-4 border-yellow-400 animate-pulse-slow">
+          <div className="bg-gradient-to-r from-red-600 to-fuchsia-600 rounded-xl p-6 text-center border-4 border-yellow-400 animate-pulse-slow">
             <p className="text-yellow-300 text-3xl font-black mb-2">
               🚀 TONIGHT COULD CHANGE YOUR LIFE!
             </p>
@@ -188,7 +188,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
 
         <button
           onClick={onClose}
-          className="w-full mt-6 py-5 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 rounded-xl font-black text-2xl transition-all hover:scale-105 shadow-2xl text-black"
+          className="w-full mt-6 py-5 bg-gradient-to-r from-yellow-500 to-fuchsia-500 hover:from-yellow-600 hover:to-fuchsia-600 rounded-xl font-black text-2xl transition-all hover:scale-105 shadow-2xl text-black"
         >
           LET'S GO! I'M READY TO WIN! 🔥💎
         </button>

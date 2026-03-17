@@ -110,7 +110,7 @@ const steps = [
     n: '4',
     emoji: '🎟️',
     title: 'Send USDC to Aureus',
-    color: 'from-yellow-600 to-orange-700',
+    color: 'from-yellow-600 to-fuchsia-700',
     border: 'border-yellow-500/40',
     content: (
       <div className="space-y-3 text-sm text-slate-300">
@@ -217,9 +217,9 @@ export default function GuidePage() {
         </div>
 
         {/* MetaMask block */}
-        <div className="mt-8 bg-orange-950/60 border-2 border-orange-500/40 rounded-2xl p-5">
+        <div className="mt-8 bg-purple-950/60 border-2 border-fuchsia-500/40 rounded-2xl p-5">
           <p className="font-black text-white text-base mb-1">🦊 Using MetaMask?</p>
-          <p className="text-orange-200/80 text-sm mb-4">MetaMask works, but you <strong className="text-white">must switch to Base network</strong> before sending. By default MetaMask is on Ethereum — if you send USDC on Ethereum it goes to the wrong place and can't be recovered.</p>
+          <p className="text-fuchsia-200/80 text-sm mb-4">MetaMask works, but you <strong className="text-white">must switch to Base network</strong> before sending. By default MetaMask is on Ethereum — if you send USDC on Ethereum it goes to the wrong place and can't be recovered.</p>
           <ol className="space-y-2 list-none">
             {[
               'Open MetaMask and tap the network name at the top (e.g. "Ethereum Mainnet")',
@@ -228,14 +228,14 @@ export default function GuidePage() {
               'Once on Base, your USDC balance on Base will appear',
               'Now tap Send → select USDC → paste the Aureus address → confirm',
             ].map((step, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-orange-100/80">
-                <span className="w-5 h-5 rounded-full bg-orange-600/60 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">{i + 1}</span>
+              <li key={i} className="flex items-start gap-2 text-sm text-fuchsia-100/80">
+                <span className="w-5 h-5 rounded-full bg-fuchsia-600/60 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">{i + 1}</span>
                 <span>{step}</span>
               </li>
             ))}
           </ol>
-          <div className="mt-4 bg-orange-500/10 border border-orange-500/20 rounded-xl p-3">
-            <p className="text-orange-300 text-xs">💡 <strong>Important:</strong> USDC on Ethereum ≠ USDC on Base. If you bought USDC on Ethereum, you need to bridge it to Base first via <a href="https://bridge.base.org" target="_blank" rel="noopener noreferrer" className="underline text-orange-200">bridge.base.org</a>. The easiest option to avoid this: use <strong className="text-white">Coinbase Wallet</strong> which lets you buy USDC directly on Base.</p>
+          <div className="mt-4 bg-fuchsia-500/10 border border-fuchsia-500/20 rounded-xl p-3">
+            <p className="text-fuchsia-300 text-xs">💡 <strong>Important:</strong> USDC on Ethereum ≠ USDC on Base. If you bought USDC on Ethereum, you need to bridge it to Base first via <a href="https://bridge.base.org" target="_blank" rel="noopener noreferrer" className="underline text-fuchsia-200">bridge.base.org</a>. The easiest option to avoid this: use <strong className="text-white">Coinbase Wallet</strong> which lets you buy USDC directly on Base.</p>
           </div>
         </div>
 

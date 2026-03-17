@@ -45,7 +45,7 @@ export default function DailyReward({ isOpen, onClose }: Props) {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-yellow-500/20 rounded-full mb-4 border-4 border-yellow-500/50 animate-pulse">
             <Gift className="w-10 h-10 text-yellow-400" />
           </div>
-          <h2 className="text-4xl font-black mb-2 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+          <h2 className="text-4xl font-black mb-2 bg-gradient-to-r from-yellow-400 to-fuchsia-500 bg-clip-text text-transparent">
             Daily Rewards
           </h2>
           <p className="text-purple-300">Claim your FREE tickets every day!</p>
@@ -57,7 +57,7 @@ export default function DailyReward({ isOpen, onClose }: Props) {
               key={index}
               className={`relative p-4 rounded-xl border-2 text-center transition-all ${
                 item.unlocked && !claimed
-                  ? 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-500/50 cursor-pointer hover:scale-110 animate-pulse'
+                  ? 'bg-gradient-to-br from-yellow-500/20 to-fuchsia-500/20 border-yellow-500/50 cursor-pointer hover:scale-110 animate-pulse'
                   : 'bg-purple-900/30 border-purple-700/30'
               }`}
               onClick={item.unlocked && !claimed ? handleClaim : undefined}

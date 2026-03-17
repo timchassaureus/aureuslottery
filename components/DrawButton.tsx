@@ -47,7 +47,7 @@ export default function DrawButton({ onWinnerSelected }: Props) {
       {processing ? (
         <>
           {/* Processing state */}
-          <div className="absolute inset-0 bg-gradient-to-r from-yellow-600 via-orange-600 to-red-600 animate-pulse"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-600 via-fuchsia-600 to-red-600 animate-pulse"></div>
           <div className="relative py-8 px-12 rounded-3xl border-4 border-yellow-400">
             <div className="flex items-center justify-center gap-4">
               <Loader className="w-10 h-10 animate-spin text-white" />
@@ -60,12 +60,12 @@ export default function DrawButton({ onWinnerSelected }: Props) {
       ) : (
         <>
           {/* Animated background */}
-          <div className={`absolute inset-0 ${canDraw ? 'bg-gradient-to-r from-yellow-600 via-orange-600 via-amber-600 to-yellow-600 animate-gradient-x' : 'bg-gradient-to-r from-gray-700 to-gray-800'}`}></div>
+          <div className={`absolute inset-0 ${canDraw ? 'bg-gradient-to-r from-yellow-600 via-fuchsia-600 via-violet-600 to-yellow-600 animate-gradient-x' : 'bg-gradient-to-r from-gray-700 to-gray-800'}`}></div>
           
           {/* Glow effect */}
           {canDraw && (
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-400 to-amber-400 blur-xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-fuchsia-400 to-violet-400 blur-xl"></div>
             </div>
           )}
           

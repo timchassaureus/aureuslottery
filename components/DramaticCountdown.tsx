@@ -51,7 +51,7 @@ export default function DramaticCountdown({ targetHour, drawType }: Props) {
 
   const title = drawType === '8pm' ? '🏆 MAIN JACKPOT DRAW' : '🎁 BONUS DRAW';
   const bgColor = drawType === '8pm' 
-    ? 'from-yellow-900/90 to-orange-900/90' 
+    ? 'from-yellow-900/90 to-purple-900/90' 
     : 'from-violet-900/90 to-fuchsia-900/90';
   const borderColor = drawType === '8pm' ? 'border-yellow-500' : 'border-violet-500';
   const textColor = drawType === '8pm' ? 'text-yellow-400' : 'text-violet-400';
@@ -113,7 +113,7 @@ export default function DramaticCountdown({ targetHour, drawType }: Props) {
             }}
             className={`px-6 py-3 bg-gradient-to-r ${
               drawType === '8pm' 
-                ? 'from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700' 
+                ? 'from-yellow-600 to-fuchsia-600 hover:from-yellow-700 hover:to-fuchsia-700' 
                 : 'from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700'
             } rounded-xl font-bold text-white transition-all hover:scale-105 shadow-2xl border-2 border-white/30 ${
               isCritical ? 'animate-bounce' : ''
@@ -128,7 +128,7 @@ export default function DramaticCountdown({ targetHour, drawType }: Props) {
           <div className="w-full bg-black/30 rounded-full h-2 overflow-hidden">
             <div
               className={`h-full bg-gradient-to-r ${
-                drawType === '8pm' ? 'from-yellow-500 to-orange-500' : 'from-violet-500 to-fuchsia-500'
+                drawType === '8pm' ? 'from-yellow-500 to-fuchsia-500' : 'from-violet-500 to-fuchsia-500'
               } transition-all duration-1000 ${isCritical ? 'animate-pulse' : ''}`}
               style={{
                 width: `${100 - ((timeLeft.hours * 60 + timeLeft.minutes) / 10) * 100}%`,

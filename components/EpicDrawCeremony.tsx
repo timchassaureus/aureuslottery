@@ -710,7 +710,7 @@ export default function EpicDrawCeremony({
           <div className="flex flex-col items-center gap-5 w-full max-w-sm text-center">
             {showWinnerBadge && (
               <div
-                className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-500 text-black font-black text-xl px-8 py-3 rounded-full edc-badge-pop"
+                className="bg-gradient-to-r from-yellow-400 via-fuchsia-400 to-red-500 text-black font-black text-xl px-8 py-3 rounded-full edc-badge-pop"
                 style={{ boxShadow: '0 0 50px rgba(255,215,0,0.9), 0 0 100px rgba(255,107,0,0.4)' }}
               >
                 🎉 IT&apos;S YOU! 🎉

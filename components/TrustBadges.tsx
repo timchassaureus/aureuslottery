@@ -44,13 +44,13 @@ export default function TrustBadges() {
         </div>
 
         {/* Base Network */}
-        <div className="flex flex-col items-center gap-2 p-3 bg-amber-900/20 border border-amber-700/30 rounded-xl text-center">
-          <div className="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
-            <span className="text-amber-400 font-bold text-sm">⬡</span>
+        <div className="flex flex-col items-center gap-2 p-3 bg-indigo-900/20 border border-violet-700/30 rounded-xl text-center">
+          <div className="w-8 h-8 bg-violet-500/20 rounded-full flex items-center justify-center">
+            <span className="text-violet-400 font-bold text-sm">⬡</span>
           </div>
           <div>
-            <p className="text-xs font-bold text-amber-300">Base Network</p>
-            <p className="text-[10px] text-amber-400/80">by Coinbase</p>
+            <p className="text-xs font-bold text-violet-300">Base Network</p>
+            <p className="text-[10px] text-violet-400/80">by Coinbase</p>
           </div>
         </div>
 
@@ -67,11 +67,11 @@ export default function TrustBadges() {
       </div>
 
       {/* Links */}
-      <div className="flex justify-center gap-4 mt-4 text-xs text-amber-400/70">
-        <Link href="/faq" className="hover:text-amber-200 transition-colors">FAQ</Link>
-        <Link href="/terms" className="hover:text-amber-200 transition-colors">Terms</Link>
-        <Link href="/privacy" className="hover:text-amber-200 transition-colors">Privacy</Link>
-        <Link href="/winner-guide" className="hover:text-amber-200 transition-colors">Winner Guide</Link>
+      <div className="flex justify-center gap-4 mt-4 text-xs text-violet-400/70">
+        <Link href="/faq" className="hover:text-violet-200 transition-colors">FAQ</Link>
+        <Link href="/terms" className="hover:text-violet-200 transition-colors">Terms</Link>
+        <Link href="/privacy" className="hover:text-violet-200 transition-colors">Privacy</Link>
+        <Link href="/winner-guide" className="hover:text-violet-200 transition-colors">Winner Guide</Link>
       </div>
     </div>
   );

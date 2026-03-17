@@ -26,9 +26,9 @@ export default function UserProfile({ isOpen, onClose }: Props) {
   const getLevel = () => {
     if (lifetimeTickets >= 500) return { name: 'Légende', icon: '👑', color: 'from-yellow-400 to-pink-500' };
     if (lifetimeTickets >= 100) return { name: 'Maître', icon: '💎', color: 'from-purple-400 to-pink-500' };
-    if (lifetimeTickets >= 50) return { name: 'Expert', icon: '🏆', color: 'from-yellow-400 to-orange-500' };
+    if (lifetimeTickets >= 50) return { name: 'Expert', icon: '🏆', color: 'from-yellow-400 to-fuchsia-500' };
     if (lifetimeTickets >= 10) return { name: 'Amateur', icon: '⭐', color: 'from-gray-300 to-gray-500' };
-    return { name: 'Débutant', icon: '🎯', color: 'from-orange-400 to-red-500' };
+    return { name: 'Débutant', icon: '🎯', color: 'from-fuchsia-400 to-red-500' };
   };
 
   const level = getLevel();
