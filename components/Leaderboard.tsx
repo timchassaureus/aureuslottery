@@ -123,17 +123,9 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
 
         {/* Leaderboard */}
         <div className="space-y-3">
-          {!hasData && mode === 'live' ? (
-            <div className="text-center py-12">
-              <Trophy className="w-16 h-16 text-violet-400/50 mx-auto mb-4" />
-              <p className="text-xl font-bold text-violet-300 mb-2">No players yet</p>
-              <p className="text-violet-400/70">Be the first to buy tickets and appear on the leaderboard!</p>
-            </div>
-          ) : !hasData ? (
-            <div className="text-center py-12">
-              <Trophy className="w-16 h-16 text-violet-400/50 mx-auto mb-4" />
-              <p className="text-xl font-bold text-violet-300 mb-2">No data available</p>
-              <p className="text-violet-400/70">Start playing to see the leaderboard!</p>
+          {!hasData ? (
+            <div className="text-center py-12 text-slate-500 text-sm">
+              Rankings will appear once players start buying tickets.
             </div>
           ) : (
             leaderboardData.map((player, index) => (

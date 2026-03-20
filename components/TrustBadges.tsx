@@ -11,15 +11,15 @@ export default function TrustBadges() {
     <div className="w-full max-w-4xl mx-auto px-4 py-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {/* Chainlink VRF */}
-        <div className="flex flex-col items-center gap-2 p-3 bg-blue-900/20 border border-blue-700/30 rounded-xl text-center">
+        <a href="https://docs.chain.link/vrf" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 p-3 bg-blue-900/20 border border-blue-700/30 rounded-xl text-center hover:border-blue-500/50 transition-colors">
           <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
             <Zap className="w-4 h-4 text-blue-400" />
           </div>
           <div>
             <p className="text-xs font-bold text-blue-300">Chainlink VRF</p>
-            <p className="text-[10px] text-blue-400/80">Verifiable draw</p>
+            <p className="text-[10px] text-blue-400/80">Verifiable draw ↗</p>
           </div>
-        </div>
+        </a>
 
         {/* Smart Contract */}
         <div className="flex flex-col items-center gap-2 p-3 bg-green-900/20 border border-green-700/30 rounded-xl text-center">
@@ -44,15 +44,15 @@ export default function TrustBadges() {
         </div>
 
         {/* Base Network */}
-        <div className="flex flex-col items-center gap-2 p-3 bg-indigo-900/20 border border-violet-700/30 rounded-xl text-center">
+        <a href="https://base.org" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 p-3 bg-indigo-900/20 border border-violet-700/30 rounded-xl text-center hover:border-violet-500/50 transition-colors">
           <div className="w-8 h-8 bg-violet-500/20 rounded-full flex items-center justify-center">
             <span className="text-violet-400 font-bold text-sm">⬡</span>
           </div>
           <div>
             <p className="text-xs font-bold text-violet-300">Base Network</p>
-            <p className="text-[10px] text-violet-400/80">by Coinbase</p>
+            <p className="text-[10px] text-violet-400/80">by Coinbase ↗</p>
           </div>
-        </div>
+        </a>
 
         {/* Sécurité */}
         <div className="flex flex-col items-center gap-2 p-3 bg-yellow-900/20 border border-yellow-700/30 rounded-xl text-center">

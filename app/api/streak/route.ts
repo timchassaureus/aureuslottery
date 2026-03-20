@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase-server';
+import { rateLimit } from '@/lib/rate-limit';
 
 /** GET : récupère le streak pour un wallet */
 export async function GET(request: Request) {
@@ -10,6 +11,12 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'wallet required' }, { status: 400 });
     }
     const normalized = wallet.toLowerCase().trim();
+
+    // Rate limit : max 20 requêtes / minute par wallet
+    const rl = rateLimit({ key: `streak:${normalized}`, limit: 20, windowMs: 60_000 });
+    if (!rl.ok) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
     const supabase = createServiceClient();
 
     const { data: row, error } = await supabase

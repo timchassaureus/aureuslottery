@@ -12,6 +12,9 @@ export default function EnhancedWinnersHistory() {
   // Get last 3 secondary draws (most recent first)
   const recentSecondaryDraws = [...secondaryDraws].slice(-3).reverse();
 
+  // Don't render anything until there's real data to show
+  if (recentDraws.length === 0 && recentSecondaryDraws.length === 0) return null;
+
   return (
     <div className="bg-black/40 backdrop-blur-xl border border-violet-500/15 rounded-xl p-4 hover:border-violet-500/25 transition-all">
       <div className="flex items-center gap-2 mb-4">
@@ -26,9 +29,7 @@ export default function EnhancedWinnersHistory() {
           <h4 className="text-sm font-bold text-yellow-400">9PM Jackpot</h4>
         </div>
         
-        {recentDraws.length === 0 ? (
-          <p className="text-slate-400 text-center py-4 text-sm">No draws yet...</p>
-        ) : (
+        {recentDraws.length === 0 ? null : (
           <div className="space-y-2">
             {recentDraws.map((draw, index) => {
               return (

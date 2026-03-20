@@ -320,13 +320,17 @@ export default function MobileHome() {
               <div className="rounded-2xl p-4 text-center" style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)' }}>
                 <p className="text-xl mb-1.5">🏆</p>
                 <p className="text-[10px] font-black uppercase tracking-widest text-violet-400/80 mb-1">Main Jackpot</p>
-                <p className="text-xl font-black text-white">${jackpot.toLocaleString('en-US')}</p>
+                <p className="text-xl font-black text-white">
+                  {jackpot > 0 ? `$${jackpot.toLocaleString('en-US')}` : 'Building…'}
+                </p>
                 <p className="text-[10px] text-slate-500 mt-1">1 winner · 9 PM UTC</p>
               </div>
               <div className="rounded-2xl p-4 text-center" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.25)' }}>
                 <p className="text-xl mb-1.5">💎</p>
                 <p className="text-[10px] font-black uppercase tracking-widest text-violet-400/80 mb-1">Bonus Draw</p>
-                <p className="text-xl font-black text-white">${secondaryPot.toLocaleString('en-US')}</p>
+                <p className="text-xl font-black text-white">
+                  {secondaryPot > 0 ? `$${secondaryPot.toLocaleString('en-US')}` : 'Building…'}
+                </p>
                 <p className="text-[10px] text-slate-500 mt-1">25 winners · 9:30 PM</p>
               </div>
             </div>
@@ -717,7 +721,7 @@ export default function MobileHome() {
       {/* ── Bottom Navigation ── */}
       <nav
         className="fixed bottom-0 inset-x-0 z-40 backdrop-blur-2xl border-t"
-        style={{ background: 'rgba(8,9,26,0.97)', borderColor: 'rgba(245,158,11,0.1)', paddingBottom: 'env(safe-area-inset-bottom)' }}
+        style={{ background: 'rgba(8,9,26,0.97)', borderColor: 'rgba(139,92,246,0.15)', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="flex">
           {tabs.map(({ id, label, Icon }) => {
@@ -731,7 +735,7 @@ export default function MobileHome() {
                 {active && (
                   <div
                     className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
-                    style={{ background: 'linear-gradient(90deg, #f59e0b, #ef4444)' }}
+                    style={{ background: 'linear-gradient(90deg, #8b5cf6, #a855f7)' }}
                   />
                 )}
                 <div className={`w-9 h-8 rounded-xl flex items-center justify-center transition-all duration-200 ${active ? 'bg-violet-500/10' : ''}`}>

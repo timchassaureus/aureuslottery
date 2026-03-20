@@ -1,11 +1,14 @@
 'use client';
 
-import { X, CheckCircle, TrendingUp, Users, Shield, Zap } from 'lucide-react';
+import { X, Shield, Zap, Trophy, Clock } from 'lucide-react';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const TREASURY = process.env.NEXT_PUBLIC_TREASURY_ADDRESS;
+const BASESCAN = 'https://basescan.org/address/';
 
 export default function HowItWorksModal({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
@@ -13,188 +16,125 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[999] overflow-y-auto py-4 md:py-8">
       <div className="min-h-screen flex items-start justify-center p-4">
-        <div className="border-2 border-violet-500/25 rounded-3xl p-6 md:p-8 max-w-3xl w-full relative" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
-          {/* Close Button - Fixed at top right */}
-          <button
-            onClick={onClose}
-            className="sticky top-2 float-right text-white hover:text-red-400 transition-all z-[1000] bg-red-600 hover:bg-red-700 rounded-full p-3 shadow-2xl mb-4"
-          >
-            <X className="w-7 h-7" />
+        <div className="border border-white/10 rounded-2xl p-6 md:p-8 max-w-2xl w-full relative" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
+
+          <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
+            <X className="w-5 h-5" />
           </button>
 
-          <div className="text-center mb-8 clear-both">
-            <h2 className="text-5xl font-black bg-gradient-to-r from-yellow-400 via-fuchsia-500 to-red-500 bg-clip-text text-transparent mb-3">
-              HOW TO WIN BIG! 🎰💰
-            </h2>
-            <p className="text-yellow-300 text-xl font-bold">It's RIDICULOUSLY simple. Let's GO! 🚀</p>
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-white mb-2">How Aureus works</h2>
+            <p className="text-slate-400 text-sm">A daily on-chain lottery — transparent, automatic, verifiable.</p>
           </div>
 
-        <div className="space-y-6">
-          {/* Basic Concept */}
-          <div className="bg-gradient-to-r from-violet-500/15 to-fuchsia-500/15 rounded-xl p-6 border-2 border-violet-400/40">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-yellow-400 to-fuchsia-500 rounded-full flex items-center justify-center animate-pulse">
-                <Zap className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-3xl font-black text-yellow-400 mb-3">🎫 IT'S INSANELY SIMPLE!</h3>
-                <ul className="space-y-3 text-white text-base">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-6 h-6 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong className="text-yellow-300">$1 per ticket</strong> - Buy <strong className="text-green-300">UNLIMITED</strong> tickets! Stack your chances! 🚀</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-6 h-6 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong className="text-violet-300">2 CHANCES TO WIN</strong> every day - Main jackpot at <strong>9PM</strong> + Bonus draw at <strong>9:30PM</strong>! 💎</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-6 h-6 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong className="text-fuchsia-300">More tickets = BETTER odds!</strong> Go ALL IN and increase your chances! 🔥</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+          <div className="space-y-4">
 
-          {/* Jackpot Funding */}
-          <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl p-6 border-2 border-green-400/50">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center animate-pulse">
-                <TrendingUp className="w-6 h-6 text-white" />
+            {/* Step 1 */}
+            <div className="flex gap-4 p-4 rounded-xl border border-white/8 bg-white/[0.03]">
+              <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-violet-500/15 flex items-center justify-center">
+                <span className="text-violet-300 font-bold text-sm">1</span>
               </div>
-              <div>
-                <h3 className="text-3xl font-black text-green-400 mb-3">💰 THE JACKPOT EXPLODES!</h3>
-                <p className="text-white text-lg leading-relaxed font-semibold">
-                  <span className="text-yellow-300 text-xl">NO LIMITS!</span> The jackpot grows with <strong className="text-green-300">EVERY. SINGLE. TICKET.</strong> sold! 🔥
+              <div className="flex-1">
+                <h3 className="text-white font-semibold mb-1">Buy tickets — $1 each</h3>
+                <p className="text-slate-400 text-sm leading-relaxed mb-3">
+                  Each ticket costs 1 USDC on Base network. Volume discounts apply at 5, 10, 20, 50, and 100 tickets.
                 </p>
-                <p className="text-white/90 text-lg leading-relaxed mt-3">
-                  More players = <strong className="text-yellow-400">BIGGER PRIZES!</strong> Watch the pot EXPLODE in real-time as thousands join the rush! This could be YOUR life-changing moment! 💎🚀
-                </p>
-                <div className="mt-4 bg-gradient-to-r from-yellow-500/20 to-fuchsia-500/20 border-2 border-yellow-400/60 rounded-xl p-4">
-                  <p className="text-yellow-300 text-base md:text-lg font-black text-center">
-                    📣 Tell your friends! If everyone joins, this jackpot can hit <span className="text-white">MILLIONS</span> — <span className="text-white">EVERY SINGLE DAY</span>. Bring the crowd, grow the pot! 🔥
-                  </p>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    ['5 tickets', '$4.90', '2% off'],
+                    ['10 tickets', '$9.50', '5% off'],
+                    ['20 tickets', '$18.40', '8% off'],
+                    ['50 tickets', '$44.00', '12% off'],
+                    ['100 tickets', '$85.00', '15% off'],
+                    ['1 000 tickets', '$800.00', '20% off'],
+                  ].map(([qty, price, save]) => (
+                    <div key={qty} className="bg-black/30 rounded-lg p-2 text-center border border-white/6">
+                      <p className="text-slate-300 font-medium text-[10px]">{qty}</p>
+                      <p className="text-white font-bold text-xs">{price}</p>
+                      <p className="text-slate-500 text-[10px]">{save}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Winner Selection */}
-          <div className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-xl p-6 border-2 border-blue-400/50">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-violet-400 to-fuchsia-500 rounded-full flex items-center justify-center animate-pulse">
-                <Users className="w-6 h-6 text-white" />
+            {/* Step 2 */}
+            <div className="flex gap-4 p-4 rounded-xl border border-white/8 bg-white/[0.03]">
+              <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-violet-500/15 flex items-center justify-center">
+                <Clock className="w-4 h-4 text-violet-300" />
               </div>
-              <div>
-                <h3 className="text-3xl font-black text-blue-300 mb-3">🏆 2 SHOTS AT GLORY!</h3>
-                <ul className="space-y-3 text-white text-base">
-                  <li className="bg-yellow-500/10 rounded-lg p-3 border-2 border-yellow-400/50">
-                    <strong className="text-yellow-300 text-xl">🎰 9PM UTC - MAIN JACKPOT</strong>
-                    <p className="text-white mt-1 font-semibold">ONE lucky winner takes <strong className="text-green-300">THE ENTIRE POT!</strong> Could be $10K, $50K, $100K+! 💰💰💰</p>
-                  </li>
-                  <li className="bg-violet-500/10 rounded-lg p-3 border-2 border-violet-400/50">
-                    <strong className="text-violet-300 text-xl">💎 9:30PM UTC - BONUS BLITZ</strong>
-                    <p className="text-white mt-1 font-semibold"><strong className="text-yellow-300">25 WINNERS</strong> share the bonus pot! Bigger prizes for each winner! 🎉</p>
-                  </li>
-                  <li className="bg-blue-900/30 rounded-lg p-3 border border-cyan-500/50">
-                    <p className="text-cyan-300 text-base font-bold">
-                      🔐 <strong>100% FAIR</strong> - Powered by Chainlink VRF! Verifiable, transparent, IMPOSSIBLE to manipulate! Trust the blockchain! ⛓️
-                    </p>
-                  </li>
-                </ul>
+              <div className="flex-1">
+                <h3 className="text-white font-semibold mb-1">Two automatic draws every day</h3>
+                <p className="text-slate-400 text-sm mb-3">Every ticket enters both draws simultaneously. No action needed after purchase.</p>
+                <div className="space-y-2">
+                  <div className="flex items-start gap-3 p-3 rounded-lg bg-yellow-500/6 border border-yellow-500/15">
+                    <Trophy className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-white text-sm font-medium">9:00 PM UTC — Main jackpot</p>
+                      <p className="text-slate-400 text-xs mt-0.5">1 winner receives 85% of the day&apos;s total pot.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 rounded-lg bg-violet-500/6 border border-violet-500/15">
+                    <Zap className="w-4 h-4 text-violet-400 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-white text-sm font-medium">9:30 PM UTC — Bonus draw</p>
+                      <p className="text-slate-400 text-xs mt-0.5">Up to 25 unique winners share 5% of the pot.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Guaranteed Winner */}
-          <div className="bg-gradient-to-r from-yellow-500/20 to-fuchsia-500/20 rounded-xl p-6 border-2 border-yellow-400/50">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-yellow-400 to-fuchsia-500 rounded-full flex items-center justify-center animate-pulse">
-                <Shield className="w-6 h-6 text-white" />
+            {/* Step 3 */}
+            <div className="flex gap-4 p-4 rounded-xl border border-white/8 bg-white/[0.03]">
+              <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-violet-500/15 flex items-center justify-center">
+                <Shield className="w-4 h-4 text-violet-300" />
               </div>
-              <div>
-                <h3 className="text-3xl font-black text-yellow-300 mb-3">✅ SOMEONE WINS EVERY DAY!</h3>
-                <p className="text-white text-xl font-bold mb-3">
-                  <strong className="text-yellow-300">NO BULLSH*T.</strong> Someone WILL win tonight! 🔥
+              <div className="flex-1">
+                <h3 className="text-white font-semibold mb-1">Verifiable randomness, automatic payout</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Winners are selected using Chainlink VRF — a cryptographically verifiable random function. The result is provably fair and cannot be influenced by anyone, including the platform. Winnings are sent directly to the winner&apos;s wallet within minutes.
                 </p>
-                <ul className="space-y-2 text-white text-base">
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-400 text-xl">✓</span>
-                    <span><strong>Full jackpot paid out</strong> - NO rollover BS!</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-400 text-xl">✓</span>
-                    <span><strong>Automatic draw at 9PM UTC</strong> - You just watch and win!</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-400 text-xl">✓</span>
-                    <span><strong>INSTANT CASH to your wallet</strong> - No waiting, no excuses!</span>
-                  </li>
-                </ul>
               </div>
             </div>
-          </div>
 
-          {/* Special Deals */}
-          <div className="bg-gradient-to-r from-fuchsia-500/20 to-red-500/20 rounded-xl p-6 border-2 border-fuchsia-400/50">
-            <h3 className="text-3xl font-black text-fuchsia-400 mb-3">🔥 INSANE BULK DEALS!</h3>
-            <p className="text-white text-lg font-bold mb-4">
-              Go BIG = Save BIG! <strong className="text-yellow-300">The more you buy, the more you SAVE!</strong> 💰
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-violet-500/30 hover:scale-105 transition-transform">
-                <p className="text-yellow-300 font-black text-xl">5 tickets</p>
-                <p className="text-green-400 text-lg font-bold">$4.90</p>
-                <p className="text-white text-xs">Save $0.10!</p>
+            {/* Pot breakdown */}
+            <div className="p-4 rounded-xl border border-white/8 bg-white/[0.03]">
+              <h3 className="text-white font-semibold mb-3 text-sm">Pot distribution</h3>
+              <div className="space-y-2 text-sm">
+                {([
+                  ['85%', 'Main jackpot winner', 'text-yellow-300'],
+                  ['5%', 'Bonus draw — up to 25 winners', 'text-violet-300'],
+                  ['10%', 'Platform operations', 'text-slate-400'],
+                ] as const).map(([pct, label, color]) => (
+                  <div key={pct} className="flex items-center gap-3">
+                    <span className={`font-bold w-10 shrink-0 ${color}`}>{pct}</span>
+                    <span className="text-slate-400">{label}</span>
+                  </div>
+                ))}
               </div>
-              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-violet-500/30 hover:scale-105 transition-transform">
-                <p className="text-yellow-300 font-black text-xl">10 tickets</p>
-                <p className="text-green-400 text-lg font-bold">$9.50</p>
-                <p className="text-white text-xs">Save $0.50!</p>
-              </div>
-              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-violet-500/30 hover:scale-105 transition-transform">
-                <p className="text-yellow-300 font-black text-xl">20 tickets</p>
-                <p className="text-green-400 text-lg font-bold">$18.40</p>
-                <p className="text-white text-xs">Save $1.60!</p>
-              </div>
-              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-violet-500/30 hover:scale-105 transition-transform">
-                <p className="text-yellow-300 font-black text-xl">50 tickets</p>
-                <p className="text-green-400 text-lg font-bold">$44.00</p>
-                <p className="text-white text-xs">Save $6! 🔥</p>
-              </div>
-              <div className="bg-black/40 rounded-lg p-3 text-center border-2 border-violet-500/30 hover:scale-105 transition-transform">
-                <p className="text-yellow-300 font-black text-xl">100 tickets</p>
-                <p className="text-green-400 text-lg font-bold">$85.00</p>
-                <p className="text-white text-xs">Save $15! 💎</p>
-              </div>
-              <div className="bg-gradient-to-r from-yellow-500/30 to-fuchsia-500/30 border-4 border-yellow-400 rounded-lg p-3 text-center animate-pulse-slow hover:scale-110 transition-transform">
-                <p className="text-yellow-300 font-black text-xl">1000 tickets</p>
-                <p className="text-yellow-400 text-lg font-black">$800.00</p>
-                <p className="text-white text-xs font-bold">Save $200! 🚀🔥</p>
-              </div>
+              {TREASURY && (
+                <a
+                  href={`${BASESCAN}${TREASURY}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                >
+                  Verify treasury on BaseScan →
+                </a>
+              )}
             </div>
+
           </div>
 
-          {/* Final CTA */}
-          <div className="bg-gradient-to-r from-red-600 to-fuchsia-600 rounded-xl p-6 text-center border-4 border-yellow-400 animate-pulse-slow">
-            <p className="text-yellow-300 text-3xl font-black mb-2">
-              🚀 TONIGHT COULD CHANGE YOUR LIFE!
-            </p>
-            <p className="text-white text-xl font-bold">
-              Someone's winning the jackpot at 9PM UTC. Why not YOU?! 💰
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={onClose}
-          className="w-full mt-6 py-5 bg-gradient-to-r from-yellow-500 to-fuchsia-500 hover:from-yellow-600 hover:to-fuchsia-600 rounded-xl font-black text-2xl transition-all hover:scale-105 shadow-2xl text-black"
-        >
-          LET'S GO! I'M READY TO WIN! 🔥💎
-        </button>
+          <button
+            onClick={onClose}
+            className="w-full mt-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-semibold text-white text-sm transition-all"
+          >
+            Got it
+          </button>
         </div>
       </div>
     </div>
   );
 }
-

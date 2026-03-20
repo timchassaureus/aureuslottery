@@ -2,13 +2,46 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ethers } from 'ethers';
 import bcrypt from 'bcryptjs';
 import { createServiceClient } from '@/lib/supabase-server';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_PASSWORD_LENGTH = 8;
 
 export async function POST(request: NextRequest) {
   try {
+    // ── Rate limiting anti brute-force ──────────────────────────────────────
+    // Limite par IP : 10 tentatives / 15 minutes
+    const ip = getClientIp(request);
+    const ipLimit = rateLimit({ key: `auth:ip:${ip}`, limit: 10, windowMs: 15 * 60_000 });
+    if (!ipLimit.ok) {
+      return NextResponse.json(
+        { success: false, error: 'Too many attempts — please try again later' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil((ipLimit.resetAt - Date.now()) / 1000)) },
+        }
+      );
+    }
+
     const body = await request.json();
     const { mode, email, password, name } = body;
+
+    // Limite supplémentaire par email (évite le ciblage d'un compte spécifique)
+    if (email && typeof email === 'string') {
+      const emailLimit = rateLimit({
+        key: `auth:email:${email.toLowerCase().trim()}`,
+        limit: 5,
+        windowMs: 15 * 60_000,
+      });
+      if (!emailLimit.ok) {
+        // Délai intentionnel pour freiner les attaques — même réponse que "wrong password"
+        await new Promise((r) => setTimeout(r, 1000));
+        return NextResponse.json(
+          { success: false, error: 'Incorrect password' },
+          { status: 401 }
+        );
+      }
+    }
 
     // mode: 'login' | 'register'
     if (mode !== 'login' && mode !== 'register') {
@@ -25,9 +58,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!password || typeof password !== 'string' || password.length < 6) {
+    if (!password || typeof password !== 'string' || password.length < MIN_PASSWORD_LENGTH) {
       return NextResponse.json(
-        { success: false, error: 'Password must be at least 6 characters' },
+        { success: false, error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters` },
         { status: 400 }
       );
     }

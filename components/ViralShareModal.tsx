@@ -150,9 +150,9 @@ export default function ViralShareModal({ isOpen, onClose, ticketCount, jackpot 
                   <span>Help the jackpot grow <strong>BIGGER!</strong></span>
                 </li>
               </ul>
-              <div className="mt-4 bg-yellow-500/10 border border-yellow-400/40 rounded-lg p-3">
-                <p className="text-center text-yellow-300 text-sm font-bold">
-                  📣 Tell your friends to join — more players = a jackpot that can reach <span className="text-white">MILLIONS</span> daily! 🚀
+              <div className="mt-4 bg-white/5 border border-white/10 rounded-lg p-3">
+                <p className="text-center text-slate-300 text-sm">
+                  More players means a bigger jackpot for everyone.
                 </p>
               </div>
             </div>

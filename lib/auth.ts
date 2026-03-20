@@ -1,29 +1,6 @@
-'use client';
-
-import { ethers } from 'ethers';
-
-/**
- * Génère un wallet Ethereum pour un utilisateur
- * Utilise un seed dérivé de l'ID utilisateur pour générer de manière déterministe
- */
-export function generateUserWallet(userId: string): {
-  address: string;
-  privateKey: string; // À stocker de manière sécurisée côté serveur
-} {
-  // Génère un wallet déterministe basé sur l'ID utilisateur
-  // En production, utiliser un seed maître + userId pour plus de sécurité
-  const seed = `aureus_wallet_${userId}_${process.env.NEXT_PUBLIC_WALLET_SEED || 'default_seed'}`;
-  const wallet = ethers.Wallet.createRandom();
-  
-  // Pour la production, utiliser ethers.utils.HDNodeWallet avec un mnemonic maître
-  // const hdNode = ethers.utils.HDNode.fromMnemonic(masterMnemonic);
-  // const wallet = hdNode.derivePath(`m/44'/60'/0'/0/${userIdIndex}`);
-  
-  return {
-    address: wallet.address,
-    privateKey: wallet.privateKey, // ⚠️ À stocker de manière sécurisée (HSM, AWS KMS, etc.)
-  };
-}
+// ⚠️ SERVER-SIDE ONLY — ne jamais importer dans un composant client ('use client')
+// Ce fichier contient des types et helpers liés à l'authentification.
+// La génération de wallets se fait exclusivement dans /app/api/auth/route.ts (serveur).
 
 /**
  * Interface utilisateur avec authentification sociale
@@ -33,8 +10,8 @@ export interface AureusUser {
   email?: string;
   name?: string;
   provider?: 'email' | 'google' | 'apple';
-  walletAddress: string; // Adresse de dépôt générée
-  usdcBalance: number; // Solde en USDC (crédit de jeu)
+  walletAddress: string; // Adresse de dépôt générée côté serveur
+  usdcBalance: number;   // Solde en USDC (crédit de jeu)
   createdAt: number;
 }
 

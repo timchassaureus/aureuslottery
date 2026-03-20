@@ -3,6 +3,7 @@
 import {
   Contract,
   JsonRpcProvider,
+  FallbackProvider,
   formatUnits,
 } from 'ethers';
 import { AUREUS_LOTTERY_ABI } from './abis/AureusLotteryAbi';
@@ -14,17 +15,53 @@ import {
 } from './config';
 
 const USDC_DECIMALS = 6;
-const rpcProvider = new JsonRpcProvider(RPC_URL);
 const isDev = process.env.NODE_ENV !== 'production';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const devLog = (...args: any[]) => { if (isDev) console.log(...args); };
+
+/**
+ * RPCs de fallback pour Base Mainnet — tous gratuits et sans clé API.
+ * Si le RPC principal est throttlé, ethers bascule automatiquement sur le suivant.
+ */
+const BASE_MAINNET_FALLBACK_RPCS = [
+  'https://mainnet.base.org',           // RPC officiel Base
+  'https://base.llamarpc.com',          // LlamaRPC — très fiable
+  'https://base-rpc.publicnode.com',    // PublicNode
+  'https://1rpc.io/base',              // 1RPC
+];
+
+function createRobustProvider(): JsonRpcProvider | FallbackProvider {
+  // Si l'utilisateur a configuré un RPC personnalisé (Alchemy, Infura…), on l'utilise seul
+  if (RPC_URL && !BASE_MAINNET_FALLBACK_RPCS.includes(RPC_URL)) {
+    return new JsonRpcProvider(RPC_URL);
+  }
+
+  // Sinon on construit un FallbackProvider avec tous les RPCs publics
+  try {
+    const providers = BASE_MAINNET_FALLBACK_RPCS.map((url, index) =>
+      ({
+        provider: new JsonRpcProvider(url),
+        priority: index + 1,
+        stallTimeout: 2000,
+        weight: 1,
+      })
+    );
+    return new FallbackProvider(providers, 8453); // chainId Base Mainnet
+  } catch {
+    // En cas d'erreur (ex: mobile), retourner un provider simple
+    return new JsonRpcProvider(RPC_URL || BASE_MAINNET_FALLBACK_RPCS[0]);
+  }
+}
+
+// Provider partagé — créé une seule fois par module (optimise les connexions)
+const rpcProvider = createRobustProvider();
 
 function getReadLotteryContract() {
   return new Contract(LOTTERY_ADDRESS, AUREUS_LOTTERY_ABI, rpcProvider);
 }
 
-export function getPublicProvider(): JsonRpcProvider {
-  return new JsonRpcProvider(RPC_URL);
+export function getPublicProvider(): JsonRpcProvider | FallbackProvider {
+  return rpcProvider;
 }
 
 export async function fetchLotteryState(limit = 5) {
@@ -118,7 +155,7 @@ export async function fetchUserState(address: string, drawId?: number) {
         contract.getUserTickets(targetDraw, address).catch(() => BigInt(0)),
         contract.lifetimeTickets(address).catch(() => BigInt(0)),
         contract.pendingClaims(targetDraw, address).catch(() => BigInt(0)),
-        new Contract(USDC_ADDRESS, ERC20_ABI, rpcProvider).balanceOf(address).catch(() => BigInt(0)),
+        new Contract(USDC_ADDRESS, ERC20_ABI, rpcProvider as JsonRpcProvider).balanceOf(address).catch(() => BigInt(0)),
       ]);
 
     const usdcBalance = Number(formatUnits(usdcBalanceBn, USDC_DECIMALS));

@@ -47,6 +47,19 @@ function WinnerGuideContent() {
     toast.success('Address received. The transfer will be initiated from your Aureus dashboard.');
   };
 
+  // Page only makes sense for real winners — redirect anyone arriving without a valid prize amount
+  if (amount <= 0) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center p-8">
+        <div className="text-center max-w-sm">
+          <p className="text-slate-400 text-lg mb-2">This page is for winners only.</p>
+          <p className="text-slate-600 text-sm mb-6">If you won a prize, you should have received a direct link.</p>
+          <Link href="/" className="text-violet-400 hover:text-violet-300 text-sm transition-colors">Back to Aureus →</Link>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-black text-white">
       {showConfetti && (

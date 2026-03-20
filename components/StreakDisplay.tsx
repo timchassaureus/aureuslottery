@@ -112,7 +112,7 @@ export default function StreakDisplay() {
           <span className="text-violet-200/80 text-sm">bonus tickets</span>
         </div>
         <div className="text-violet-200/80 text-sm">
-          Record: <span className="text-violet-300 font-medium">{longestStreak}</span> days
+          Record: <span className="text-violet-300 font-medium">{longestStreak}</span> {longestStreak === 1 ? 'day' : 'days'}
         </div>
       </div>
     </div>

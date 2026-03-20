@@ -1,13 +1,31 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase-server';
+import { rateLimit } from '@/lib/rate-limit';
+import { startOfDay } from 'date-fns';
 
 const COMMISSION_RATE = 0.03; // 3%
 const ETH_ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;
+const MILESTONES: Record<number, number> = { 3: 1, 5: 2, 7: 5, 14: 10, 30: 20 };
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const walletAddress = body?.walletAddress as string | undefined;
+
+    // Rate limit : max 10 achats par wallet par minute (anti-spam)
+    if (walletAddress && typeof walletAddress === 'string') {
+      const rl = rateLimit({
+        key: `record-purchase:wallet:${walletAddress.toLowerCase()}`,
+        limit: 10,
+        windowMs: 60_000,
+      });
+      if (!rl.ok) {
+        return NextResponse.json(
+          { error: 'Too many purchase requests — please wait a moment' },
+          { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+        );
+      }
+    }
     const amountUsd = body?.amountUsd as number | undefined;
     const ticketsCount = body?.ticketsCount as number | undefined;
     const referralCode = body?.referralCode as string | null | undefined;
@@ -95,18 +113,67 @@ export async function POST(request: Request) {
       });
     }
 
-    // 2) Mise à jour du streak (appel interne, non-bloquant)
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.url?.split('/api')[0] || 'http://localhost:3000';
+    // 2) Mise à jour du streak — logique inline pour éviter l'auto-fetch HTTP fragile
+    // (l'appel HTTP interne échouait souvent en production car NEXT_PUBLIC_APP_URL n'est pas défini côté serveur)
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
-      await fetch(`${baseUrl}/api/streak/update`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ walletAddress: normalizedBuyer }),
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
+      const today = startOfDay(new Date());
+      const yesterday = startOfDay(new Date(today.getTime() - 86400000));
+
+      const { data: streakRow, error: streakFetchErr } = await supabase
+        .from('streaks')
+        .select('*')
+        .eq('wallet_address', normalizedBuyer)
+        .single();
+
+      if (!streakFetchErr || streakFetchErr.code === 'PGRST116') {
+        const lastPlayDate = streakRow?.last_play_date
+          ? startOfDay(new Date(streakRow.last_play_date))
+          : null;
+        const prevStreak = streakRow?.current_streak ?? 0;
+        const longestSoFar = streakRow?.longest_streak ?? 0;
+        const totalBonusSoFar = streakRow?.total_bonus_tickets ?? 0;
+
+        let newStreak: number;
+        if (!lastPlayDate) {
+          newStreak = 1;
+        } else if (lastPlayDate.getTime() === today.getTime()) {
+          newStreak = prevStreak; // déjà joué aujourd'hui — pas de mise à jour
+        } else if (lastPlayDate.getTime() === yesterday.getTime()) {
+          newStreak = prevStreak + 1;
+        } else {
+          newStreak = 1; // streak cassé
+        }
+
+        const newLongest = Math.max(longestSoFar, newStreak);
+        const isNewDay = !lastPlayDate || lastPlayDate.getTime() !== today.getTime();
+        const bonusGranted = isNewDay ? ((MILESTONES[newStreak] ?? 0) + 1) : 0;
+
+        if (!streakRow?.id) {
+          await supabase.from('streaks').insert({
+            wallet_address: normalizedBuyer,
+            current_streak: newStreak,
+            longest_streak: newLongest,
+            last_play_date: today.toISOString().slice(0, 10),
+            total_bonus_tickets: totalBonusSoFar + bonusGranted,
+          });
+        } else {
+          await supabase.from('streaks').update({
+            current_streak: newStreak,
+            longest_streak: newLongest,
+            last_play_date: today.toISOString().slice(0, 10),
+            total_bonus_tickets: totalBonusSoFar + bonusGranted,
+          }).eq('wallet_address', normalizedBuyer);
+        }
+
+        if (bonusGranted > 0 && isNewDay) {
+          await supabase.from('bonus_tickets').insert({
+            wallet_address: normalizedBuyer,
+            amount: bonusGranted,
+            reason: `streak_${newStreak}`,
+            used: false,
+          });
+        }
+      }
     } catch (e) {
       console.warn('Streak update failed (non-blocking):', e);
     }
