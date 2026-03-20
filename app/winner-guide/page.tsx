@@ -34,7 +34,7 @@ function WinnerGuideContent() {
     return () => clearTimeout(t);
   }, []);
 
-  const twitterText = useMemo(
+  const shareText = useMemo(
     () => `I just won $${amount.toFixed(2)} on @AureusLottery 🎰🏆 Join me!`,
     [amount]
   );
@@ -54,7 +54,7 @@ function WinnerGuideContent() {
         <div className="text-center max-w-sm">
           <p className="text-slate-400 text-lg mb-2">This page is for winners only.</p>
           <p className="text-slate-600 text-sm mb-6">If you won a prize, you should have received a direct link.</p>
-          <Link href="/" className="text-violet-400 hover:text-violet-300 text-sm transition-colors">Back to Aureus →</Link>
+          <Link href="/app" className="text-[#C9A84C] hover:text-[#e8c97a] text-sm transition-colors">Back to Aureus →</Link>
         </div>
       </main>
     );
@@ -175,18 +175,18 @@ function WinnerGuideContent() {
             Join the community chat
           </a>
           <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}`}
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`}
             target="_blank"
             rel="noreferrer"
-            className="rounded-lg bg-sky-600 hover:bg-sky-500 px-4 py-3 text-center font-semibold"
+            className="rounded-lg bg-black border border-white/20 hover:border-white/40 px-4 py-3 text-center font-semibold"
           >
-            Share my win on Twitter
+            Share my win on X
           </a>
         </div>
 
         <div className="mt-5 text-center">
           <Link
-            href="/"
+            href="/app"
             className="inline-block rounded-lg border border-white/20 px-5 py-2 text-sm text-slate-200 hover:bg-white/5"
           >
             Back to Aureus

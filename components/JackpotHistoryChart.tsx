@@ -22,8 +22,8 @@ interface DrawPoint {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-slate-900 border border-purple-500/50 rounded-xl p-3 shadow-xl">
-        <p className="text-purple-300 text-xs mb-1">{label}</p>
+      <div className="bg-slate-900 border border-[#C9A84C]/40 rounded-xl p-3 shadow-xl">
+        <p className="text-[#e8c97a] text-xs mb-1">{label}</p>
         <p className="text-yellow-400 font-bold">${payload[0].value.toLocaleString('en-US')} jackpot</p>
         {payload[0].payload.winner && (
           <p className="text-green-400 text-xs mt-1">
@@ -53,7 +53,7 @@ export default function JackpotHistoryChart() {
           .order('draw_date', { ascending: true })
           .limit(30);
 
-        if (winners && winners.length > 0) {
+        if (winners && winners.length >= 3) {
           const points: DrawPoint[] = winners.map((w) => ({
             date: new Date(w.draw_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
             jackpot: Number(w.amount_usd),
@@ -64,21 +64,8 @@ export default function JackpotHistoryChart() {
           setData(points);
           setMaxJackpot(Math.max(...points.map(p => p.jackpot)));
           setTotalPaidOut(points.reduce((acc, p) => acc + p.jackpot, 0));
-        } else {
-          // Demo data if no draws yet
-          const demoData: DrawPoint[] = Array.from({ length: 14 }, (_, i) => {
-            const date = new Date();
-            date.setDate(date.getDate() - (13 - i));
-            return {
-              date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-              jackpot: Math.floor(50 + Math.random() * 200),
-              winner: '',
-            };
-          });
-          setData(demoData);
-          setMaxJackpot(Math.max(...demoData.map(p => p.jackpot)));
-          setTotalPaidOut(demoData.reduce((acc, p) => acc + p.jackpot, 0));
         }
+        // Fewer than 3 draws: leave data empty → component returns null
       } catch {
         // Silent fail
       } finally {
@@ -89,30 +76,23 @@ export default function JackpotHistoryChart() {
     fetchHistory();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="bg-purple-900/20 border border-purple-700/30 rounded-2xl p-6 animate-pulse">
-        <div className="h-6 w-48 bg-purple-800/50 rounded mb-4" />
-        <div className="h-48 bg-purple-800/30 rounded-xl" />
-      </div>
-    );
-  }
+  if (loading || data.length < 3) return null;
 
   return (
-    <div className="bg-purple-900/20 border border-purple-700/30 rounded-2xl p-6">
+    <div className="bg-[#0A0A0F]/60 border border-[#C9A84C]/20 rounded-2xl p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-yellow-400" />
           <h3 className="text-lg font-bold">Jackpot History</h3>
-          <span className="text-xs text-purple-400">last 30 draws</span>
+          <span className="text-xs text-[#C9A84C]/70">last 30 draws</span>
         </div>
         <div className="flex gap-4 text-right">
           <div>
-            <p className="text-xs text-purple-400">Record</p>
+            <p className="text-xs text-[#C9A84C]/70">Record</p>
             <p className="text-yellow-400 font-bold">${maxJackpot.toLocaleString('en-US')}</p>
           </div>
           <div>
-            <p className="text-xs text-purple-400">Total paid out</p>
+            <p className="text-xs text-[#C9A84C]/70">Total paid out</p>
             <p className="text-green-400 font-bold">${totalPaidOut.toLocaleString('en-US')}</p>
           </div>
         </div>
@@ -129,13 +109,13 @@ export default function JackpotHistoryChart() {
           <CartesianGrid strokeDasharray="3 3" stroke="#453412" strokeOpacity={0.3} />
           <XAxis
             dataKey="date"
-            tick={{ fill: '#a78bfa', fontSize: 10 }}
+            tick={{ fill: '#C9A84C', fontSize: 10 }}
             tickLine={false}
             axisLine={false}
             interval="preserveStartEnd"
           />
           <YAxis
-            tick={{ fill: '#a78bfa', fontSize: 10 }}
+            tick={{ fill: '#C9A84C', fontSize: 10 }}
             tickLine={false}
             axisLine={false}
             tickFormatter={(v) => `$${v}`}

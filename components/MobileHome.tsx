@@ -691,7 +691,7 @@ export default function MobileHome() {
                   rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-black/50 border border-white/[0.08] rounded-xl text-white text-xs font-semibold"
                 >
-                  <Twitter className="w-3.5 h-3.5" /> Twitter
+                  <Twitter className="w-3.5 h-3.5" /> X
                 </a>
                 <a
                   href={`https://t.me/share/url?url=${encodeURIComponent(siteUrl)}&text=${encodeURIComponent(shareText)}`}
