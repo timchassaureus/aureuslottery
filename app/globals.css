@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #07070f;
-  --foreground: #f0f0f0;
-  --accent: #8b5cf6;
-  --accent-light: #c4b5fd;
+  --background: #0A0A0F;
+  --foreground: #F5F0E8;
+  --accent: #C9A84C;
+  --accent-light: #e8c97a;
 }
 
 @theme inline {
@@ -31,11 +31,11 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.25);
+  background: rgba(201, 168, 76, 0.25);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 92, 246, 0.45);
+  background: rgba(201, 168, 76, 0.45);
 }
 
 @keyframes gradient {
@@ -52,14 +52,14 @@ body {
 
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(244, 114, 182, 0.5),
-                0 0 40px rgba(168, 85, 247, 0.5),
-                0 0 60px rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.4),
+                0 0 40px rgba(201, 168, 76, 0.25),
+                0 0 60px rgba(201, 168, 76, 0.15);
   }
   50% {
-    box-shadow: 0 0 30px rgba(244, 114, 182, 0.8),
-                0 0 60px rgba(168, 85, 247, 0.8),
-                0 0 90px rgba(139, 92, 246, 0.8);
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.6),
+                0 0 60px rgba(201, 168, 76, 0.4),
+                0 0 90px rgba(201, 168, 76, 0.25);
   }
 }
 

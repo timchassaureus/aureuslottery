@@ -51,16 +51,16 @@ export default function WinnersFeed() {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-violet-500/30 bg-black/40 p-4 h-32 flex items-center justify-center">
-        <span className="text-violet-200/80 text-sm">Loading winners…</span>
+      <div className="rounded-xl border border-[#C9A84C]/ bg-black/40 p-4 h-32 flex items-center justify-center">
+        <span className="text-[#F5F0E8]/ text-sm">Loading winners…</span>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-violet-500/30 bg-black/40 overflow-hidden">
-      <div className="px-4 py-2 border-b border-violet-500/20">
-        <h3 className="text-sm font-semibold text-violet-200">Latest winners</h3>
+    <div className="rounded-xl border border-[#C9A84C]/ bg-black/40 overflow-hidden">
+      <div className="px-4 py-2 border-b border-[#C9A84C]/">
+        <h3 className="text-sm font-semibold text-[#F5F0E8]">Latest winners</h3>
       </div>
       <div className="max-h-48 overflow-y-auto divide-y divide-violet-500/10">
         {winners.map((w, i) => (
@@ -73,7 +73,7 @@ export default function WinnersFeed() {
               <span
                 className={
                   w.draw_type === 'main'
-                    ? 'text-violet-400 font-semibold'
+                    ? 'text-[#C9A84C] font-semibold'
                     : 'text-gray-400 font-medium'
                 }
               >
@@ -82,7 +82,7 @@ export default function WinnersFeed() {
               on the {w.draw_type === 'main' ? 'Jackpot' : 'Bonus Draw'}!
             </span>
             {w.demo && (
-              <span className="shrink-0 text-xs text-violet-500/80 border border-violet-500/40 rounded px-1.5 py-0.5">
+              <span className="shrink-0 text-xs text-[#C9A84C]/ border border-[#C9A84C]/ rounded px-1.5 py-0.5">
                 Demo
               </span>
             )}

@@ -95,7 +95,7 @@ export default function PremiumChat() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 md:bottom-6 right-4 md:right-6 w-14 h-14 md:w-16 md:h-16 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all z-[60] hover:shadow-purple-500/50"
+        className="fixed bottom-24 md:bottom-6 right-4 md:right-6 w-14 h-14 md:w-16 md:h-16 bg-gradient-to-r from-[#0A0A0F] to-[#111118] hover:from-[#0A0A0F] hover:to-[#111118] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all z-[60] hover:shadow-purple-500/50"
       >
         <MessageCircle className="w-6 h-6 md:w-7 md:h-7" />
         {messages.length > 2 && (
@@ -107,7 +107,7 @@ export default function PremiumChat() {
 
       {isOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[70] p-3 md:p-4">
-          <div className="bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900 border-2 border-purple-500/30 rounded-3xl p-4 md:p-6 w-full max-w-2xl h-[85vh] md:h-[700px] flex flex-col relative shadow-2xl">
+          <div className="bg-gradient-to-br from-[#0A0A0F] via-[#0A0A0F] to-[#111118] border-2 border-purple-500/30 rounded-3xl p-4 md:p-6 w-full max-w-2xl h-[85vh] md:h-[700px] flex flex-col relative shadow-2xl">
             <button
               onClick={() => setIsOpen(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10 text-2xl"
@@ -136,7 +136,7 @@ export default function PremiumChat() {
               </div>
             </div>
 
-            <div className="flex-1 bg-purple-950/50 rounded-xl p-4 overflow-y-auto space-y-3 mb-4 border border-purple-800/50">
+            <div className="flex-1 bg-[#0A0A0F]/ rounded-xl p-4 overflow-y-auto space-y-3 mb-4 border border-purple-800/50">
               {messages.map((message) => {
                 const isUser = message.address === user?.address;
                 const levelIcon = getLevelIcon(message.level || 'beginner');
@@ -186,7 +186,7 @@ export default function PremiumChat() {
                 onKeyPress={handleKeyPress}
                 placeholder={connected && hasTickets ? "Write a message..." : "Connect and buy a ticket to chat"}
                 disabled={!connected || !hasTickets}
-                className="flex-1 px-4 py-3 bg-purple-950/70 border border-purple-700/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 disabled:opacity-50"
+                className="flex-1 px-4 py-3 bg-[#0A0A0F]/ border border-purple-700/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 disabled:opacity-50"
               />
               <button
                 onClick={handleSend}

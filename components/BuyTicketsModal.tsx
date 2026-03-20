@@ -133,7 +133,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
         />
       )}
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 p-3 md:p-4 flex items-start md:items-center justify-center">
-        <div className="modal w-full max-w-md border border-violet-500/20 rounded-3xl relative" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
+        <div className="modal w-full max-w-md border border-[#C9A84C]/ rounded-3xl relative" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
           <div className="modal-content p-6 md:p-8">
             <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
               <X className="w-6 h-6" />
@@ -144,7 +144,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
                 <Ticket className="w-8 h-8 text-primary-400" />
               </div>
               <h2 className="text-3xl font-bold mb-2">Buy Tickets</h2>
-              <p className="text-violet-300/80">1 USDC = 1 ticket · Base network</p>
+              <p className="text-[#e8c97a]/">1 USDC = 1 ticket · Base network</p>
             </div>
 
             <div className="space-y-6">
@@ -152,34 +152,34 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
               {/* Demo mode: payment method selector */}
               {!isLive && (
                 <div>
-                  <label className="block text-sm font-semibold mb-3 text-violet-200">Payment Method</label>
+                  <label className="block text-sm font-semibold mb-3 text-[#F5F0E8]">Payment Method</label>
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() => setPaymentMethod('crypto')}
-                      className={`relative p-4 rounded-xl border-2 transition-all ${paymentMethod === 'crypto' ? 'border-violet-500 bg-violet-500/20' : 'border-violet-500/20 bg-black/30 hover:border-violet-500/40'}`}
+                      className={`relative p-4 rounded-xl border-2 transition-all ${paymentMethod === 'crypto' ? 'border-[#C9A84C] bg-[#C9A84C]/' : 'border-[#C9A84C]/ bg-black/30 hover:border-[#C9A84C]/'}`}
                     >
                       <div className="text-center">
                         <div className="text-2xl mb-1">🔷</div>
                         <div className="font-bold text-white text-sm mb-1">USDC Wallet</div>
-                        <div className="text-xs text-violet-300/80">No fees · Instant</div>
+                        <div className="text-xs text-[#e8c97a]/">No fees · Instant</div>
                       </div>
                       {paymentMethod === 'crypto' && (
-                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-violet-500 rounded-full flex items-center justify-center">
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-[#C9A84C] rounded-full flex items-center justify-center">
                           <span className="text-black text-xs font-bold">✓</span>
                         </div>
                       )}
                     </button>
                     <button
                       onClick={() => setPaymentMethod('card')}
-                      className={`relative p-4 rounded-xl border-2 transition-all ${paymentMethod === 'card' ? 'border-violet-500 bg-violet-500/20' : 'border-violet-500/20 bg-black/30 hover:border-violet-500/40'}`}
+                      className={`relative p-4 rounded-xl border-2 transition-all ${paymentMethod === 'card' ? 'border-[#C9A84C] bg-[#C9A84C]/' : 'border-[#C9A84C]/ bg-black/30 hover:border-[#C9A84C]/'}`}
                     >
                       <div className="text-center">
                         <div className="text-2xl mb-1">💳</div>
                         <div className="font-bold text-white text-sm mb-1">Credit Card</div>
-                        <div className="text-xs text-violet-300/80">+3% · 2-3 min</div>
+                        <div className="text-xs text-[#e8c97a]/">+3% · 2-3 min</div>
                       </div>
                       {paymentMethod === 'card' && (
-                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-violet-500 rounded-full flex items-center justify-center">
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-[#C9A84C] rounded-full flex items-center justify-center">
                           <span className="text-black text-xs font-bold">✓</span>
                         </div>
                       )}
@@ -198,7 +198,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
                       <button
                         key={pack.tickets}
                         onClick={() => setCount(pack.tickets)}
-                        className={`relative p-3 rounded-xl border-2 transition-all ${isSelected ? 'border-yellow-500 bg-gradient-to-br from-yellow-500/20 to-fuchsia-500/20 scale-105' : 'border-violet-500/20 bg-black/30 hover:border-violet-500/40 hover:scale-105'}`}
+                        className={`relative p-3 rounded-xl border-2 transition-all ${isSelected ? 'border-yellow-500 bg-gradient-to-br from-yellow-500/20 to-[#e8c97a]/20 scale-105' : 'border-[#C9A84C]/ bg-black/30 hover:border-[#C9A84C]/ hover:scale-105'}`}
                       >
                         {pack.popular && (
                           <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-[10px] font-black px-2 py-0.5 rounded-full whitespace-nowrap">
@@ -208,7 +208,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
                         <div className="text-center mt-1">
                           <div className="text-xl mb-0.5">{pack.emoji} {pack.label}</div>
                           <div className="font-black text-white text-lg">{pack.tickets} USDC</div>
-                          <div className="text-xs text-violet-300/80">{pack.tickets} tickets</div>
+                          <div className="text-xs text-[#e8c97a]/">{pack.tickets} tickets</div>
                           <div className={`text-xs font-bold mt-1 px-2 py-0.5 rounded ${isSelected ? 'bg-yellow-500 text-black' : 'bg-green-500/20 text-green-400'}`}>
                             +{pack.bonus} FREE BONUS{pack.bonus > 1 ? 'ES' : ''}
                           </div>
@@ -223,7 +223,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
                   })}
                 </div>
 
-                <label className="block text-xs text-violet-400/70 mb-1 text-center">Or enter a custom amount</label>
+                <label className="block text-xs text-[#C9A84C]/ mb-1 text-center">Or enter a custom amount</label>
                 <input
                   type="number"
                   min="1"
@@ -234,14 +234,14 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
                     else { const n = parseInt(val, 10); if (!isNaN(n) && n > 0) setCount(n); }
                   }}
                   onBlur={() => { if (count < 1) setCount(1); }}
-                  className="w-full px-4 py-2 bg-black/40 border border-violet-500/30 rounded-xl text-white text-center text-xl font-bold focus:outline-none focus:border-violet-500"
+                  className="w-full px-4 py-2 bg-black/40 border border-[#C9A84C]/ rounded-xl text-white text-center text-xl font-bold focus:outline-none focus:border-[#C9A84C]"
                 />
               </div>
 
               {/* Summary */}
-              <div className="bg-black/30 rounded-xl p-4 space-y-2 border border-violet-500/10">
+              <div className="bg-black/30 rounded-xl p-4 space-y-2 border border-[#C9A84C]/">
                 <div className="flex justify-between items-center">
-                  <span className="text-violet-300/80">Tickets:</span>
+                  <span className="text-[#e8c97a]/">Tickets:</span>
                   <span className="text-white font-semibold">{count} × 1 USDC</span>
                 </div>
                 {bonusTickets > 0 && (
@@ -256,9 +256,9 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
                     <span className="text-green-300 font-black">{totalTicketsInDraw} tickets</span>
                   </div>
                 )}
-                <div className="border-t border-violet-500/20 pt-2 mt-2">
+                <div className="border-t border-[#C9A84C]/ pt-2 mt-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-violet-300/80 font-semibold">Amount to send:</span>
+                    <span className="text-[#e8c97a]/ font-semibold">Amount to send:</span>
                     <span className="text-primary-400 font-bold text-xl">{totalCost.toFixed(2)} USDC</span>
                   </div>
                 </div>
@@ -288,9 +288,9 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
                       <p className="text-red-300 font-black text-sm text-center">⚠️ SEND ON BASE NETWORK ONLY</p>
                       <p className="text-red-200/80 text-xs text-center mt-0.5">Sending on Ethereum or any other network = funds lost forever</p>
                     </div>
-                    <div className="bg-indigo-900/20 border border-violet-500/25 rounded-xl p-3">
-                      <p className="text-xs text-violet-300 font-semibold mb-1">Send exactly <span className="text-white font-black">{totalCost.toFixed(2)} USDC</span> to this address:</p>
-                      <p className="font-mono text-xs text-violet-200/80 break-all mb-1">{TREASURY}</p>
+                    <div className="bg-indigo-900/20 border border-[#C9A84C]/ rounded-xl p-3">
+                      <p className="text-xs text-[#e8c97a] font-semibold mb-1">Send exactly <span className="text-white font-black">{totalCost.toFixed(2)} USDC</span> to this address:</p>
+                      <p className="font-mono text-xs text-[#F5F0E8]/ break-all mb-1">{TREASURY}</p>
                       <p className="text-xs text-slate-400">Tickets are registered automatically within a few minutes.</p>
                     </div>
                     <div className="bg-purple-900/30 border border-fuchsia-500/30 rounded-xl p-3 space-y-1.5">
@@ -304,7 +304,7 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
                   </div>
                 )}
 
-                <div className="mt-3 text-[11px] text-violet-200/60 space-y-1 border-t border-violet-500/20 pt-2">
+                <div className="mt-3 text-[11px] text-[#F5F0E8]/ space-y-1 border-t border-[#C9A84C]/ pt-2">
                   <p>⚠️ Lottery tickets are a high-risk product. You can lose 100% of the amount you spend. Never play with money you cannot afford to lose.</p>
                   <p>By buying tickets, you confirm that you are of legal age in your country and that participation in online lotteries is permitted in your jurisdiction.</p>
                 </div>

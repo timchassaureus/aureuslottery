@@ -31,8 +31,8 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
 
             {/* Step 1 */}
             <div className="flex gap-4 p-4 rounded-xl border border-white/8 bg-white/[0.03]">
-              <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-violet-500/15 flex items-center justify-center">
-                <span className="text-violet-300 font-bold text-sm">1</span>
+              <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-[#C9A84C]/ flex items-center justify-center">
+                <span className="text-[#e8c97a] font-bold text-sm">1</span>
               </div>
               <div className="flex-1">
                 <h3 className="text-white font-semibold mb-1">Buy tickets — $1 each</h3>
@@ -60,8 +60,8 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
 
             {/* Step 2 */}
             <div className="flex gap-4 p-4 rounded-xl border border-white/8 bg-white/[0.03]">
-              <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-violet-500/15 flex items-center justify-center">
-                <Clock className="w-4 h-4 text-violet-300" />
+              <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-[#C9A84C]/ flex items-center justify-center">
+                <Clock className="w-4 h-4 text-[#e8c97a]" />
               </div>
               <div className="flex-1">
                 <h3 className="text-white font-semibold mb-1">Two automatic draws every day</h3>
@@ -74,8 +74,8 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
                       <p className="text-slate-400 text-xs mt-0.5">1 winner receives 85% of the day&apos;s total pot.</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3 p-3 rounded-lg bg-violet-500/6 border border-violet-500/15">
-                    <Zap className="w-4 h-4 text-violet-400 mt-0.5 flex-shrink-0" />
+                  <div className="flex items-start gap-3 p-3 rounded-lg bg-[#C9A84C]/ border border-[#C9A84C]/">
+                    <Zap className="w-4 h-4 text-[#C9A84C] mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="text-white text-sm font-medium">9:30 PM UTC — Bonus draw</p>
                       <p className="text-slate-400 text-xs mt-0.5">Up to 25 unique winners share 5% of the pot.</p>
@@ -87,8 +87,8 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
 
             {/* Step 3 */}
             <div className="flex gap-4 p-4 rounded-xl border border-white/8 bg-white/[0.03]">
-              <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-violet-500/15 flex items-center justify-center">
-                <Shield className="w-4 h-4 text-violet-300" />
+              <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-[#C9A84C]/ flex items-center justify-center">
+                <Shield className="w-4 h-4 text-[#e8c97a]" />
               </div>
               <div className="flex-1">
                 <h3 className="text-white font-semibold mb-1">Verifiable randomness, automatic payout</h3>
@@ -104,7 +104,7 @@ export default function HowItWorksModal({ isOpen, onClose }: Props) {
               <div className="space-y-2 text-sm">
                 {([
                   ['85%', 'Main jackpot winner', 'text-yellow-300'],
-                  ['5%', 'Bonus draw — up to 25 winners', 'text-violet-300'],
+                  ['5%', 'Bonus draw — up to 25 winners', 'text-[#e8c97a]'],
                   ['10%', 'Platform operations', 'text-slate-400'],
                 ] as const).map(([pct, label, color]) => (
                   <div key={pct} className="flex items-center gap-3">

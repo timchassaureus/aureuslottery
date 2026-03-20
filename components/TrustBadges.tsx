@@ -44,13 +44,13 @@ export default function TrustBadges() {
         </div>
 
         {/* Base Network */}
-        <a href="https://base.org" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 p-3 bg-indigo-900/20 border border-violet-700/30 rounded-xl text-center hover:border-violet-500/50 transition-colors">
-          <div className="w-8 h-8 bg-violet-500/20 rounded-full flex items-center justify-center">
-            <span className="text-violet-400 font-bold text-sm">⬡</span>
+        <a href="https://base.org" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 p-3 bg-[#0A0A0F]/40 border border-[#C9A84C]/30 rounded-xl text-center hover:border-[#C9A84C]/60 transition-colors">
+          <div className="w-8 h-8 bg-[#C9A84C]/20 rounded-full flex items-center justify-center">
+            <span className="text-[#C9A84C] font-bold text-sm">⬡</span>
           </div>
           <div>
-            <p className="text-xs font-bold text-violet-300">Base Network</p>
-            <p className="text-[10px] text-violet-400/80">by Coinbase ↗</p>
+            <p className="text-xs font-bold text-[#e8c97a]">Base Network</p>
+            <p className="text-[10px] text-[#C9A84C]/80">by Coinbase ↗</p>
           </div>
         </a>
 
@@ -67,11 +67,11 @@ export default function TrustBadges() {
       </div>
 
       {/* Links */}
-      <div className="flex justify-center gap-4 mt-4 text-xs text-violet-400/70">
-        <Link href="/faq" className="hover:text-violet-200 transition-colors">FAQ</Link>
-        <Link href="/terms" className="hover:text-violet-200 transition-colors">Terms</Link>
-        <Link href="/privacy" className="hover:text-violet-200 transition-colors">Privacy</Link>
-        <Link href="/winner-guide" className="hover:text-violet-200 transition-colors">Winner Guide</Link>
+      <div className="flex justify-center gap-4 mt-4 text-xs text-[#C9A84C]/70">
+        <Link href="/faq" className="hover:text-[#F5F0E8] transition-colors">FAQ</Link>
+        <Link href="/terms" className="hover:text-[#F5F0E8] transition-colors">Terms</Link>
+        <Link href="/privacy" className="hover:text-[#F5F0E8] transition-colors">Privacy</Link>
+        <Link href="/winner-guide" className="hover:text-[#F5F0E8] transition-colors">Winner Guide</Link>
       </div>
     </div>
   );

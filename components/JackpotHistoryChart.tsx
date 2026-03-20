@@ -126,7 +126,7 @@ export default function JackpotHistoryChart() {
               <stop offset="95%" stopColor="#eab308" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#4c1d95" strokeOpacity={0.3} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#453412" strokeOpacity={0.3} />
           <XAxis
             dataKey="date"
             tick={{ fill: '#a78bfa', fontSize: 10 }}

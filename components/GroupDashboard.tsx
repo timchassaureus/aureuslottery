@@ -46,11 +46,11 @@ export default function GroupDashboard() {
   const pastGroups = useMemo(() => myGroups.filter((group) => group.status !== 'active'), [myGroups]);
 
   return (
-    <section className="rounded-2xl border border-violet-500/25 bg-black/40 p-4 md:p-5">
+    <section className="rounded-2xl border border-[#C9A84C]/ bg-black/40 p-4 md:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg md:text-xl font-bold text-white">My groups</h2>
-          <p className="text-xs text-violet-200/80 mt-1">
+          <p className="text-xs text-[#F5F0E8]/ mt-1">
             Create your syndicate and split winnings automatically.
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function GroupDashboard() {
       </div>
 
       {!wallet && (
-        <div className="mt-4 rounded-xl border border-violet-500/20 bg-black/30 p-4 text-sm text-violet-200/80">
+        <div className="mt-4 rounded-xl border border-[#C9A84C]/ bg-black/30 p-4 text-sm text-[#F5F0E8]/">
           Connect your wallet to create or join a group.
         </div>
       )}
@@ -71,7 +71,7 @@ export default function GroupDashboard() {
       {wallet && (
         <>
           <div className="mt-5 space-y-3">
-            <h3 className="text-sm font-semibold text-violet-300">Active groups</h3>
+            <h3 className="text-sm font-semibold text-[#e8c97a]">Active groups</h3>
             {activeGroups.length === 0 ? (
               <p className="text-sm text-slate-300">No active groups at the moment.</p>
             ) : (
@@ -109,7 +109,7 @@ export default function GroupDashboard() {
           </div>
 
           <div className="mt-6 space-y-3">
-            <h3 className="text-sm font-semibold text-violet-300">History</h3>
+            <h3 className="text-sm font-semibold text-[#e8c97a]">History</h3>
             {pastGroups.length === 0 ? (
               <p className="text-sm text-slate-300">No group history yet.</p>
             ) : (
@@ -139,7 +139,7 @@ export default function GroupDashboard() {
       />
 
       {isLoading && (
-        <p className="mt-3 text-xs text-violet-200/80">Loading groups...</p>
+        <p className="mt-3 text-xs text-[#F5F0E8]/">Loading groups...</p>
       )}
     </section>
   );

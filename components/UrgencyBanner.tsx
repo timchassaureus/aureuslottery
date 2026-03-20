@@ -13,7 +13,7 @@ export default function UrgencyBanner({ timeLeft }: Props) {
   if (totalMinutes > 30) return null;
 
   const isLastMinutes = totalMinutes <= 5;
-  const bgColor = isLastMinutes ? 'from-red-600 to-fuchsia-600' : 'from-fuchsia-600 to-yellow-600';
+  const bgColor = isLastMinutes ? 'from-red-600 to-[#e8c97a]' : 'from-[#C9A84C] to-yellow-600';
   const text = isLastMinutes ? '🚨 LAST MINUTES!' : '⚠️ LAST 30 MINUTES!';
 
   return (
