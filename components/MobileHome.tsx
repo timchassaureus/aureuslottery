@@ -214,7 +214,7 @@ export default function MobileHome() {
       </div>
 
       {/* ── Header ── */}
-      <header className="sticky top-0 z-30 backdrop-blur-xl border-b border-[#C9A84C]/[0.12]" style={{ background: 'rgba(8,9,26,0.88)' }}>
+      <header className="sticky top-0 z-30 backdrop-blur-xl border-b border-[#C9A84C]/[0.12]" style={{ background: 'rgba(10,10,15,0.94)' }}>
         <div className="px-4 py-3 flex items-center justify-between">
 
           {/* Live badge */}
@@ -230,7 +230,7 @@ export default function MobileHome() {
           {/* Logo */}
           <h1
             className="text-2xl font-black tracking-[0.25em] bg-clip-text text-transparent"
-            style={{ backgroundImage: 'linear-gradient(135deg, #fcd34d, #f59e0b, #fbbf24)' }}
+            style={{ color: '#C9A84C' }}
           >
             AUREUS
           </h1>
@@ -240,8 +240,8 @@ export default function MobileHome() {
             onClick={() => isGuest ? setAuthModalOpen(true) : setActiveTab('profile')}
             className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black text-black shrink-0"
             style={{
-              background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
-              boxShadow: '0 0 16px rgba(245,158,11,0.35)',
+              background: '#C9A84C',
+              boxShadow: '0 0 16px rgba(201,168,76,0.35)',
             }}
           >
             {displayName ? displayName[0].toUpperCase() : <Settings className="w-4 h-4 text-black" />}
@@ -266,15 +266,15 @@ export default function MobileHome() {
             <div
               className="relative rounded-3xl overflow-hidden"
               style={{
-                background: 'linear-gradient(160deg, #131228 0%, #0e0c22 50%, #110f1e 100%)',
-                border: '1px solid rgba(245,158,11,0.3)',
-                boxShadow: '0 0 60px rgba(245,158,11,0.08), 0 4px 40px rgba(0,0,0,0.5)',
+                background: 'linear-gradient(160deg, #111108 0%, #0f0e08 50%, #0e0e0a 100%)',
+                border: '1px solid rgba(201,168,76,0.25)',
+                boxShadow: '0 0 60px rgba(201,168,76,0.07), 0 4px 40px rgba(0,0,0,0.5)',
               }}
             >
               {/* Glow behind number */}
               <div
                 className="absolute inset-0 pointer-events-none"
-                style={{ background: 'radial-gradient(ellipse at 50% 55%, rgba(245,158,11,0.18) 0%, rgba(139,92,246,0.06) 50%, transparent 75%)' }}
+                style={{ background: 'radial-gradient(ellipse at 50% 55%, rgba(201,168,76,0.15) 0%, rgba(201,168,76,0.04) 50%, transparent 75%)' }}
               />
               <div className="relative p-6 text-center">
                 {/* Countdown */}
@@ -343,8 +343,8 @@ export default function MobileHome() {
               onClick={() => isGuest ? setAuthModalOpen(true) : setBuyOpen(true)}
               className="group relative w-full overflow-hidden rounded-2xl"
               style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
-                boxShadow: '0 0 40px rgba(245,158,11,0.25), 0 4px 20px rgba(0,0,0,0.4)',
+                background: '#C9A84C',
+                boxShadow: '0 0 40px rgba(201,168,76,0.20), 0 4px 20px rgba(0,0,0,0.4)',
               }}
             >
               <div className="relative py-5 px-6 text-center">
@@ -404,7 +404,7 @@ export default function MobileHome() {
                 <button
                   onClick={() => setAuthModalOpen(true)}
                   className="w-full py-3 rounded-xl font-bold text-black"
-                  style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}
+                  style={{ background: '#C9A84C' }}
                 >
                   Sign In / Register
                 </button>
@@ -417,7 +417,7 @@ export default function MobileHome() {
                 <p className="text-[11px] font-black uppercase tracking-[0.25em] text-[#C9A84C]/50 mb-2">Your Active Tickets</p>
                 <p
                   className="text-7xl font-black mb-1"
-                  style={{ color: '#fcd34d', textShadow: '0 0 40px rgba(252,211,77,0.3)' }}
+                  style={{ color: '#C9A84C', textShadow: '0 0 40px rgba(201,168,76,0.3)' }}
                 >
                   {userTicketsCount}
                 </p>
@@ -491,7 +491,7 @@ export default function MobileHome() {
               <p className="font-bold text-white text-sm mb-3">Prize Distribution</p>
               <div className="space-y-2.5">
                 {[
-                  { pct: '85%', label: 'Main winner',     color: '#f59e0b', w: '85%' },
+                  { pct: '85%', label: 'Main winner',     color: '#C9A84C', w: '85%' },
                   { pct: '5%',  label: '25 bonus winners', color: '#C9A84C', w: '5%'  },
                   { pct: '3%',  label: 'Referral program', color: '#10b981', w: '3%'  },
                   { pct: '7%',  label: 'Operating fees',   color: '#475569', w: '7%'  },
@@ -598,7 +598,7 @@ export default function MobileHome() {
                 <div
                   className="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-black text-black mx-auto mb-5"
                   style={{
-                    background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+                    background: '#C9A84C',
                     boxShadow: '0 0 30px rgba(245,158,11,0.25)',
                   }}
                 >
@@ -610,7 +610,7 @@ export default function MobileHome() {
                   onClick={() => setAuthModalOpen(true)}
                   className="w-full py-3.5 rounded-2xl font-bold text-black text-base"
                   style={{
-                    background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+                    background: '#C9A84C',
                     boxShadow: '0 0 20px rgba(245,158,11,0.2)',
                   }}
                 >
@@ -624,7 +624,7 @@ export default function MobileHome() {
                   <div
                     className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-black text-black shrink-0"
                     style={{
-                      background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+                      background: '#C9A84C',
                       boxShadow: '0 0 20px rgba(245,158,11,0.25)',
                     }}
                   >
@@ -666,7 +666,7 @@ export default function MobileHome() {
                 <button
                   onClick={() => setBuyOpen(true)}
                   className="w-full py-3 mb-2.5 rounded-2xl font-bold text-black"
-                  style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}
+                  style={{ background: '#C9A84C' }}
                 >
                   Buy Tickets
                 </button>
@@ -721,7 +721,7 @@ export default function MobileHome() {
       {/* ── Bottom Navigation ── */}
       <nav
         className="fixed bottom-0 inset-x-0 z-40 backdrop-blur-2xl border-t"
-        style={{ background: 'rgba(8,9,26,0.97)', borderColor: 'rgba(201,168,76,0.15)', paddingBottom: 'env(safe-area-inset-bottom)' }}
+        style={{ background: 'rgba(10,10,15,0.97)', borderColor: 'rgba(201,168,76,0.15)', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="flex">
           {tabs.map(({ id, label, Icon }) => {

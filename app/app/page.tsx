@@ -353,12 +353,12 @@ export default function AppPage() {
 
             {/* Nav */}
             <nav className="flex items-center gap-1">
-              <Link
-                href="/"
+              <a
+                href="/#how-it-works"
                 className="px-4 py-2 rounded-xl text-sm text-[#8A8A95] hover:text-[#F5F0E8] hover:bg-white/5 transition-all"
               >
                 How it works
-              </Link>
+              </a>
               <button
                 onClick={() => setReferralOpen(true)}
                 className="px-4 py-2 rounded-xl text-sm text-[#8A8A95] hover:text-[#F5F0E8] hover:bg-white/5 transition-all"

@@ -88,7 +88,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── How it works ── */}
-      <section className="py-24 px-6 border-t border-white/[0.04]">
+      <section id="how-it-works" className="py-24 px-6 border-t border-white/[0.04]">
         <div className="max-w-5xl mx-auto">
           <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#C9A84C]/60 text-center mb-3">
             Simple &amp; transparent
