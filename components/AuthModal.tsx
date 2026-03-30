@@ -99,7 +99,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                 onChange={e => setName(e.target.value)}
                 placeholder="Username"
                 autoComplete="name"
-                className="w-full pl-10 pr-4 py-3 bg-black/40 border border-[#C9A84C]/ rounded-xl text-white placeholder-violet-400/60 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full pl-10 pr-4 py-3 bg-black/40 border border-[#C9A84C]/ rounded-xl text-white placeholder-[#8A8A95]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]"
               />
             </div>
           )}
@@ -113,7 +113,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
               onChange={e => setEmail(e.target.value)}
               placeholder="your@email.com"
               autoComplete="email"
-              className="w-full pl-10 pr-4 py-3 bg-black/40 border border-[#C9A84C]/ rounded-xl text-white placeholder-violet-400/60 focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="w-full pl-10 pr-4 py-3 bg-black/40 border border-[#C9A84C]/ rounded-xl text-white placeholder-[#8A8A95]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]"
             />
           </div>
 
@@ -126,7 +126,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
               onChange={e => setPassword(e.target.value)}
               placeholder="Password (6 characters min.)"
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-              className="w-full pl-10 pr-12 py-3 bg-black/40 border border-[#C9A84C]/ rounded-xl text-white placeholder-violet-400/60 focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="w-full pl-10 pr-12 py-3 bg-black/40 border border-[#C9A84C]/ rounded-xl text-white placeholder-[#8A8A95]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]"
             />
             <button
               type="button"

@@ -261,7 +261,7 @@ export default function DailyEngagementCard({
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-black/35">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-[#C9A84C] via-fuchsia-500 to-[#e8c97a] transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-[#C9A84C] to-[#e8c97a] transition-all duration-500"
             style={{ width: `${(progress / 3) * 100}%` }}
           />
         </div>
@@ -296,7 +296,7 @@ export default function DailyEngagementCard({
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-black/35">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-[#C9A84C] via-fuchsia-500 to-red-500 transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-[#C9A84C] to-red-500 transition-all duration-500"
             style={{ width: `${targetProgress}%` }}
           />
         </div>

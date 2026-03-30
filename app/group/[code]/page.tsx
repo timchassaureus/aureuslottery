@@ -99,19 +99,19 @@ export default function JoinGroupPage() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white p-4 md:p-6">
       {showConfetti && (
-        <div className="pointer-events-none fixed inset-0 z-50 bg-gradient-to-r from-amber-400/20 via-violet-400/20 to-emerald-400/20 animate-pulse" />
+        <div className="pointer-events-none fixed inset-0 z-50 bg-gradient-to-r from-amber-400/20 via-[#C9A84C]/20 to-emerald-400/20 animate-pulse" />
       )}
       <div className="mx-auto max-w-3xl space-y-4">
         <button
           onClick={() => router.push('/groups')}
-          className="text-sm text-violet-300 hover:text-violet-200"
+          className="text-sm text-[#C9A84C] hover:text-[#e8c97a]"
         >
           ← Back to groups
         </button>
 
-        <section className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-slate-900 to-violet-950/40 p-5">
+        <section className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-slate-900 to-[#0A0A0F] p-5">
           <h1 className="text-2xl font-black text-amber-300">{group.name}</h1>
-          <p className="text-sm text-violet-200 mt-1">Code: {group.invite_code}</p>
+          <p className="text-sm text-[#F5F0E8] mt-1">Code: {group.invite_code}</p>
           <p className="mt-2 text-sm text-slate-200">
             Total pool: <span className="text-emerald-300 font-semibold">${Number(group.total_pool).toFixed(2)}</span>
           </p>
@@ -120,17 +120,17 @@ export default function JoinGroupPage() {
           </p>
 
           <div className="mt-4">
-            <div className="mb-1 flex items-center justify-between text-xs text-violet-200">
+            <div className="mb-1 flex items-center justify-between text-xs text-[#F5F0E8]">
               <span>{group.members.length}/{group.max_members} members joined</span>
               <span>{progress.toFixed(0)}%</span>
             </div>
             <div className="h-2 rounded-full bg-black/35 overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-violet-500 to-amber-400" style={{ width: `${progress}%` }} />
+              <div className="h-full bg-gradient-to-r from-[#C9A84C] to-[#e8c97a]" style={{ width: `${progress}%` }} />
             </div>
           </div>
         </section>
 
-        <section className="rounded-2xl border border-violet-500/30 bg-slate-900/70 p-5">
+        <section className="rounded-2xl border border-[#C9A84C]/30 bg-slate-900/70 p-5">
           <h2 className="text-lg font-semibold mb-3">Members</h2>
           <div className="space-y-2">
             {group.members.map((member) => (
@@ -142,7 +142,7 @@ export default function JoinGroupPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-violet-500/30 bg-slate-900/70 p-5 space-y-3">
+        <section className="rounded-2xl border border-[#C9A84C]/30 bg-slate-900/70 p-5 space-y-3">
           <h2 className="text-lg font-semibold">Join and pay</h2>
           <input
             type="number"
@@ -150,7 +150,7 @@ export default function JoinGroupPage() {
             step="0.01"
             value={amount}
             onChange={(e) => setAmount(Number(e.target.value))}
-            className="w-full rounded-lg border border-violet-500/40 bg-slate-900 px-3 py-2"
+            className="w-full rounded-lg border border-[#C9A84C]/30 bg-slate-900 px-3 py-2"
           />
           <button
             disabled={isLoading}
@@ -162,7 +162,7 @@ export default function JoinGroupPage() {
                 toast.error(error instanceof Error ? error.message : 'Unable to join the group');
               }
             }}
-            className="w-full rounded-lg bg-violet-600 hover:bg-violet-500 disabled:opacity-50 px-4 py-2 font-semibold"
+            className="w-full rounded-lg bg-[#C9A84C] hover:bg-[#e8c97a] disabled:opacity-50 px-4 py-2 font-semibold"
           >
             {isLoading ? 'Processing...' : 'Join and pay'}
           </button>

@@ -384,8 +384,8 @@ export default function EpicDrawCeremony({
           80%     { transform:translateX(2px); }
         }
         @keyframes edc-user-pulse {
-          0%,100% { box-shadow:0 0 0 0 rgba(99,102,241,0.7); }
-          50%     { box-shadow:0 0 0 8px rgba(99,102,241,0); }
+          0%,100% { box-shadow:0 0 0 0 rgba(201,168,76,0.7); }
+          50%     { box-shadow:0 0 0 8px rgba(201,168,76,0); }
         }
         @keyframes edc-ticket-float {
           0%   { transform:translateY(0) rotate(-3deg); }
@@ -488,7 +488,7 @@ export default function EpicDrawCeremony({
             className="h-full transition-[width] duration-200"
             style={{
               width: `${progress}%`,
-              background: 'linear-gradient(90deg, #7c3aed, #f59e0b, #ef4444)',
+              background: 'linear-gradient(90deg, #C9A84C, #f59e0b, #ef4444)',
             }}
           />
         </div>
@@ -500,8 +500,8 @@ export default function EpicDrawCeremony({
             style={{ zIndex: 10 }}
           >
             <div
-              className="flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-400/60 text-indigo-200 text-sm font-bold edc-user-pulse"
-              style={{ background: 'rgba(99,102,241,0.2)' }}
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#C9A84C]/60 text-[#e8c97a] text-sm font-bold edc-user-pulse"
+              style={{ background: 'rgba(201,168,76,0.2)' }}
             >
               <span>🎫</span>
               <span>{myDisplayName} — YOUR TICKET IS IN!</span>
@@ -687,7 +687,7 @@ export default function EpicDrawCeremony({
                       style={isActive ? { textShadow: '0 0 18px rgba(255,215,0,0.9)' } : {}}
                     >
                       {name || '???'}
-                      {isMe && isActive && <span className="ml-2 text-indigo-300 text-sm">← YOU</span>}
+                      {isMe && isActive && <span className="ml-2 text-[#e8c97a] text-sm">← YOU</span>}
                     </div>
                     {isActive && (
                       <span className="absolute -top-3 right-3 bg-yellow-500 text-black text-[10px] font-black px-2 py-0.5 rounded-full tracking-widest">
@@ -710,7 +710,7 @@ export default function EpicDrawCeremony({
           <div className="flex flex-col items-center gap-5 w-full max-w-sm text-center">
             {showWinnerBadge && (
               <div
-                className="bg-gradient-to-r from-yellow-400 via-fuchsia-400 to-red-500 text-black font-black text-xl px-8 py-3 rounded-full edc-badge-pop"
+                className="bg-gradient-to-r from-yellow-400 via-[#C9A84C] to-red-500 text-black font-black text-xl px-8 py-3 rounded-full edc-badge-pop"
                 style={{ boxShadow: '0 0 50px rgba(255,215,0,0.9), 0 0 100px rgba(255,107,0,0.4)' }}
               >
                 🎉 IT&apos;S YOU! 🎉

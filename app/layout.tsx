@@ -67,12 +67,12 @@ export default function RootLayout({
             <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-950 via-slate-950 to-slate-950">
               <main className="flex-1">{children}</main>
               <footer className="border-t border-white/5 bg-black/70 text-[11px] text-slate-300/80 px-4 py-4 text-center leading-snug">
-                <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mb-3 text-purple-400">
-                  <a href="/faq" className="hover:text-purple-200 transition-colors">FAQ</a>
-                  <a href="/terms" className="hover:text-purple-200 transition-colors">Terms of Service</a>
-                  <a href="/privacy" className="hover:text-purple-200 transition-colors">Privacy</a>
-                  <a href="/winner-guide" className="hover:text-purple-200 transition-colors">Winner Guide</a>
-                  <a href="mailto:support@aureuslottery.app" className="hover:text-purple-200 transition-colors">Support</a>
+                <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mb-3 text-[#C9A84C]">
+                  <a href="/faq" className="hover:text-[#F5F0E8]/80 transition-colors">FAQ</a>
+                  <a href="/terms" className="hover:text-[#F5F0E8]/80 transition-colors">Terms of Service</a>
+                  <a href="/privacy" className="hover:text-[#F5F0E8]/80 transition-colors">Privacy</a>
+                  <a href="/winner-guide" className="hover:text-[#F5F0E8]/80 transition-colors">Winner Guide</a>
+                  <a href="mailto:support@aureuslottery.app" className="hover:text-[#F5F0E8]/80 transition-colors">Support</a>
                 </div>
                 <p>
                   Aureus is a decentralized lottery application secured by on-chain smart contracts.
@@ -84,7 +84,7 @@ export default function RootLayout({
                   It is your responsibility to verify that online lotteries are legal in your country
                   and that you are of legal age.
                 </p>
-                <p className="mt-2 text-purple-500">© 2026 Aureus Lottery · aureuslottery.app</p>
+                <p className="mt-2 text-[#8A8A95]">© 2026 Aureus Lottery · aureuslottery.app</p>
               </footer>
             </div>
           </ErrorBoundary>

@@ -27,7 +27,7 @@ export default function DisclaimerPage() {
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-indigo-950 via-purple-950 to-blue-950 text-white flex flex-col" style={{ WebkitOverflowScrolling: 'touch' }}>
+    <div className="fixed inset-0 bg-gradient-to-br from-[#0A0A0F] to-[#12120A] text-white flex flex-col" style={{ WebkitOverflowScrolling: 'touch' }}>
       <header className="px-4 py-3 md:py-4 border-b border-white/10 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <AlertTriangle className="w-6 h-6 text-yellow-400" />
@@ -40,7 +40,7 @@ export default function DisclaimerPage() {
         <div className="max-w-xl mx-auto space-y-4">
           {/* Quick accept bar when conditions met (mobile friendly) */}
           {isOver18 && understandsRisks && (
-            <div className="sticky top-0 z-40 -mx-4 px-4 py-2 mb-2 bg-indigo-900/70 backdrop-blur border-b border-white/10">
+            <div className="sticky top-0 z-40 -mx-4 px-4 py-2 mb-2 bg-[#0A0A0F]/70 backdrop-blur border-b border-white/10">
               <button onClick={handleAccept} className="w-full py-2 rounded-lg font-bold bg-gradient-to-r from-yellow-400 to-orange-500 text-black">✅ I Accept - Enter Aureus</button>
             </div>
           )}
@@ -75,7 +75,7 @@ export default function DisclaimerPage() {
         </div>
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-[max(env(safe-area-inset-bottom,0px),12px)] pt-2 border-t border-white/10 bg-indigo-950/80 backdrop-blur">
+      <footer className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-[max(env(safe-area-inset-bottom,0px),12px)] pt-2 border-t border-white/10 bg-[#0A0A0F]/80 backdrop-blur">
         <div className="max-w-xl mx-auto">
           <button
             onClick={handleAccept}

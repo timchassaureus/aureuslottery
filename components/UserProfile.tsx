@@ -25,17 +25,17 @@ export default function UserProfile({ isOpen, onClose }: Props) {
   // Get user level
   const getLevel = () => {
     if (lifetimeTickets >= 500) return { name: 'Légende', icon: '👑', color: 'from-yellow-400 to-pink-500' };
-    if (lifetimeTickets >= 100) return { name: 'Maître', icon: '💎', color: 'from-purple-400 to-pink-500' };
-    if (lifetimeTickets >= 50) return { name: 'Expert', icon: '🏆', color: 'from-yellow-400 to-fuchsia-500' };
+    if (lifetimeTickets >= 100) return { name: 'Maître', icon: '💎', color: 'from-[#C9A84C] to-[#e8c97a]' };
+    if (lifetimeTickets >= 50) return { name: 'Expert', icon: '🏆', color: 'from-[#C9A84C] to-[#e8c97a]' };
     if (lifetimeTickets >= 10) return { name: 'Amateur', icon: '⭐', color: 'from-gray-300 to-gray-500' };
-    return { name: 'Débutant', icon: '🎯', color: 'from-fuchsia-400 to-red-500' };
+    return { name: 'Débutant', icon: '🎯', color: 'from-[#C9A84C] to-[#D4B96A]' };
   };
 
   const level = getLevel();
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-indigo-950 via-purple-950 to-blue-950 border-2 border-white/20 rounded-2xl p-6 max-w-2xl w-full relative max-h-[85vh] overflow-y-auto">
+      <div className="bg-[#0A0A0F] border-2 border-white/20 rounded-2xl p-6 max-w-2xl w-full relative max-h-[85vh] overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full transition-all"
@@ -45,7 +45,7 @@ export default function UserProfile({ isOpen, onClose }: Props) {
 
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-violet-500/20 to-indigo-600/20 rounded-full mb-3 border-2 border-white/30">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#C9A84C]/20 rounded-full mb-3 border-2 border-white/30">
             <User className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold mb-2 text-white">My Profile</h2>
@@ -73,8 +73,8 @@ export default function UserProfile({ isOpen, onClose }: Props) {
           </div>
 
           <div className="bg-white/5 rounded-lg p-3 border border-white/10 text-center">
-            <Award className="w-5 h-5 text-violet-400 mx-auto mb-1" />
-            <p className="text-xl font-bold text-violet-400">{lifetimeTickets}</p>
+            <Award className="w-5 h-5 text-[#C9A84C] mx-auto mb-1" />
+            <p className="text-xl font-bold text-[#C9A84C]">{lifetimeTickets}</p>
             <p className="text-xs text-slate-400">Tickets</p>
           </div>
         </div>

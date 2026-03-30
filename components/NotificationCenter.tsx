@@ -65,7 +65,7 @@ export default function NotificationCenter() {
     <>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-r from-pink-600 via-purple-600 via-indigo-600 to-blue-600 hover:from-pink-700 hover:to-blue-700 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all z-40 border-2 border-white/20"
+        className="fixed bottom-24 right-6 w-14 h-14 bg-[#C9A84C] hover:bg-[#e8c97a] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all z-40 border-2 border-white/20"
       >
         <Bell className="w-7 h-7" />
         {notifications.length > 0 && (
@@ -76,7 +76,7 @@ export default function NotificationCenter() {
       </button>
 
       {isOpen && (
-        <div className="fixed bottom-32 right-6 w-96 bg-gradient-to-br from-pink-900 via-purple-900 via-indigo-900 to-blue-900 border-2 border-purple-500/30 rounded-2xl p-6 shadow-2xl z-40 max-h-[500px] overflow-y-auto">
+        <div className="fixed bottom-32 right-6 w-96 bg-[#0A0A0F] border-2 border-[#C9A84C]/30 rounded-2xl p-6 shadow-2xl z-40 max-h-[500px] overflow-y-auto">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-bold flex items-center gap-2">
               <Bell className="w-6 h-6 text-primary-400" />
@@ -116,12 +116,12 @@ export default function NotificationCenter() {
 
           <div className="space-y-3">
             {notifications.length === 0 ? (
-              <p className="text-purple-300 text-center py-8">No notifications</p>
+              <p className="text-[#8A8A95] text-center py-8">No notifications</p>
             ) : (
               notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className="bg-purple-800/30 border border-purple-700/50 rounded-xl p-4 relative hover:bg-purple-800/40 transition-colors"
+                  className="bg-[#C9A84C]/5 border border-[#C9A84C]/20 rounded-xl p-4 relative hover:bg-[#C9A84C]/10 transition-colors"
                 >
                   <div className="flex items-start gap-3">
                     {notification.type === 'winner' && (
@@ -135,7 +135,7 @@ export default function NotificationCenter() {
                     )}
                     <div className="flex-1">
                       <p className="text-sm">{notification.message}</p>
-                      <p className="text-xs text-purple-400 mt-1">{notification.time}</p>
+                      <p className="text-xs text-[#8A8A95] mt-1">{notification.time}</p>
                     </div>
                     <button
                       onClick={() => removeNotification(notification.id)}

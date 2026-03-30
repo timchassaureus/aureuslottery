@@ -33,7 +33,7 @@ export default function DailyReward({ isOpen, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 border-2 border-yellow-500/50 rounded-3xl p-8 max-w-2xl w-full relative shadow-2xl">
+      <div className="bg-[#0A0A0F] border-2 border-yellow-500/50 rounded-3xl p-8 max-w-2xl w-full relative shadow-2xl">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors text-2xl"
@@ -45,10 +45,10 @@ export default function DailyReward({ isOpen, onClose }: Props) {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-yellow-500/20 rounded-full mb-4 border-4 border-yellow-500/50 animate-pulse">
             <Gift className="w-10 h-10 text-yellow-400" />
           </div>
-          <h2 className="text-4xl font-black mb-2 bg-gradient-to-r from-yellow-400 to-fuchsia-500 bg-clip-text text-transparent">
+          <h2 className="text-4xl font-black mb-2 bg-gradient-to-r from-yellow-400 to-[#e8c97a] bg-clip-text text-transparent">
             Daily Rewards
           </h2>
-          <p className="text-purple-300">Claim your FREE tickets every day!</p>
+          <p className="text-[#8A8A95]">Claim your FREE tickets every day!</p>
         </div>
 
         <div className="grid grid-cols-7 gap-2 mb-6">
@@ -57,14 +57,14 @@ export default function DailyReward({ isOpen, onClose }: Props) {
               key={index}
               className={`relative p-4 rounded-xl border-2 text-center transition-all ${
                 item.unlocked && !claimed
-                  ? 'bg-gradient-to-br from-yellow-500/20 to-fuchsia-500/20 border-yellow-500/50 cursor-pointer hover:scale-110 animate-pulse'
-                  : 'bg-purple-900/30 border-purple-700/30'
+                  ? 'bg-gradient-to-br from-yellow-500/20 to-[#C9A84C]/20 border-yellow-500/50 cursor-pointer hover:scale-110 animate-pulse'
+                  : 'bg-[#C9A84C]/5 border-[#C9A84C]/15'
               }`}
               onClick={item.unlocked && !claimed ? handleClaim : undefined}
             >
-              <div className="text-xs font-bold text-purple-300 mb-1">Day {item.day}</div>
+              <div className="text-xs font-bold text-[#8A8A95] mb-1">Day {item.day}</div>
               <div className="text-2xl mb-2">{item.unlocked && !claimed ? '🎁' : '🔒'}</div>
-              <div className="text-xs text-purple-300">{item.reward}</div>
+              <div className="text-xs text-[#8A8A95]">{item.reward}</div>
               {item.unlocked && !claimed && (
                 <Sparkles className="absolute -top-1 -right-1 w-5 h-5 text-yellow-400 animate-bounce" />
               )}
@@ -79,8 +79,8 @@ export default function DailyReward({ isOpen, onClose }: Props) {
           </div>
         )}
 
-        <div className="mt-6 p-4 bg-purple-900/30 rounded-xl border border-purple-700/50">
-          <p className="text-sm text-center text-purple-300">
+        <div className="mt-6 p-4 bg-[#C9A84C]/5 rounded-xl border border-[#C9A84C]/20">
+          <p className="text-sm text-center text-[#8A8A95]">
             💰 The more days you complete, the bigger the rewards! Week 2 offers even better prizes!
           </p>
         </div>

@@ -288,15 +288,15 @@ export default function BuyTicketsModal({ isOpen, onClose, initialCount = 5 }: P
                       <p className="text-red-300 font-black text-sm text-center">⚠️ SEND ON BASE NETWORK ONLY</p>
                       <p className="text-red-200/80 text-xs text-center mt-0.5">Sending on Ethereum or any other network = funds lost forever</p>
                     </div>
-                    <div className="bg-indigo-900/20 border border-[#C9A84C]/ rounded-xl p-3">
+                    <div className="bg-[#C9A84C]/5 border border-[#C9A84C]/ rounded-xl p-3">
                       <p className="text-xs text-[#e8c97a] font-semibold mb-1">Send exactly <span className="text-white font-black">{totalCost.toFixed(2)} USDC</span> to this address:</p>
                       <p className="font-mono text-xs text-[#F5F0E8]/ break-all mb-1">{TREASURY}</p>
                       <p className="text-xs text-slate-400">Tickets are registered automatically within a few minutes.</p>
                     </div>
-                    <div className="bg-purple-900/30 border border-fuchsia-500/30 rounded-xl p-3 space-y-1.5">
-                      <p className="text-fuchsia-300 font-bold text-xs">🦊 Using MetaMask?</p>
-                      <p className="text-fuchsia-200/80 text-xs">Before sending, switch your network to <strong className="text-white">Base</strong>: tap the network name at the top of MetaMask → select &quot;Base&quot;. If it&apos;s not in the list, add it on <a href="https://chainlist.org/?search=base" target="_blank" rel="noopener noreferrer" className="underline text-fuchsia-300">chainlist.org</a>.</p>
-                      <p className="text-fuchsia-200/60 text-xs">💡 Easiest alternative: use <strong className="text-white">Coinbase Wallet</strong> — it handles Base automatically.</p>
+                    <div className="bg-[#C9A84C]/10 border border-[#C9A84C]/20 rounded-xl p-3 space-y-1.5">
+                      <p className="text-[#C9A84C] font-bold text-xs">🦊 Using MetaMask?</p>
+                      <p className="text-[#e8c97a]/80 text-xs">Before sending, switch your network to <strong className="text-white">Base</strong>: tap the network name at the top of MetaMask → select &quot;Base&quot;. If it&apos;s not in the list, add it on <a href="https://chainlist.org/?search=base" target="_blank" rel="noopener noreferrer" className="underline text-[#C9A84C]">chainlist.org</a>.</p>
+                      <p className="text-[#e8c97a]/60 text-xs">💡 Easiest alternative: use <strong className="text-white">Coinbase Wallet</strong> — it handles Base automatically.</p>
                     </div>
                     <a href="/guide" className="flex items-center justify-center gap-2 text-xs text-blue-400 hover:text-blue-300 transition-colors">
                       🔰 First time? Read the full beginner guide →

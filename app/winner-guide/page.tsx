@@ -81,7 +81,7 @@ function WinnerGuideContent() {
       )}
 
       <section className="mx-auto max-w-3xl px-4 py-8 md:py-10">
-        <div className="rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-500/10 to-violet-500/10 p-6 md:p-8 text-center">
+        <div className="rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-500/10 to-[#e8c97a]/500/10 p-6 md:p-8 text-center">
           <h1 className="text-3xl md:text-5xl font-black text-amber-300 leading-tight">
             🏆 CONGRATULATIONS! You won ${displayAmount.toFixed(2)}
           </h1>
@@ -140,7 +140,7 @@ function WinnerGuideContent() {
                   value={coinbaseAddress}
                   onChange={(e) => setCoinbaseAddress(e.target.value)}
                   placeholder="Paste your Coinbase address here"
-                  className="w-full rounded-lg border border-violet-400/30 bg-black px-3 py-2 text-sm"
+                  className="w-full rounded-lg border border-[#C9A84C]/20 bg-black px-3 py-2 text-sm"
                 />
                 <button
                   onClick={handleTransfer}
@@ -170,7 +170,7 @@ function WinnerGuideContent() {
             href="https://t.me/"
             target="_blank"
             rel="noreferrer"
-            className="rounded-lg bg-violet-600 hover:bg-violet-500 px-4 py-3 text-center font-semibold"
+            className="rounded-lg bg-[#C9A84C] hover:bg-[#C9A84C] px-4 py-3 text-center font-semibold"
           >
             Join the community chat
           </a>

@@ -159,7 +159,7 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
         <div className="w-full max-w-sm bg-slate-900 border border-white/10 rounded-2xl p-8 shadow-2xl">
-          <div className="w-10 h-10 rounded-xl bg-violet-600/20 flex items-center justify-center mb-4">
+          <div className="w-10 h-10 rounded-xl bg-[#C9A84C]/10 flex items-center justify-center mb-4">
             <span className="text-xl">🏆</span>
           </div>
           <h1 className="text-2xl font-black text-white mb-1">Aureus Admin</h1>
@@ -170,10 +170,10 @@ export default function AdminPage() {
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleLogin()}
             placeholder="Mot de passe"
-            className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm mb-4 focus:outline-none focus:border-violet-500"
+            className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm mb-4 focus:outline-none focus:border-[#C9A84C]"
           />
           <button onClick={handleLogin}
-            className="w-full py-3 bg-violet-600 hover:bg-violet-500 rounded-xl font-bold text-white transition flex items-center justify-center gap-2">
+            className="w-full py-3 bg-[#C9A84C] hover:bg-[#C9A84C] rounded-xl font-bold text-white transition flex items-center justify-center gap-2">
             <LogIn className="w-4 h-4" /> Se connecter
           </button>
         </div>
@@ -199,7 +199,7 @@ export default function AdminPage() {
     { label: 'Revenu total',    value: usd(s?.totalRevenue    ?? 0), icon: DollarSign, color: 'text-green-400'  },
     { label: 'Tickets vendus',  value: s?.totalTickets    ?? 0,  icon: Ticket,     color: 'text-yellow-400' },
     { label: 'Gains distribués',value: usd(s?.totalPaidOut    ?? 0), icon: Trophy,     color: 'text-amber-400'  },
-    { label: 'Nb achats',       value: s?.purchases       ?? 0,  icon: TrendingUp, color: 'text-violet-400' },
+    { label: 'Nb achats',       value: s?.purchases       ?? 0,  icon: TrendingUp, color: 'text-[#C9A84C]' },
     { label: 'Commissions',     value: usd(s?.totalCommissions ?? 0), icon: Gift,    color: 'text-pink-400'   },
   ];
 
@@ -284,7 +284,7 @@ export default function AdminPage() {
             />
             <BarMini
               title="🎟 Tickets vendus / jour"
-              color="#8b5cf6"
+              color="#C9A84C"
               data={cd} dataKey="tickets"
             />
             <BarMini
@@ -355,7 +355,7 @@ export default function AdminPage() {
                   ? `✅ Tirage bonus : ${d.winners?.length} gagnants, $${d.prizePerWinner?.toFixed(2)} chacun (${d.bonusTicketsUsed ?? 0} tickets bonus inclus)`
                   : `❌ ${d.error || d.message}`);
               }}
-              className="px-5 py-3 bg-violet-600/20 hover:bg-violet-600/40 border border-violet-500/30 rounded-xl text-sm font-bold text-violet-300 transition"
+              className="px-5 py-3 bg-[#C9A84C]/10 hover:bg-[#C9A84C]/20 border border-[#C9A84C]/20 rounded-xl text-sm font-bold text-[#e8c97a] transition"
             >
               💎 Déclencher tirage bonus
             </button>

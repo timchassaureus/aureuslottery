@@ -13,11 +13,11 @@ function initials(addr: string) {
 
 function colorFor(addr: string) {
   const colors = [
-    'bg-violet-600',
-    'bg-fuchsia-600',
+    'bg-[#C9A84C]',
+    'bg-[#A68A3E]',
     'bg-blue-600',
     'bg-emerald-600',
-    'bg-violet-600',
+    'bg-[#C9A84C]',
   ];
   let hash = 0;
   for (let i = 0; i < addr.length; i += 1) hash = (hash + addr.charCodeAt(i)) % colors.length;
@@ -48,15 +48,15 @@ export default function GroupCard({
   const isCreator = myWallet?.toLowerCase() === group.creator_wallet.toLowerCase();
 
   return (
-    <div className="rounded-2xl border border-violet-500/30 bg-gradient-to-br from-slate-900/90 to-violet-950/40 p-4">
+    <div className="rounded-2xl border border-[#C9A84C]/20 bg-[#0A0A0F] p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-white font-semibold">{group.name}</h3>
-          <p className="text-xs text-violet-200 mt-1">Code: {group.invite_code}</p>
+          <p className="text-xs text-[#8A8A95] mt-1">Code: {group.invite_code}</p>
         </div>
         <div className="flex gap-2">
           {isCreator && (
-            <span className="rounded-full border border-violet-400/40 bg-violet-500/10 px-2 py-0.5 text-[11px] text-violet-200">
+            <span className="rounded-full border border-[#C9A84C]/40 bg-[#C9A84C]/10 px-2 py-0.5 text-[11px] text-[#e8c97a]">
               Creator
             </span>
           )}
@@ -78,26 +78,26 @@ export default function GroupCard({
             {initials(member.wallet_address)}
           </div>
         ))}
-        {memberCount > 5 && <span className="text-xs text-violet-200">+{memberCount - 5}</span>}
+        {memberCount > 5 && <span className="text-xs text-[#8A8A95]">+{memberCount - 5}</span>}
       </div>
 
       <div className="mt-3">
-        <p className="text-2xl font-black text-violet-300">${Number(group.total_pool || 0).toFixed(2)}</p>
+        <p className="text-2xl font-black text-[#C9A84C]">${Number(group.total_pool || 0).toFixed(2)}</p>
         <p className="text-xs text-slate-300">{memberCount} members • ${Number(group.total_pool || 0).toFixed(2)} at stake</p>
       </div>
 
       <div className="mt-3">
-        <div className="mb-1 flex items-center justify-between text-[11px] text-violet-200">
+        <div className="mb-1 flex items-center justify-between text-[11px] text-[#8A8A95]">
           <span>Group progress</span>
           <span>{memberCount}/{group.max_members}</span>
         </div>
         <div className="h-2 rounded-full bg-black/35 overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-violet-500 to-violet-400" style={{ width: `${progress}%` }} />
+          <div className="h-full bg-gradient-to-r from-[#C9A84C] to-[#e8c97a]" style={{ width: `${progress}%` }} />
         </div>
       </div>
 
-      <div className="mt-3 text-xs text-violet-100/90">
-        <p>My share: <span className="text-violet-300 font-semibold">{myShare.toFixed(2)}%</span> (${myContribution.toFixed(2)})</p>
+      <div className="mt-3 text-xs text-[#F5F0E8]/90">
+        <p>My share: <span className="text-[#C9A84C] font-semibold">{myShare.toFixed(2)}%</span> (${myContribution.toFixed(2)})</p>
         <p className="mt-1">Draw in ~{hoursLeft}h</p>
       </div>
 
@@ -105,7 +105,7 @@ export default function GroupCard({
         {onInvite && (
           <button
             onClick={onInvite}
-            className="rounded-lg bg-violet-600 hover:bg-violet-500 px-3 py-2 text-xs font-medium text-white"
+            className="rounded-lg bg-[#C9A84C] hover:bg-[#e8c97a] px-3 py-2 text-xs font-medium text-white"
           >
             Invite more friends
           </button>

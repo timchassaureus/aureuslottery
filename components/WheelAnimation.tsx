@@ -111,10 +111,10 @@ export default function WheelAnimation({ participants: propParticipants, winner,
             🎰 DRAWING WINNER 🎰
           </h2>
           <div className="flex items-center justify-center gap-8 text-lg">
-            <span className="text-violet-300">
+            <span className="text-[#8A8A95]">
               👥 <strong className="text-2xl">{participants.length.toLocaleString('en-US')}</strong> Players
             </span>
-            <span className="text-fuchsia-300">
+            <span className="text-[#8A8A95]">
               🎫 <strong className="text-2xl">{totalTickets.toLocaleString('en-US')}</strong> Tickets
             </span>
             <span className="text-yellow-300">
@@ -129,7 +129,7 @@ export default function WheelAnimation({ participants: propParticipants, winner,
             {/* Main display box */}
             <div className="relative mb-8">
               {/* Glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-indigo-500 rounded-3xl blur-3xl opacity-50 animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#C9A84C] via-[#e8c97a] to-[#A68A3E] rounded-3xl blur-3xl opacity-50 animate-pulse"></div>
               
               {/* Content */}
               <div className="relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl border-4 border-yellow-400 rounded-3xl p-12 md:p-20">
@@ -152,7 +152,7 @@ export default function WheelAnimation({ participants: propParticipants, winner,
                   
                   <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
                     <div 
-                      className={`h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-yellow-500 rounded-full transition-all ${
+                      className={`h-full bg-gradient-to-r from-[#C9A84C] via-[#e8c97a] to-[#C9A84C] rounded-full transition-all ${
                         phase === 'rolling' ? 'w-1/3' : 'w-2/3'
                       }`}
                       style={{
@@ -206,16 +206,16 @@ export default function WheelAnimation({ participants: propParticipants, winner,
             `}</style>
 
             <div className="mb-6">
-              <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-r from-yellow-400 to-fuchsia-500 rounded-full border-4 border-white shadow-2xl mb-4 animate-bounce">
+              <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-r from-[#C9A84C] to-[#e8c97a] rounded-full border-4 border-white shadow-2xl mb-4 animate-bounce">
                 <Trophy className="w-16 h-16 text-white" />
               </div>
             </div>
 
-            <h2 className="text-7xl md:text-9xl font-black mb-6 bg-gradient-to-r from-yellow-400 via-fuchsia-400 to-yellow-400 bg-clip-text text-transparent animate-pulse">
+            <h2 className="text-7xl md:text-9xl font-black mb-6 bg-gradient-to-r from-[#C9A84C] via-[#e8c97a] to-[#C9A84C] bg-clip-text text-transparent animate-pulse">
               WINNER!
             </h2>
 
-            <div className="bg-gradient-to-r from-yellow-500/20 to-fuchsia-500/20 rounded-3xl p-8 mb-6 border-4 border-yellow-400 max-w-3xl mx-auto backdrop-blur-xl">
+            <div className="bg-gradient-to-r from-[#C9A84C]/20 to-[#e8c97a]/20 rounded-3xl p-8 mb-6 border-4 border-yellow-400 max-w-3xl mx-auto backdrop-blur-xl">
               <p className="text-2xl text-yellow-300 font-bold mb-4">🎊 Congratulations to 🎊</p>
               <p className="text-4xl md:text-5xl font-mono font-black text-yellow-400 break-all mb-6">
                 {finalWinner}

@@ -29,10 +29,10 @@ export default function RefCodePage() {
   }, [params?.code, router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900 text-white p-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#0A0A0F] to-[#12120A] text-white p-6">
       <div className="text-center animate-in fade-in duration-500">
         <p className="text-2xl font-bold text-primary-400 mb-2">🎁 {message}</p>
-        <p className="text-purple-300">Redirecting to the lottery…</p>
+        <p className="text-[#e8c97a]">Redirecting to the lottery…</p>
       </div>
     </div>
   );

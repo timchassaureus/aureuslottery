@@ -16,7 +16,7 @@ export default function EnhancedWinnersHistory() {
   if (recentDraws.length === 0 && recentSecondaryDraws.length === 0) return null;
 
   return (
-    <div className="bg-black/40 backdrop-blur-xl border border-violet-500/15 rounded-xl p-4 hover:border-violet-500/25 transition-all">
+    <div className="bg-black/40 backdrop-blur-xl border border-[#C9A84C]/15 rounded-xl p-4 hover:border-[#C9A84C]/25 transition-all">
       <div className="flex items-center gap-2 mb-4">
         <Trophy className="w-5 h-5 text-yellow-400" />
         <h3 className="text-xl font-bold text-white">Recent Winners</h3>
@@ -69,8 +69,8 @@ export default function EnhancedWinnersHistory() {
       {recentSecondaryDraws.length > 0 && (
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Gift className="w-4 h-4 text-violet-400" />
-            <h4 className="text-sm font-bold text-violet-400">10PM Bonus Draw</h4>
+            <Gift className="w-4 h-4 text-[#C9A84C]" />
+            <h4 className="text-sm font-bold text-[#C9A84C]">10PM Bonus Draw</h4>
           </div>
           
           <div className="space-y-2">
@@ -93,7 +93,7 @@ export default function EnhancedWinnersHistory() {
                     </div>
                     
                     <div className="text-right">
-                      <p className="text-lg font-black text-violet-400">
+                      <p className="text-lg font-black text-[#C9A84C]">
                         ${draw.totalPot.toLocaleString('en-US')}
                       </p>
                     </div>
@@ -113,7 +113,7 @@ export default function EnhancedWinnersHistory() {
                     ))}
                     {draw.winners.length > 5 && (
                       <div className="bg-white/5 px-2 py-1 rounded text-center flex items-center justify-center">
-                        <p className="text-[10px] text-violet-400 font-bold">
+                        <p className="text-[10px] text-[#C9A84C] font-bold">
                           +{draw.winners.length - 5}
                         </p>
                       </div>

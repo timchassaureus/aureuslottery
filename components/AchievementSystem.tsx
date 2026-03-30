@@ -71,14 +71,14 @@ export default function AchievementSystem() {
   ).slice(0, 3); // Show max 3 locked achievements
 
   return (
-    <div className="bg-purple-800/30 rounded-2xl p-6 backdrop-blur-xl border border-purple-700/30">
+    <div className="bg-[#C9A84C]/5 rounded-2xl p-6 backdrop-blur-xl border border-[#C9A84C]/20">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <Crown className="w-6 h-6 text-yellow-400" />
           <h3 className="text-2xl font-bold">Achievements</h3>
         </div>
         <div className="text-right">
-          <p className="text-sm text-purple-300">
+          <p className="text-sm text-[#8A8A95]">
             {earnedCount} / {visibleAchievements.length} unlocked
           </p>
         </div>
@@ -91,23 +91,23 @@ export default function AchievementSystem() {
             key={idx}
             className={`p-4 rounded-xl text-center transition-all ${
               achievement.earned
-                ? 'bg-gradient-to-br from-yellow-500/20 to-fuchsia-500/20 border-2 border-yellow-500/50 scale-100'
-                : 'bg-purple-900/20 border-2 border-purple-700/20 scale-90 opacity-60'
+                ? 'bg-gradient-to-br from-yellow-500/20 to-[#C9A84C]/20 border-2 border-yellow-500/50 scale-100'
+                : 'bg-[#C9A84C]/5 border-2 border-[#C9A84C]/10 scale-90 opacity-60'
             }`}
           >
             <div className="text-4xl mb-2">{achievement.icon}</div>
             <div className="text-xs font-bold mb-1">{achievement.title}</div>
-            <div className="text-xs text-purple-300 opacity-75">{achievement.desc}</div>
+            <div className="text-xs text-[#8A8A95] opacity-75">{achievement.desc}</div>
           </div>
         ))}
       </div>
 
       {/* Next Tier Preview (Locked) */}
       {nextTierAchievements.length > 0 && (
-        <div className="border-t border-purple-700/30 pt-4">
+        <div className="border-t border-[#C9A84C]/20 pt-4">
           <div className="flex items-center gap-2 mb-3">
-            <Lock className="w-4 h-4 text-purple-400" />
-            <p className="text-sm font-bold text-purple-300">
+            <Lock className="w-4 h-4 text-[#8A8A95]" />
+            <p className="text-sm font-bold text-[#8A8A95]">
               Unlock at {nextTierAchievements[0].requiredLevel} level ({nextTierAchievements[0].requiredTickets} tickets)
             </p>
           </div>
@@ -115,12 +115,12 @@ export default function AchievementSystem() {
             {nextTierAchievements.map((achievement, idx) => (
               <div
                 key={idx}
-                className="p-4 rounded-xl text-center bg-purple-950/40 border-2 border-purple-600/30 scale-90 grayscale opacity-50 relative"
+                className="p-4 rounded-xl text-center bg-[#C9A84C]/5 border-2 border-[#C9A84C]/15 scale-90 grayscale opacity-50 relative"
               >
-                <Lock className="absolute top-2 right-2 w-3 h-3 text-purple-400" />
+                <Lock className="absolute top-2 right-2 w-3 h-3 text-[#8A8A95]" />
                 <div className="text-4xl mb-2 blur-sm">{achievement.icon}</div>
-                <div className="text-xs font-bold mb-1 text-purple-400">???</div>
-                <div className="text-xs text-purple-500 opacity-75">Locked</div>
+                <div className="text-xs font-bold mb-1 text-[#8A8A95]">???</div>
+                <div className="text-xs text-[#8A8A95] opacity-75">Locked</div>
               </div>
             ))}
           </div>
@@ -129,7 +129,7 @@ export default function AchievementSystem() {
 
       {/* Total Progress */}
       <div className="mt-6 text-center">
-        <p className="text-xs text-purple-400">
+        <p className="text-xs text-[#8A8A95]">
           {allAchievements.filter(a => a.earned).length} / {allAchievements.length} total achievements earned
         </p>
       </div>

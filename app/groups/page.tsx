@@ -71,8 +71,8 @@ export default function GroupsPublicPage() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white p-4 md:p-6">
       <div className="mx-auto max-w-5xl">
-        <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-slate-900 to-violet-950/30 p-6">
-          <p className="text-sm text-violet-200">Social discovery</p>
+        <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-slate-900 to-[#0A0A0F] p-6">
+          <p className="text-sm text-[#F5F0E8]">Social discovery</p>
           <h1 className="mt-1 text-3xl md:text-4xl font-black text-amber-300">Open groups</h1>
           <p className="mt-2 text-sm text-slate-200">
             Join an existing group or create your own to play together in the 9PM draw.
@@ -80,7 +80,7 @@ export default function GroupsPublicPage() {
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <button
               onClick={() => setOpenCreate(true)}
-              className="rounded-lg bg-violet-600 hover:bg-violet-500 px-4 py-2 font-semibold"
+              className="rounded-lg bg-[#C9A84C] hover:bg-[#e8c97a] px-4 py-2 font-semibold"
             >
               Create my own group 🚀
             </button>
@@ -104,12 +104,12 @@ export default function GroupsPublicPage() {
             const members = membersByGroup[group.id] || 0;
             const remaining = Math.max(0, group.max_members - members);
             return (
-              <div key={group.id} className="rounded-2xl border border-violet-500/30 bg-slate-900/70 p-4">
+              <div key={group.id} className="rounded-2xl border border-[#C9A84C]/30 bg-slate-900/70 p-4">
                 <h3 className="text-lg font-semibold">{group.name}</h3>
                 <p className="mt-1 text-sm text-slate-300">
                   Pool: <span className="text-emerald-300 font-semibold">${group.total_pool.toFixed(2)}</span>
                 </p>
-                <p className="mt-1 text-xs text-violet-200">
+                <p className="mt-1 text-xs text-[#F5F0E8]">
                   {members}/{group.max_members} members • {remaining} spot{remaining > 1 ? 's' : ''} remaining
                 </p>
                 <p className="mt-1 text-xs text-slate-300">
@@ -117,7 +117,7 @@ export default function GroupsPublicPage() {
                 </p>
                 <button
                   onClick={() => router.push(`/group/${group.invite_code}`)}
-                  className="mt-3 rounded-lg bg-violet-600 hover:bg-violet-500 px-4 py-2 text-sm font-semibold"
+                  className="mt-3 rounded-lg bg-[#C9A84C] hover:bg-[#e8c97a] px-4 py-2 text-sm font-semibold"
                 >
                   Join
                 </button>

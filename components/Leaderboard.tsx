@@ -88,7 +88,7 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="border-2 border-violet-500/20 rounded-3xl p-8 max-w-3xl w-full relative max-h-[90vh] overflow-y-auto" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
+      <div className="border-2 border-[#C9A84C]/20 rounded-3xl p-8 max-w-3xl w-full relative max-h-[90vh] overflow-y-auto" style={{ background: 'linear-gradient(160deg, #0e0d1a 0%, #09090f 100%)' }}>
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors text-2xl"
@@ -101,7 +101,7 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
             <Trophy className="w-8 h-8 text-yellow-400" />
           </div>
           <h2 className="text-4xl font-black mb-2">Leaderboard</h2>
-          <p className="text-violet-300/80">Top players this week</p>
+          <p className="text-[#8A8A95]">Top players this week</p>
         </div>
 
         {/* Period selector */}
@@ -112,8 +112,8 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
               onClick={() => setSelectedPeriod(period)}
               className={`px-4 py-2 rounded-xl font-semibold transition-all ${
                 selectedPeriod === period
-                  ? 'bg-gradient-to-r from-violet-500 to-fuchsia-500 text-black'
-                  : 'bg-black/40 text-violet-300/80 border border-violet-500/20 hover:bg-black/60'
+                  ? 'bg-gradient-to-r from-[#C9A84C] to-[#e8c97a] text-black'
+                  : 'bg-black/40 text-[#8A8A95] border border-[#C9A84C]/20 hover:bg-black/60'
               }`}
             >
               {period.charAt(0).toUpperCase() + period.slice(1)}
@@ -135,8 +135,8 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
                   player.rank === 1
                     ? 'border-yellow-500/50 bg-yellow-900/10'
                     : player.rank <= 3
-                    ? 'border-violet-500/40'
-                    : 'border-violet-500/15'
+                    ? 'border-[#C9A84C]/30'
+                    : 'border-[#C9A84C]/10'
                 }`}
               >
                 <div className="flex items-center gap-4">
@@ -147,9 +147,9 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
                     ) : player.rank === 2 ? (
                       <span className="text-gray-300">🥈</span>
                     ) : player.rank === 3 ? (
-                      <span className="text-fuchsia-400">🥉</span>
+                      <span className="text-[#C9A84C]">🥉</span>
                     ) : (
-                      <span className="text-violet-400">#{player.rank}</span>
+                      <span className="text-[#C9A84C]">#{player.rank}</span>
                     )}
                   </div>
 
@@ -158,7 +158,7 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
                     <p className="font-mono font-bold text-lg">
                       {getDisplayName(player.address, undefined, undefined)}
                     </p>
-                    <div className="flex gap-4 text-sm text-violet-300/70 mt-1">
+                    <div className="flex gap-4 text-sm text-[#8A8A95] mt-1">
                       <span>{player.tickets} ticket{player.tickets !== 1 ? 's' : ''}</span>
                       {player.winnings > 0 && (
                         <>
@@ -175,11 +175,11 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
         </div>
 
         {/* Rewards info */}
-        <div className="mt-6 p-4 bg-violet-500/5 rounded-xl border border-violet-500/20">
+        <div className="mt-6 p-4 bg-[#C9A84C]/5 rounded-xl border border-[#C9A84C]/20">
           <p className="text-center text-sm font-bold text-white mb-1">
             🏆 Weekly rewards — every Sunday evening
           </p>
-          <p className="text-center text-xs text-violet-400/70 mb-4">
+          <p className="text-center text-xs text-[#C9A84C]/70 mb-4">
             Based on your weekly stake — the more you play, the more you earn
           </p>
           <div className="flex justify-center gap-4 text-sm">
@@ -187,22 +187,22 @@ export default function Leaderboard({ isOpen, onClose }: Props) {
               <p className="text-2xl mb-1">🥇</p>
               <p className="text-yellow-300 font-black text-lg">10%</p>
               <p className="text-yellow-200/70 text-xs">of your tickets</p>
-              <p className="text-violet-400/60 text-[10px] mt-1">min 5 · max 200</p>
+              <p className="text-[#C9A84C]/60 text-[10px] mt-1">min 5 · max 200</p>
             </div>
             <div className="text-center bg-slate-500/10 border border-slate-500/20 rounded-xl px-4 py-3">
               <p className="text-2xl mb-1">🥈</p>
               <p className="text-slate-300 font-black text-lg">7%</p>
               <p className="text-slate-300/70 text-xs">of your tickets</p>
-              <p className="text-violet-400/60 text-[10px] mt-1">min 3 · max 150</p>
+              <p className="text-[#C9A84C]/60 text-[10px] mt-1">min 3 · max 150</p>
             </div>
-            <div className="text-center bg-fuchsia-500/10 border border-fuchsia-500/20 rounded-xl px-4 py-3">
+            <div className="text-center bg-[#C9A84C]/10 border border-[#C9A84C]/20 rounded-xl px-4 py-3">
               <p className="text-2xl mb-1">🥉</p>
-              <p className="text-fuchsia-300 font-black text-lg">5%</p>
-              <p className="text-fuchsia-200/70 text-xs">of your tickets</p>
-              <p className="text-violet-400/60 text-[10px] mt-1">min 2 · max 100</p>
+              <p className="text-[#C9A84C] font-black text-lg">5%</p>
+              <p className="text-[#e8c97a]/70 text-xs">of your tickets</p>
+              <p className="text-[#C9A84C]/60 text-[10px] mt-1">min 2 · max 100</p>
             </div>
           </div>
-          <p className="text-center text-[11px] text-violet-400/60 mt-3">
+          <p className="text-center text-[11px] text-[#C9A84C]/60 mt-3">
             E.g.: 500 tickets this week → 🥇 50 bonus tickets awarded
           </p>
         </div>

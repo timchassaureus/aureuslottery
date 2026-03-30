@@ -33,7 +33,7 @@ export default function StickyBuyButton({ onBuyClick, isConnected }: Props) {
             toast.error('Connect wallet first! 👛');
           }
         }}
-        className="w-full py-4 bg-gradient-to-r from-yellow-500 via-fuchsia-500 to-red-500 rounded-2xl font-black text-xl text-white shadow-2xl border-2 border-white/50 active:scale-95 transition-transform"
+        className="w-full py-4 bg-gradient-to-r from-[#C9A84C] to-[#e8c97a] rounded-2xl font-black text-xl text-black shadow-2xl border-2 border-[#C9A84C]/50 active:scale-95 transition-transform"
       >
         🎫 BUY TICKETS NOW 💰
       </button>

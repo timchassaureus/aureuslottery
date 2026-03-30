@@ -67,7 +67,7 @@ export default function AdminControls() {
         <button
           onClick={handleBonusDraw}
           disabled={loading !== null}
-          className="px-4 py-2 bg-fuchsia-500/60 hover:bg-fuchsia-500/80 rounded-xl text-sm font-bold transition disabled:opacity-50 flex items-center gap-2"
+          className="px-4 py-2 bg-[#C9A84C]/60 hover:bg-[#C9A84C]/80 rounded-xl text-sm font-bold transition disabled:opacity-50 flex items-center gap-2"
         >
           {loading === 'bonus' ? <Loader2 className="w-4 h-4 animate-spin" /> : '💎'}
           Request Bonus Draw

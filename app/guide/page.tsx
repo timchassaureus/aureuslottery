@@ -47,8 +47,8 @@ const steps = [
     n: '2',
     emoji: '💳',
     title: 'Buy USDC inside the app',
-    color: 'from-violet-600 to-violet-800',
-    border: 'border-violet-500/40',
+    color: 'from-[#C9A84C] to-[#A68A3E]',
+    border: 'border-[#C9A84C]/30',
     content: (
       <div className="space-y-3 text-sm text-slate-300">
         <p>Once the app is installed and your wallet is created:</p>
@@ -62,7 +62,7 @@ const steps = [
             'The USDC will appear in your wallet within a few minutes',
           ].map((step, i) => (
             <li key={i} className="flex items-start gap-2">
-              <span className="w-5 h-5 rounded-full bg-violet-600/60 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">{i + 1}</span>
+              <span className="w-5 h-5 rounded-full bg-[#C9A84C]/60 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">{i + 1}</span>
               <span>{step}</span>
             </li>
           ))}
@@ -110,7 +110,7 @@ const steps = [
     n: '4',
     emoji: '🎟️',
     title: 'Send USDC to Aureus',
-    color: 'from-yellow-600 to-fuchsia-700',
+    color: 'from-yellow-600 to-[#e8c97a]',
     border: 'border-yellow-500/40',
     content: (
       <div className="space-y-3 text-sm text-slate-300">
@@ -133,8 +133,8 @@ const steps = [
             </li>
           ))}
         </ol>
-        <div className="bg-violet-500/10 border border-violet-500/30 rounded-xl p-3">
-          <p className="text-violet-300 text-xs">🎯 <strong>1 USDC = 1 ticket.</strong> Your tickets are registered automatically within a few minutes. The draw happens every evening at 9 PM UTC.</p>
+        <div className="bg-[#C9A84C]/10 border border-[#C9A84C]/20 rounded-xl p-3">
+          <p className="text-[#e8c97a] text-xs">🎯 <strong>1 USDC = 1 ticket.</strong> Your tickets are registered automatically within a few minutes. The draw happens every evening at 9 PM UTC.</p>
         </div>
       </div>
     ),
@@ -217,9 +217,9 @@ export default function GuidePage() {
         </div>
 
         {/* MetaMask block */}
-        <div className="mt-8 bg-purple-950/60 border-2 border-fuchsia-500/40 rounded-2xl p-5">
+        <div className="mt-8 bg-[#0A0A0F]/60 border-2 border-[#C9A84C]/40 rounded-2xl p-5">
           <p className="font-black text-white text-base mb-1">🦊 Using MetaMask?</p>
-          <p className="text-fuchsia-200/80 text-sm mb-4">MetaMask works, but you <strong className="text-white">must switch to Base network</strong> before sending. By default MetaMask is on Ethereum — if you send USDC on Ethereum it goes to the wrong place and can't be recovered.</p>
+          <p className="text-[#F5F0E8]/70 text-sm mb-4">MetaMask works, but you <strong className="text-white">must switch to Base network</strong> before sending. By default MetaMask is on Ethereum — if you send USDC on Ethereum it goes to the wrong place and can't be recovered.</p>
           <ol className="space-y-2 list-none">
             {[
               'Open MetaMask and tap the network name at the top (e.g. "Ethereum Mainnet")',
@@ -228,14 +228,14 @@ export default function GuidePage() {
               'Once on Base, your USDC balance on Base will appear',
               'Now tap Send → select USDC → paste the Aureus address → confirm',
             ].map((step, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-fuchsia-100/80">
-                <span className="w-5 h-5 rounded-full bg-fuchsia-600/60 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">{i + 1}</span>
+              <li key={i} className="flex items-start gap-2 text-sm text-[#F5F0E8]/80">
+                <span className="w-5 h-5 rounded-full bg-[#C9A84C]/60 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">{i + 1}</span>
                 <span>{step}</span>
               </li>
             ))}
           </ol>
-          <div className="mt-4 bg-fuchsia-500/10 border border-fuchsia-500/20 rounded-xl p-3">
-            <p className="text-fuchsia-300 text-xs">💡 <strong>Important:</strong> USDC on Ethereum ≠ USDC on Base. If you bought USDC on Ethereum, you need to bridge it to Base first via <a href="https://bridge.base.org" target="_blank" rel="noopener noreferrer" className="underline text-fuchsia-200">bridge.base.org</a>. The easiest option to avoid this: use <strong className="text-white">Coinbase Wallet</strong> which lets you buy USDC directly on Base.</p>
+          <div className="mt-4 bg-[#C9A84C]/5 border border-[#C9A84C]/15 rounded-xl p-3">
+            <p className="text-[#C9A84C] text-xs">💡 <strong>Important:</strong> USDC on Ethereum ≠ USDC on Base. If you bought USDC on Ethereum, you need to bridge it to Base first via <a href="https://bridge.base.org" target="_blank" rel="noopener noreferrer" className="underline text-[#F5F0E8]/80">bridge.base.org</a>. The easiest option to avoid this: use <strong className="text-white">Coinbase Wallet</strong> which lets you buy USDC directly on Base.</p>
           </div>
         </div>
 
@@ -261,7 +261,7 @@ export default function GuidePage() {
         <div className="mt-6 text-center">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-2xl font-bold text-white hover:from-violet-500 hover:to-fuchsia-500 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#C9A84C] to-[#A68A3E] rounded-2xl font-bold text-white hover:from-[#D4B96A] hover:to-[#C9A84C] transition-colors"
           >
             I'm ready — go to Aureus →
           </Link>

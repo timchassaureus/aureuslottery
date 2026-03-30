@@ -138,10 +138,10 @@ export default function DrawPage() {
   const shareText = `🎰 Watch the LIVE Aureus Lottery draw at 9PM UTC!\n$${jackpot.toLocaleString('en-US')} jackpot · ${ticketCount.toLocaleString('en-US')} tickets sold\naureulottery.app/draw`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-[#0A0A0F] to-slate-950 text-white">
       {/* Header */}
       <div className="border-b border-white/5 px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="text-purple-400 hover:text-purple-200 text-sm transition-colors">
+        <Link href="/" className="text-[#8A8A95] hover:text-[#F5F0E8] text-sm transition-colors">
           ← Back
         </Link>
         <span className="text-yellow-400 font-bold tracking-widest text-sm">AUREUS LIVE DRAW</span>
@@ -150,7 +150,7 @@ export default function DrawPage() {
             navigator.share?.({ title: 'Aureus Live Draw', text: shareText, url: window.location.href })
               ?? navigator.clipboard.writeText(window.location.href);
           }}
-          className="flex items-center gap-1 text-purple-400 hover:text-purple-200 text-sm transition-colors"
+          className="flex items-center gap-1 text-[#8A8A95] hover:text-[#F5F0E8] text-sm transition-colors"
         >
           <Share2 className="w-4 h-4" /> Share
         </button>
@@ -162,7 +162,7 @@ export default function DrawPage() {
         {phase === 'waiting' && (
           <>
             <div className="text-center mb-10">
-              <p className="text-purple-400 text-sm uppercase tracking-widest mb-3">Next draw in</p>
+              <p className="text-[#8A8A95] text-sm uppercase tracking-widest mb-3">Next draw in</p>
               <div className={`flex items-center justify-center gap-3 ${isImminent ? 'animate-pulse' : ''}`}>
                 {[
                   { val: h, label: 'hours' },
@@ -170,10 +170,10 @@ export default function DrawPage() {
                   { val: s, label: 'sec' },
                 ].map(({ val, label }) => (
                   <div key={label} className="flex flex-col items-center">
-                    <div className={`w-20 h-20 flex items-center justify-center rounded-2xl border-2 text-4xl font-black font-mono ${isImminent ? 'bg-red-500/20 border-red-500 text-red-300' : 'bg-purple-900/50 border-purple-600/50 text-yellow-400'}`}>
+                    <div className={`w-20 h-20 flex items-center justify-center rounded-2xl border-2 text-4xl font-black font-mono ${isImminent ? 'bg-red-500/20 border-red-500 text-red-300' : 'bg-[#C9A84C]/10 border-[#C9A84C]/30 text-yellow-400'}`}>
                       {String(val).padStart(2, '0')}
                     </div>
-                    <span className="text-purple-400 text-xs mt-1">{label}</span>
+                    <span className="text-[#8A8A95] text-xs mt-1">{label}</span>
                   </div>
                 ))}
               </div>
@@ -186,27 +186,27 @@ export default function DrawPage() {
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3 mb-8">
-              <div className="bg-purple-900/20 border border-purple-700/30 rounded-xl p-4 text-center">
+              <div className="bg-[#C9A84C]/5 border border-[#C9A84C]/20 rounded-xl p-4 text-center">
                 <Trophy className="w-5 h-5 text-yellow-400 mx-auto mb-1" />
                 <p className="text-2xl font-black text-yellow-400">${jackpot.toLocaleString('en-US')}</p>
-                <p className="text-xs text-purple-400">Jackpot</p>
+                <p className="text-xs text-[#8A8A95]">Jackpot</p>
               </div>
-              <div className="bg-purple-900/20 border border-purple-700/30 rounded-xl p-4 text-center">
-                <Ticket className="w-5 h-5 text-purple-300 mx-auto mb-1" />
-                <p className="text-2xl font-black text-purple-300">{ticketCount.toLocaleString('en-US')}</p>
-                <p className="text-xs text-purple-400">Tickets sold</p>
+              <div className="bg-[#C9A84C]/5 border border-[#C9A84C]/20 rounded-xl p-4 text-center">
+                <Ticket className="w-5 h-5 text-[#8A8A95] mx-auto mb-1" />
+                <p className="text-2xl font-black text-[#8A8A95]">{ticketCount.toLocaleString('en-US')}</p>
+                <p className="text-xs text-[#8A8A95]">Tickets sold</p>
               </div>
-              <div className="bg-purple-900/20 border border-purple-700/30 rounded-xl p-4 text-center">
+              <div className="bg-[#C9A84C]/5 border border-[#C9A84C]/20 rounded-xl p-4 text-center">
                 <Clock className="w-5 h-5 text-blue-300 mx-auto mb-1" />
                 <p className="text-2xl font-black text-blue-300">9 PM</p>
-                <p className="text-xs text-purple-400">UTC daily</p>
+                <p className="text-xs text-[#8A8A95]">UTC daily</p>
               </div>
             </div>
 
             {/* How it works */}
-            <div className="bg-purple-900/20 border border-purple-700/30 rounded-2xl p-5 mb-8">
+            <div className="bg-[#C9A84C]/5 border border-[#C9A84C]/20 rounded-2xl p-5 mb-8">
               <h3 className="font-bold text-white mb-3">How the draw works</h3>
-              <div className="space-y-2 text-sm text-purple-200">
+              <div className="space-y-2 text-sm text-[#F5F0E8]">
                 <div className="flex items-start gap-2"><span className="text-yellow-400 font-bold shrink-0">1.</span> At 9PM UTC, Chainlink VRF generates a provably random number</div>
                 <div className="flex items-start gap-2"><span className="text-yellow-400 font-bold shrink-0">2.</span> The number selects 1 winner from all tickets sold</div>
                 <div className="flex items-start gap-2"><span className="text-yellow-400 font-bold shrink-0">3.</span> 85% of the jackpot is sent instantly to the winner's wallet</div>
@@ -222,16 +222,16 @@ export default function DrawPage() {
                 </h3>
                 <div className="space-y-2">
                   {lastWinners.map((w, i) => (
-                    <div key={i} className="flex items-center justify-between bg-purple-900/20 border border-purple-700/30 rounded-xl px-4 py-3">
+                    <div key={i} className="flex items-center justify-between bg-[#C9A84C]/5 border border-[#C9A84C]/20 rounded-xl px-4 py-3">
                       <div>
-                        <p className="font-mono text-sm text-purple-200">{w.wallet.slice(0, 8)}...{w.wallet.slice(-6)}</p>
-                        <p className="text-xs text-purple-400">{w.date}</p>
+                        <p className="font-mono text-sm text-[#F5F0E8]">{w.wallet.slice(0, 8)}...{w.wallet.slice(-6)}</p>
+                        <p className="text-xs text-[#8A8A95]">{w.date}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-yellow-400 font-bold">${w.amount.toLocaleString('en-US')}</span>
                         {w.txHash && (
                           <a href={`https://basescan.org/tx/${w.txHash}`} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="w-3 h-3 text-purple-400 hover:text-purple-200" />
+                            <ExternalLink className="w-3 h-3 text-[#8A8A95] hover:text-[#F5F0E8]" />
                           </a>
                         )}
                       </div>
@@ -248,18 +248,18 @@ export default function DrawPage() {
           <div className="text-center py-8">
             <h2 className="text-4xl font-black mb-8 animate-pulse">🎰 DRAWING WINNER 🎰</h2>
             <div className="relative mb-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-indigo-500 rounded-3xl blur-3xl opacity-40 animate-pulse" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#C9A84C] via-[#e8c97a] to-[#A68A3E] rounded-3xl blur-3xl opacity-40 animate-pulse" />
               <div className="relative bg-slate-900/90 border-4 border-yellow-400 rounded-3xl p-10">
-                <p className="text-xs text-purple-400 uppercase tracking-widest mb-4">Selecting winner...</p>
+                <p className="text-xs text-[#8A8A95] uppercase tracking-widest mb-4">Selecting winner...</p>
                 <p className="text-3xl font-black font-mono text-white blur-sm animate-pulse min-h-[2.5rem]">
                   {currentName}
                 </p>
                 <div className="mt-6 h-2 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-violet-500 to-yellow-500 rounded-full animate-pulse w-1/2" />
+                  <div className="h-full bg-gradient-to-r from-[#C9A84C] to-[#e8c97a] rounded-full animate-pulse w-1/2" />
                 </div>
               </div>
             </div>
-            <p className="text-purple-300 animate-pulse">Chainlink VRF randomness is being processed...</p>
+            <p className="text-[#8A8A95] animate-pulse">Chainlink VRF randomness is being processed...</p>
           </div>
         )}
 
@@ -302,7 +302,7 @@ export default function DrawPage() {
               <p className="font-mono text-2xl text-yellow-400 break-all mb-4">{winner.address}</p>
               <p className="text-white text-lg mb-1">Won</p>
               <p className="text-6xl font-black text-yellow-400">${winner.prize.toLocaleString('en-US')}</p>
-              <p className="text-purple-300 text-sm mt-2">USDC sent directly to their wallet</p>
+              <p className="text-[#8A8A95] text-sm mt-2">USDC sent directly to their wallet</p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">

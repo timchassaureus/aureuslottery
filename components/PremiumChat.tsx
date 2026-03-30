@@ -95,7 +95,7 @@ export default function PremiumChat() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 md:bottom-6 right-4 md:right-6 w-14 h-14 md:w-16 md:h-16 bg-gradient-to-r from-[#0A0A0F] to-[#111118] hover:from-[#0A0A0F] hover:to-[#111118] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all z-[60] hover:shadow-purple-500/50"
+        className="fixed bottom-24 md:bottom-6 right-4 md:right-6 w-14 h-14 md:w-16 md:h-16 bg-gradient-to-r from-[#0A0A0F] to-[#111118] hover:from-[#0A0A0F] hover:to-[#111118] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all z-[60] hover:shadow-[#C9A84C]/30"
       >
         <MessageCircle className="w-6 h-6 md:w-7 md:h-7" />
         {messages.length > 2 && (
@@ -107,7 +107,7 @@ export default function PremiumChat() {
 
       {isOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[70] p-3 md:p-4">
-          <div className="bg-gradient-to-br from-[#0A0A0F] via-[#0A0A0F] to-[#111118] border-2 border-purple-500/30 rounded-3xl p-4 md:p-6 w-full max-w-2xl h-[85vh] md:h-[700px] flex flex-col relative shadow-2xl">
+          <div className="bg-gradient-to-br from-[#0A0A0F] via-[#0A0A0F] to-[#111118] border-2 border-[#C9A84C]/30 rounded-3xl p-4 md:p-6 w-full max-w-2xl h-[85vh] md:h-[700px] flex flex-col relative shadow-2xl">
             <button
               onClick={() => setIsOpen(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10 text-2xl"
@@ -115,7 +115,7 @@ export default function PremiumChat() {
               ✕
             </button>
 
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-purple-700/50">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#C9A84C]/20">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-primary-500/20 to-primary-600/20 rounded-xl">
                   <MessageCircle className="w-6 h-6 text-primary-400" />
@@ -123,8 +123,8 @@ export default function PremiumChat() {
                 <div>
                   <h3 className="text-2xl font-bold">AUREUS Chat</h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <Users className="w-4 h-4 text-purple-300" />
-                    <span className="text-sm text-purple-300">
+                    <Users className="w-4 h-4 text-[#8A8A95]" />
+                    <span className="text-sm text-[#8A8A95]">
                       {messages.length + 156} connected
                     </span>
                   </div>
@@ -136,7 +136,7 @@ export default function PremiumChat() {
               </div>
             </div>
 
-            <div className="flex-1 bg-[#0A0A0F]/ rounded-xl p-4 overflow-y-auto space-y-3 mb-4 border border-purple-800/50">
+            <div className="flex-1 bg-[#0A0A0F]/ rounded-xl p-4 overflow-y-auto space-y-3 mb-4 border border-[#C9A84C]/20">
               {messages.map((message) => {
                 const isUser = message.address === user?.address;
                 const levelIcon = getLevelIcon(message.level || 'beginner');
@@ -150,7 +150,7 @@ export default function PremiumChat() {
                       className={`max-w-[85%] rounded-2xl p-4 ${
                         isUser
                           ? 'bg-gradient-to-r from-primary-500/20 to-primary-600/20 border border-primary-500/30'
-                          : 'bg-purple-800/30 border border-purple-700/30'
+                          : 'bg-[#C9A84C]/5 border border-[#C9A84C]/20'
                       }`}
                     >
                       <div className="flex items-center gap-2 mb-2">
@@ -158,7 +158,7 @@ export default function PremiumChat() {
                         <span className="text-sm font-bold text-primary-400">
                           {message.author}
                         </span>
-                        <span className="text-xs text-purple-400">
+                        <span className="text-xs text-[#8A8A95]">
                           {new Date(message.timestamp).toLocaleTimeString()}
                         </span>
                       </div>
@@ -186,7 +186,7 @@ export default function PremiumChat() {
                 onKeyPress={handleKeyPress}
                 placeholder={connected && hasTickets ? "Write a message..." : "Connect and buy a ticket to chat"}
                 disabled={!connected || !hasTickets}
-                className="flex-1 px-4 py-3 bg-[#0A0A0F]/ border border-purple-700/50 rounded-xl text-white placeholder-purple-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 disabled:opacity-50"
+                className="flex-1 px-4 py-3 bg-[#0A0A0F]/ border border-[#C9A84C]/20 rounded-xl text-white placeholder-[#8A8A95] focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 disabled:opacity-50"
               />
               <button
                 onClick={handleSend}

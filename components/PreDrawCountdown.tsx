@@ -34,7 +34,7 @@ export default function PreDrawCountdown({ timeLeft, jackpot, totalPlayers, user
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-black via-purple-900/50 to-black z-[999] flex items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 bg-gradient-to-br from-black via-[#0A0A0F] to-black z-[999] flex items-center justify-center overflow-hidden">
       <LiveDrawReactions active viewerCount={totalPlayers} />
       {/* Animated background particles */}
       <div className="absolute inset-0 opacity-30">

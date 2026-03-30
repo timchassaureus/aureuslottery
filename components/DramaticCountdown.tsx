@@ -50,11 +50,11 @@ export default function DramaticCountdown({ targetHour, drawType }: Props) {
   }
 
   const title = drawType === '8pm' ? '🏆 MAIN JACKPOT DRAW' : '🎁 BONUS DRAW';
-  const bgColor = drawType === '8pm' 
-    ? 'from-yellow-900/90 to-purple-900/90' 
-    : 'from-violet-900/90 to-fuchsia-900/90';
-  const borderColor = drawType === '8pm' ? 'border-yellow-500' : 'border-violet-500';
-  const textColor = drawType === '8pm' ? 'text-yellow-400' : 'text-violet-400';
+  const bgColor = drawType === '8pm'
+    ? 'from-yellow-900/90 to-[#0A0A0F]/90'
+    : 'from-[#0A0A0F]/90 to-[#C9A84C]/20';
+  const borderColor = drawType === '8pm' ? 'border-yellow-500' : 'border-[#C9A84C]';
+  const textColor = drawType === '8pm' ? 'text-yellow-400' : 'text-[#C9A84C]';
 
   return (
     <div className={`fixed bottom-0 left-0 right-0 bg-gradient-to-r ${bgColor} border-t-4 ${borderColor} z-50 ${
@@ -112,9 +112,9 @@ export default function DramaticCountdown({ targetHour, drawType }: Props) {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             className={`px-6 py-3 bg-gradient-to-r ${
-              drawType === '8pm' 
-                ? 'from-yellow-600 to-fuchsia-600 hover:from-yellow-700 hover:to-fuchsia-700' 
-                : 'from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700'
+              drawType === '8pm'
+                ? 'from-yellow-600 to-[#C9A84C] hover:from-yellow-700 hover:to-[#A68A3E]'
+                : 'from-[#C9A84C] to-[#e8c97a] hover:from-[#A68A3E] hover:to-[#C9A84C]'
             } rounded-xl font-bold text-white transition-all hover:scale-105 shadow-2xl border-2 border-white/30 ${
               isCritical ? 'animate-bounce' : ''
             }`}
@@ -128,7 +128,7 @@ export default function DramaticCountdown({ targetHour, drawType }: Props) {
           <div className="w-full bg-black/30 rounded-full h-2 overflow-hidden">
             <div
               className={`h-full bg-gradient-to-r ${
-                drawType === '8pm' ? 'from-yellow-500 to-fuchsia-500' : 'from-violet-500 to-fuchsia-500'
+                drawType === '8pm' ? 'from-yellow-500 to-[#C9A84C]' : 'from-[#C9A84C] to-[#e8c97a]'
               } transition-all duration-1000 ${isCritical ? 'animate-pulse' : ''}`}
               style={{
                 width: `${100 - ((timeLeft.hours * 60 + timeLeft.minutes) / 10) * 100}%`,

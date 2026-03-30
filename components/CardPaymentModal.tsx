@@ -75,7 +75,7 @@ export default function CardPaymentModal({ isOpen, onClose, amount, userWalletAd
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="relative bg-gradient-to-br from-purple-900 to-indigo-900 border-2 border-purple-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+      <div className="relative bg-[#0A0A0F] border-2 border-[#C9A84C]/30 rounded-2xl p-6 max-w-md w-full shadow-2xl">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
@@ -84,11 +84,11 @@ export default function CardPaymentModal({ isOpen, onClose, amount, userWalletAd
         </button>
 
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-500/20 rounded-full mb-4">
-            <CreditCard className="w-8 h-8 text-purple-400" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#C9A84C]/20 rounded-full mb-4">
+            <CreditCard className="w-8 h-8 text-[#C9A84C]" />
           </div>
           <h2 className="text-2xl font-bold mb-2">Buy with card</h2>
-          <p className="text-purple-200">
+          <p className="text-[#F5F0E8]">
             Buy <strong>{amount} USDC</strong> — sent directly to your wallet
           </p>
         </div>
@@ -111,7 +111,7 @@ export default function CardPaymentModal({ isOpen, onClose, amount, userWalletAd
           <button
             onClick={handleRamp}
             disabled={loading}
-            className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-3"
+            className="w-full py-4 bg-gradient-to-r from-[#C9A84C] to-[#A68A3E] hover:from-[#e8c97a] hover:to-[#C9A84C] rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-3"
           >
             {loading ? (
               <Loader className="w-5 h-5 animate-spin" />
@@ -120,7 +120,7 @@ export default function CardPaymentModal({ isOpen, onClose, amount, userWalletAd
                 <span className="text-xl">⚡</span>
                 <div className="text-left">
                   <div className="font-bold">Ramp Network</div>
-                  <div className="text-xs text-purple-200">Bank card / wire transfer</div>
+                  <div className="text-xs text-[#F5F0E8]">Bank card / wire transfer</div>
                 </div>
               </>
             )}

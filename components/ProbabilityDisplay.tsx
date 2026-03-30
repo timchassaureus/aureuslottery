@@ -15,20 +15,20 @@ export default function ProbabilityDisplay() {
   const needForOnePercent = Math.ceil(totalTicketsSold * 0.01) - userTickets;
 
   return (
-    <div className="bg-gradient-to-br from-indigo-950/50 via-purple-950/50 to-blue-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl p-6 hover:border-white/30 transition-all">
+    <div className="bg-gradient-to-br from-[#0A0A0F] to-[#09090f] backdrop-blur-xl border-2 border-white/10 rounded-2xl p-6 hover:border-white/30 transition-all">
       <div className="flex items-center gap-3 mb-4">
-        <Target className="w-6 h-6 text-violet-400" />
+        <Target className="w-6 h-6 text-[#C9A84C]" />
         <h3 className="text-xl font-bold text-white">Your Chances</h3>
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
         {/* Your Tickets */}
-        <div className="bg-violet-900/20 rounded-xl p-4 border border-violet-700/30">
+        <div className="bg-[#C9A84C]/5 rounded-xl p-4 border border-[#C9A84C]/20">
           <div className="flex items-center gap-2 mb-2">
             <div className="text-2xl">🎫</div>
             <span className="text-sm text-slate-300">Your Tickets</span>
           </div>
-          <p className="text-3xl font-black text-violet-400">{userTickets}</p>
+          <p className="text-3xl font-black text-[#C9A84C]">{userTickets}</p>
         </div>
 
         {/* Total Tickets */}
@@ -41,12 +41,12 @@ export default function ProbabilityDisplay() {
         </div>
 
         {/* Probability */}
-        <div className="bg-fuchsia-900/20 rounded-xl p-4 border border-fuchsia-700/30">
+        <div className="bg-[#C9A84C]/5 rounded-xl p-4 border border-[#C9A84C]/20">
           <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="w-5 h-5 text-fuchsia-400" />
+            <TrendingUp className="w-5 h-5 text-[#C9A84C]" />
             <span className="text-sm text-slate-300">Win Chance</span>
           </div>
-          <p className="text-3xl font-black text-fuchsia-400">{probability.toFixed(3)}%</p>
+          <p className="text-3xl font-black text-[#C9A84C]">{probability.toFixed(3)}%</p>
         </div>
       </div>
 
@@ -54,13 +54,13 @@ export default function ProbabilityDisplay() {
       <div className="mt-6">
         <div className="flex justify-between text-sm mb-2">
           <span className="text-slate-300">Progress to 1% odds</span>
-          <span className="text-violet-400 font-bold">
+          <span className="text-[#C9A84C] font-bold">
             {probability >= 1 ? '🔥 1%+ Achieved!' : `${needForOnePercent} more tickets`}
           </span>
         </div>
         <div className="w-full bg-slate-800/50 rounded-full h-4 border border-white/10 overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 transition-all duration-500 shadow-lg relative"
+            className="h-full bg-gradient-to-r from-[#C9A84C] to-[#e8c97a] transition-all duration-500 shadow-lg relative"
             style={{ width: `${Math.min(probability * 100, 100)}%` }}
           >
             <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
@@ -75,10 +75,10 @@ export default function ProbabilityDisplay() {
 
       {/* Motivation */}
       {probability < 1 && needForOnePercent > 0 && (
-        <div className="mt-4 p-3 bg-violet-900/20 rounded-lg border border-violet-700/30">
-          <p className="text-sm text-center text-violet-300">
+        <div className="mt-4 p-3 bg-[#C9A84C]/5 rounded-lg border border-[#C9A84C]/20">
+          <p className="text-sm text-center text-[#8A8A95]">
             💡 Buy <span className="text-white font-bold">{needForOnePercent}</span> more tickets to reach{' '}
-            <span className="text-violet-400 font-bold">1% odds</span>!
+            <span className="text-[#C9A84C] font-bold">1% odds</span>!
           </p>
         </div>
       )}

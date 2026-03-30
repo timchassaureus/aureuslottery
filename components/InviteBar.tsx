@@ -36,7 +36,7 @@ export default function InviteBar() {
 
   return (
     <div className="fixed left-0 right-0 bottom-24 md:bottom-24 z-[45] px-4 md:px-6">
-      <div className="max-w-3xl mx-auto bg-gradient-to-r from-yellow-600/15 via-fuchsia-600/15 to-red-600/15 rounded-2xl backdrop-blur-md p-3 md:p-4 shadow-xl">
+      <div className="max-w-3xl mx-auto bg-gradient-to-r from-[#C9A84C]/15 via-[#A68A3E]/15 to-[#C9A84C]/10 rounded-2xl backdrop-blur-md p-3 md:p-4 shadow-xl">
         <div className="flex items-center gap-3 md:gap-4 flex-wrap justify-between">
           <div className="flex items-center gap-2">
             <Megaphone className="w-5 h-5 text-yellow-300" />

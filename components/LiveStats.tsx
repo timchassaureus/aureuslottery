@@ -24,7 +24,7 @@ export default function LiveStats() {
   const displayedTickets = mode === 'live' ? totalTicketsSold : ticketsSold;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-purple-900/95 via-indigo-900/95 to-blue-900/95 backdrop-blur-lg border-t border-white/10 py-3 px-4 z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-[#0A0A0F]/95 backdrop-blur-lg border-t border-[#C9A84C]/20 py-3 px-4 z-50">
       <div className="container mx-auto flex flex-wrap items-center justify-center gap-4 md:gap-8 text-sm md:text-base">
         {/* Yesterday's Main Jackpot Win */}
         {yesterdayWin ? (

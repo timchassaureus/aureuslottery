@@ -127,12 +127,12 @@ function VictoryContent() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col items-center justify-center p-6 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-violet-500/5 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#C9A84C]/500/5 to-transparent pointer-events-none" />
       <div className="relative z-10 text-center max-w-lg">
         {isCoinbasePayment ? (
           <>
             <div className="text-6xl mb-4">🎟️</div>
-            <h1 className="text-4xl md:text-5xl font-bold text-violet-400 mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#C9A84C] mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
               Payment confirmed!
             </h1>
             <p className="text-xl text-white mb-2">
@@ -140,22 +140,22 @@ function VictoryContent() {
                 ? `${tickets} tickets + ${bonus} bonus tickets registered.`
                 : `${tickets} ticket${tickets > 1 ? 's' : ''} registered.`}
             </p>
-            <p className="text-violet-300/80 mt-1">Good luck in the next draw!</p>
+            <p className="text-[#e8c97a]/80 mt-1">Good luck in the next draw!</p>
           </>
         ) : isStripePayment ? (
           <>
-            <h1 className="text-4xl md:text-5xl font-bold text-violet-400 mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#C9A84C] mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
               Payment confirmed!
             </h1>
             <p className="text-xl text-white mb-2">
               Your tickets are registered. Good luck in the next draw!
             </p>
-            <p className="text-sm text-violet-200/60 mt-2">Session: {sessionId?.slice(0, 20)}…</p>
+            <p className="text-sm text-[#F5F0E8]/50 mt-2">Session: {sessionId?.slice(0, 20)}…</p>
           </>
         ) : tickets > 0 ? (
           <>
             <div className="text-6xl mb-4">🎟️</div>
-            <h1 className="text-4xl md:text-5xl font-bold text-violet-400 mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#C9A84C] mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
               Payment confirmed!
             </h1>
             <p className="text-xl text-white mb-2">
@@ -163,15 +163,15 @@ function VictoryContent() {
                 ? `${tickets} tickets + ${bonus} bonus tickets registered.`
                 : `${tickets} ticket${tickets > 1 ? 's' : ''} registered.`}
             </p>
-            <p className="text-violet-300/80 mt-1">Good luck in the next draw!</p>
+            <p className="text-[#e8c97a]/80 mt-1">Good luck in the next draw!</p>
           </>
         ) : (
           <>
-            <h1 className="text-4xl md:text-5xl font-bold text-violet-400 mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#C9A84C] mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
               CONGRATULATIONS!
             </h1>
             <p className="text-2xl md:text-3xl text-white mb-2">
-              You won <span className="text-violet-400 font-bold">${displayAmount.toFixed(2)}</span>!
+              You won <span className="text-[#C9A84C] font-bold">${displayAmount.toFixed(2)}</span>!
             </p>
           </>
         )}
@@ -195,7 +195,7 @@ function VictoryContent() {
         </div>
         <Link
           href="/"
-          className="inline-block mt-6 rounded-lg bg-violet-500 px-6 py-3 font-semibold text-black hover:bg-violet-400 transition-colors"
+          className="inline-block mt-6 rounded-lg bg-[#C9A84C] px-6 py-3 font-semibold text-black hover:bg-[#D4B96A] transition-colors"
         >
           {isPurchase ? 'Back to game' : 'Play again'}
         </Link>
@@ -208,7 +208,7 @@ export default function VictoryPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <p className="text-violet-200/80">Loading…</p>
+        <p className="text-[#F5F0E8]/80/80">Loading…</p>
       </div>
     }>
       <VictoryContent />

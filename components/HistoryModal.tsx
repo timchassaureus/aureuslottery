@@ -17,7 +17,7 @@ export default function HistoryModal({ isOpen, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-purple-900 to-purple-800 border border-purple-500/30 rounded-3xl p-8 max-w-2xl w-full relative max-h-[80vh] overflow-hidden flex flex-col">
+      <div className="bg-[#0A0A0F] border border-[#C9A84C]/20 rounded-3xl p-8 max-w-2xl w-full relative max-h-[80vh] overflow-hidden flex flex-col">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10"
@@ -30,12 +30,12 @@ export default function HistoryModal({ isOpen, onClose }: Props) {
             <Trophy className="w-8 h-8 text-primary-400" />
           </div>
           <h2 className="text-3xl font-bold mb-2">Draw History</h2>
-          <p className="text-purple-300">Last 5 winners</p>
+          <p className="text-[#8A8A95]">Last 5 winners</p>
         </div>
 
         <div className="overflow-y-auto flex-1 space-y-3">
           {recentDraws.length === 0 ? (
-            <div className="text-center py-12 text-purple-400">
+            <div className="text-center py-12 text-[#8A8A95]">
               <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p>No draws yet</p>
               <p className="text-sm mt-2">Be the first to trigger a draw!</p>
@@ -48,10 +48,10 @@ export default function HistoryModal({ isOpen, onClose }: Props) {
               return (
                 <div
                   key={draw.id}
-                  className={`bg-purple-800/30 rounded-xl p-4 border ${
+                  className={`bg-[#C9A84C]/5 rounded-xl p-4 border ${
                     isUserWinner
                       ? 'border-green-500/50 bg-green-900/10'
-                      : 'border-purple-700/50'
+                      : 'border-[#C9A84C]/20'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
@@ -63,13 +63,13 @@ export default function HistoryModal({ isOpen, onClose }: Props) {
                       />
                       <span className="font-bold">Draw #{draw.id}</span>
                     </div>
-                    <span className="text-sm text-purple-300">
+                    <span className="text-sm text-[#8A8A95]">
                       {date.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-purple-300 text-sm">Winner: </span>
+                      <span className="text-[#8A8A95] text-sm">Winner: </span>
                       <span
                         className={`font-mono ${
                           isUserWinner ? 'text-green-400 font-bold' : 'text-white'

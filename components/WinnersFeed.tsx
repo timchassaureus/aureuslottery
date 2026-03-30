@@ -62,7 +62,7 @@ export default function WinnersFeed() {
       <div className="px-4 py-2 border-b border-[#C9A84C]/">
         <h3 className="text-sm font-semibold text-[#F5F0E8]">Latest winners</h3>
       </div>
-      <div className="max-h-48 overflow-y-auto divide-y divide-violet-500/10">
+      <div className="max-h-48 overflow-y-auto divide-y divide-[#C9A84C]/10">
         {winners.map((w, i) => (
           <div
             key={`${w.wallet_address}-${w.draw_date}-${i}`}

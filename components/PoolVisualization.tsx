@@ -24,7 +24,7 @@ export default function PoolVisualization() {
   const secondaryWinnerPrize = Math.floor(secondaryPot / 25);
 
   return (
-    <div className="bg-gradient-to-br from-indigo-950/50 via-purple-950/50 to-blue-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl p-6 hover:border-white/30 transition-all">
+    <div className="bg-gradient-to-br from-[#0A0A0F] to-[#09090f] backdrop-blur-xl border-2 border-white/10 rounded-2xl p-6 hover:border-white/30 transition-all">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <DollarSign className="w-6 h-6 text-green-400" />
@@ -41,8 +41,8 @@ export default function PoolVisualization() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Main Jackpot */}
-        <div className="bg-gradient-to-br from-yellow-900/30 to-purple-900/30 rounded-xl p-4 border-2 border-yellow-600/40 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-fuchsia-500/10 animate-pulse"></div>
+        <div className="bg-gradient-to-br from-[#C9A84C]/10 to-[#A68A3E]/10 rounded-xl p-4 border-2 border-yellow-600/40 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#C9A84C]/10 to-[#e8c97a]/10 animate-pulse"></div>
           <div className="relative">
             <div className="flex items-center gap-2 mb-2">
               <div className="text-2xl">🏆</div>
@@ -56,22 +56,22 @@ export default function PoolVisualization() {
         </div>
 
         {/* Secondary Pot */}
-        <div className="bg-gradient-to-br from-violet-900/30 to-fuchsia-900/30 rounded-xl p-4 border-2 border-violet-600/40 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 animate-pulse"></div>
+        <div className="bg-gradient-to-br from-[#C9A84C]/10 to-[#A68A3E]/10 rounded-xl p-4 border-2 border-[#C9A84C]/40 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#C9A84C]/10 to-[#e8c97a]/10 animate-pulse"></div>
           <div className="relative">
             <div className="flex items-center gap-2 mb-2">
               <div className="text-2xl">🎁</div>
-              <span className="text-xs text-violet-300 font-bold">10PM DRAW</span>
+              <span className="text-xs text-[#C9A84C] font-bold">10PM DRAW</span>
             </div>
-            <p className="text-3xl font-black text-violet-400 mb-1">
+            <p className="text-3xl font-black text-[#C9A84C] mb-1">
               ${secondaryPot.toLocaleString('en-US')}
             </p>
-            <p className="text-xs text-violet-600">25 Winners • ${secondaryWinnerPrize} each</p>
+            <p className="text-xs text-[#8A8A95]">25 Winners • ${secondaryWinnerPrize} each</p>
           </div>
         </div>
 
         {/* Total Tickets */}
-        <div className="bg-gradient-to-br from-blue-900/30 to-indigo-900/30 rounded-xl p-4 border-2 border-blue-600/40">
+        <div className="bg-gradient-to-br from-[#C9A84C]/5 to-[#C9A84C]/10 rounded-xl p-4 border-2 border-[#C9A84C]/20">
           <div className="flex items-center gap-2 mb-2">
             <Users2 className="w-5 h-5 text-blue-400" />
             <span className="text-xs text-blue-300 font-bold">TOTAL TICKETS</span>

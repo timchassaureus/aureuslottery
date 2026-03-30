@@ -101,33 +101,33 @@ const faqs = [
 
 export default function FAQPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/20 to-slate-950 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950  to-slate-950 text-white">
       <div className="max-w-3xl mx-auto px-4 py-12">
         <div className="text-center mb-12">
-          <Link href="/" className="text-purple-400 hover:text-purple-300 text-sm mb-4 inline-block">
+          <Link href="/" className="text-[#C9A84C] hover:text-[#e8c97a] text-sm mb-4 inline-block">
             ← Back to home
           </Link>
           <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
-          <p className="text-purple-200">Everything you need to know about Aureus Lottery</p>
+          <p className="text-[#F5F0E8]/80">Everything you need to know about Aureus Lottery</p>
         </div>
 
         <div className="space-y-10">
           {faqs.map((section) => (
             <div key={section.category}>
-              <h2 className="text-xl font-bold text-yellow-400 mb-4 border-b border-purple-800/50 pb-2">
+              <h2 className="text-xl font-bold text-yellow-400 mb-4 border-b border-[#C9A84C]/20 pb-2">
                 {section.category}
               </h2>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <details
                     key={item.q}
-                    className="group bg-purple-900/20 border border-purple-700/30 rounded-xl overflow-hidden"
+                    className="group bg-[#C9A84C]/5 border border-[#C9A84C]/15 rounded-xl overflow-hidden"
                   >
-                    <summary className="flex items-center justify-between p-4 cursor-pointer hover:bg-purple-800/20 transition-colors list-none">
+                    <summary className="flex items-center justify-between p-4 cursor-pointer hover:bg-[#C9A84C]/5 transition-colors list-none">
                       <span className="font-medium pr-4">{item.q}</span>
-                      <ChevronDown className="w-5 h-5 text-purple-400 shrink-0 group-open:rotate-180 transition-transform" />
+                      <ChevronDown className="w-5 h-5 text-[#C9A84C] shrink-0 group-open:rotate-180 transition-transform" />
                     </summary>
-                    <div className="px-4 pb-4 text-purple-200 leading-relaxed">
+                    <div className="px-4 pb-4 text-[#F5F0E8]/80 leading-relaxed">
                       {item.a}
                     </div>
                   </details>
@@ -137,8 +137,8 @@ export default function FAQPage() {
           ))}
         </div>
 
-        <div className="mt-12 p-6 bg-purple-900/20 border border-purple-700/30 rounded-xl text-center">
-          <p className="text-purple-200 mb-3">Didn&apos;t find your answer?</p>
+        <div className="mt-12 p-6 bg-[#C9A84C]/5 border border-[#C9A84C]/15 rounded-xl text-center">
+          <p className="text-[#F5F0E8]/80 mb-3">Didn&apos;t find your answer?</p>
           <a
             href="mailto:support@aureuslottery.app"
             className="inline-block px-6 py-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-xl transition-all"

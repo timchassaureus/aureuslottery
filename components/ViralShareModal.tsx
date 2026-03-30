@@ -117,7 +117,7 @@ export default function ViralShareModal({ isOpen, onClose, ticketCount, jackpot 
           /* Initial State - Show Offer */
           <div className="relative z-10">
             <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-fuchsia-500 rounded-full mb-4 animate-bounce">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#C9A84C] to-[#e8c97a] rounded-full mb-4 animate-bounce">
                 <Gift className="w-10 h-10 text-white" />
               </div>
               <h2 className="text-4xl font-black text-yellow-400 mb-2 drop-shadow-lg">
@@ -254,7 +254,7 @@ export default function ViralShareModal({ isOpen, onClose, ticketCount, jackpot 
               {!bonusClaimed && (
                 <button
                   onClick={() => setShowConfirmation(false)}
-                  className="w-full py-3 bg-indigo-900/40 hover:bg-indigo-900/60 border border-violet-500/30 rounded-xl font-semibold text-white transition-all"
+                  className="w-full py-3 bg-[#C9A84C]/10 hover:bg-[#C9A84C]/20 border border-[#C9A84C]/20 rounded-xl font-semibold text-white transition-all"
                 >
                   Not yet, let me share again
                 </button>

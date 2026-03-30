@@ -7,20 +7,20 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/20 to-slate-950 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950  to-slate-950 text-white">
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <Link href="/" className="text-purple-400 hover:text-purple-300 text-sm mb-6 inline-block">
+        <Link href="/" className="text-[#C9A84C] hover:text-[#e8c97a] text-sm mb-6 inline-block">
           ← Back to home
         </Link>
 
         <h1 className="text-4xl font-bold mb-2">Privacy Policy</h1>
-        <p className="text-purple-400 mb-10">Last updated: February 2026</p>
+        <p className="text-[#C9A84C] mb-10">Last updated: February 2026</p>
 
-        <div className="space-y-8 text-purple-100 leading-relaxed">
+        <div className="space-y-8 text-[#F5F0E8] leading-relaxed">
           <section>
             <h2 className="text-xl font-bold text-white mb-3">1. Data collected</h2>
             <p>Aureus only collects data necessary for the operation of the service:</p>
-            <ul className="list-disc pl-6 mt-2 space-y-1 text-purple-200">
+            <ul className="list-disc pl-6 mt-2 space-y-1 text-[#F5F0E8]/80">
               <li>Email address (when creating an account)</li>
               <li>Username / display name</li>
               <li>Blockchain wallet address (public by nature)</li>
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-bold text-white mb-3">2. Use of data</h2>
             <p>Your data is used to:</p>
-            <ul className="list-disc pl-6 mt-2 space-y-1 text-purple-200">
+            <ul className="list-disc pl-6 mt-2 space-y-1 text-[#F5F0E8]/80">
               <li>Manage your account and access to the service</li>
               <li>Display your ticket and winnings history</li>
               <li>Contact you in case of a win or technical issue</li>
@@ -48,7 +48,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-bold text-white mb-3">4. Data sharing</h2>
             <p>We do not sell or rent your data to third parties. Your data may be shared with:</p>
-            <ul className="list-disc pl-6 mt-2 space-y-1 text-purple-200">
+            <ul className="list-disc pl-6 mt-2 space-y-1 text-[#F5F0E8]/80">
               <li>Supabase (database)</li>
               <li>Vercel (hosting)</li>
               <li>MoonPay / Ramp (payments — subject to their own policies)</li>
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-bold text-white mb-3">6. Your rights</h2>
             <p>You may at any time:</p>
-            <ul className="list-disc pl-6 mt-2 space-y-1 text-purple-200">
+            <ul className="list-disc pl-6 mt-2 space-y-1 text-[#F5F0E8]/80">
               <li>Request access to your personal data</li>
               <li>Request deletion of your account</li>
               <li>Correct inaccurate information</li>

@@ -29,15 +29,15 @@ export default function WinnerAnimation({ winners, drawType, userAddress, onClos
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-xl bg-gradient-to-br from-violet-950 via-purple-950 to-slate-900 border border-violet-500/40 rounded-3xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-xl bg-gradient-to-br from-[#0A0A0F] via-[#09090f] to-[#0A0A0F] border border-[#C9A84C]/30 rounded-3xl shadow-2xl overflow-hidden">
 
         {/* Header */}
         <div className="px-6 pt-8 pb-4 text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-violet-400/70 mb-2">💎 Bonus Draw Results</p>
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#8A8A95] mb-2">💎 Bonus Draw Results</p>
           <p className="text-4xl font-black text-white">
             {winners.length} Winners
           </p>
-          <p className="text-lg text-violet-300 mt-1">
+          <p className="text-lg text-[#8A8A95] mt-1">
             ${prizeEach.toFixed(2)} <span className="text-slate-400 font-normal">each</span>
           </p>
         </div>
@@ -76,7 +76,7 @@ export default function WinnerAnimation({ winners, drawType, userAddress, onClos
         <div className="px-6 pb-6">
           <button
             onClick={onClose}
-            className="w-full py-3 rounded-xl bg-violet-700 hover:bg-violet-600 font-bold text-white transition-colors"
+            className="w-full py-3 rounded-xl bg-[#C9A84C] hover:bg-[#e8c97a] font-bold text-white transition-colors"
           >
             Continue
           </button>

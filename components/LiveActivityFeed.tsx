@@ -66,16 +66,16 @@ export default function LiveActivityFeed() {
   const getActivityColor = (type: string) => {
     switch (type) {
       case 'big_purchase':
-        return 'from-fuchsia-500/20 to-red-500/20 border-fuchsia-500/40';
+        return 'from-[#C9A84C]/20 to-[#A68A3E]/20 border-[#C9A84C]/40';
       case 'milestone':
-        return 'from-yellow-500/20 to-violet-500/20 border-yellow-500/40';
+        return 'from-[#C9A84C]/20 to-[#A68A3E]/20 border-[#C9A84C]/40';
       default:
-        return 'from-blue-500/20 to-indigo-500/20 border-blue-500/40';
+        return 'from-[#C9A84C]/10 to-[#A68A3E]/10 border-[#C9A84C]/20';
     }
   };
 
   return (
-    <div className="bg-gradient-to-br from-indigo-950/50 via-purple-950/50 to-blue-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl p-6 hover:border-white/30 transition-all">
+    <div className="bg-gradient-to-br from-[#0A0A0F] to-[#09090f] backdrop-blur-xl border-2 border-white/10 rounded-2xl p-6 hover:border-white/30 transition-all">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <Activity className="w-6 h-6 text-green-400 animate-pulse" />
@@ -110,7 +110,7 @@ export default function LiveActivityFeed() {
               </div>
               <div className="text-right">
                 {activity.type === 'big_purchase' && (
-                  <span className="text-xs bg-fuchsia-500/20 px-2 py-1 rounded-full text-fuchsia-400 font-bold">
+                  <span className="text-xs bg-[#C9A84C]/20 px-2 py-1 rounded-full text-[#C9A84C] font-bold">
                     BIG BUY!
                   </span>
                 )}
@@ -126,12 +126,12 @@ export default function LiveActivityFeed() {
       </div>
 
       {/* FOMO Message */}
-      <div className="mt-4 p-3 bg-gradient-to-r from-violet-900/30 to-fuchsia-900/30 rounded-lg border border-violet-700/30">
+      <div className="mt-4 p-3 bg-gradient-to-r from-[#C9A84C]/10 to-[#e8c97a]/10 rounded-lg border border-[#C9A84C]/20">
         <div className="flex items-center gap-2">
           <Zap className="w-4 h-4 text-yellow-400" />
           <p className="text-sm text-white font-bold">
             {totalTicketsSold > 100 ? 'Hot Pot! ' : ''}{' '}
-            <span className="text-violet-400">{totalTicketsSold}</span> tickets sold today!
+            <span className="text-[#C9A84C]">{totalTicketsSold}</span> tickets sold today!
           </p>
         </div>
       </div>
