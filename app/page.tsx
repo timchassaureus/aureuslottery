@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Ticket, Clock, Wallet, Shield, Zap, Lock, ExternalLink } from 'lucide-react';
+import { Ticket, Clock, Wallet, Shield, Zap, Lock, ExternalLink, Users, Gift } from 'lucide-react';
 
 const LOTTERY_CONTRACT = process.env.NEXT_PUBLIC_LOTTERY_ADDRESS;
 const TREASURY = process.env.NEXT_PUBLIC_TREASURY_ADDRESS || '0x47d918C2e303855da1AD3e08A4128211284aD837';
@@ -26,10 +26,15 @@ export default function LandingPage() {
             AUREUS
           </span>
           <div className="flex items-center gap-4">
-            <Link
-              href="/app"
-              className="text-sm text-[#8A8A95] hover:text-[#F5F0E8] transition-colors"
-            >
+            <a href="https://x.com/AUREUSLottery" target="_blank" rel="noopener noreferrer"
+              className="text-xs text-[#8A8A95] hover:text-[#F5F0E8] transition-colors hidden sm:block">
+              𝕏
+            </a>
+            <a href="https://instagram.com/aureuslottery" target="_blank" rel="noopener noreferrer"
+              className="text-xs text-[#8A8A95] hover:text-[#F5F0E8] transition-colors hidden sm:block">
+              IG
+            </a>
+            <Link href="/app" className="text-sm text-[#8A8A95] hover:text-[#F5F0E8] transition-colors">
               Sign in
             </Link>
             <Link
@@ -141,20 +146,58 @@ export default function LandingPage() {
             style={{ background: 'rgba(255,255,255,0.015)' }}
           >
             <p className="text-xs font-bold uppercase tracking-widest text-[#8A8A95] mb-4">
-              Pot distribution
+              Pot distribution — for every $100 in tickets
             </p>
             <div className="flex flex-wrap gap-6">
               {[
-                { pct: '85%', label: 'Main winner', color: '#C9A84C' },
-                { pct: '5%', label: 'Bonus draw — 25 winners', color: '#e8c97a' },
-                { pct: '3%', label: 'Referral commissions', color: '#4CAF7D' },
-                { pct: '7%', label: 'Platform operations', color: '#8A8A95' },
+                { pct: '85%', label: 'Main winner ($85)', color: '#C9A84C' },
+                { pct: '5%', label: 'Bonus draw — 25 winners ($5)', color: '#e8c97a' },
+                { pct: '3%', label: 'Referral commissions ($3)', color: '#4CAF7D' },
+                { pct: '7%', label: 'Platform operations ($7)', color: '#8A8A95' },
               ].map(({ pct, label, color }) => (
                 <div key={label} className="flex items-center gap-2.5">
                   <span className="font-black text-sm" style={{ color }}>{pct}</span>
                   <span className="text-sm text-[#8A8A95]">{label}</span>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Volume discounts */}
+          <div
+            className="mt-4 rounded-2xl border border-white/[0.05] p-6"
+            style={{ background: 'rgba(255,255,255,0.015)' }}
+          >
+            <p className="text-xs font-bold uppercase tracking-widest text-[#8A8A95] mb-4">
+              Volume discounts — the more you buy, the less you pay
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-[#8A8A95] text-xs">
+                    <th className="text-left pb-3 font-semibold">Tickets</th>
+                    <th className="text-left pb-3 font-semibold">Price</th>
+                    <th className="text-left pb-3 font-semibold">Per ticket</th>
+                    <th className="text-left pb-3 font-semibold">Saving</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/[0.04]">
+                  {[
+                    { qty: '1', price: '$1.00', per: '$1.00', save: '—' },
+                    { qty: '5', price: '$4.90', per: '$0.98', save: '2%' },
+                    { qty: '10', price: '$9.50', per: '$0.95', save: '5%' },
+                    { qty: '25', price: '$22.25', per: '$0.89', save: '11%' },
+                    { qty: '50', price: '$44.00', per: '$0.88', save: '12%' },
+                  ].map(({ qty, price, per, save }, i) => (
+                    <tr key={qty} className={i === 4 ? 'text-[#C9A84C]' : 'text-[#F5F0E8]/80'}>
+                      <td className="py-2.5 font-bold">{qty} tickets</td>
+                      <td className="py-2.5">{price}</td>
+                      <td className="py-2.5">{per}</td>
+                      <td className="py-2.5 text-[#4CAF7D]">{save}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -224,6 +267,93 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── Referral ── */}
+      <section className="py-24 px-6 border-t border-white/[0.04]">
+        <div className="max-w-5xl mx-auto">
+          <div
+            className="rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8"
+            style={{ background: 'rgba(201,168,76,0.04)', border: '1px solid rgba(201,168,76,0.15)' }}
+          >
+            <div className="flex-1">
+              <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#C9A84C]/60 mb-3">
+                Referral program
+              </p>
+              <h2 className="text-2xl md:text-3xl font-black text-[#F5F0E8] mb-4">
+                Invite friends. Earn 3% forever.
+              </h2>
+              <p className="text-[#8A8A95] leading-relaxed mb-6 max-w-lg">
+                Share your referral link. Every time someone you invited buys tickets, you automatically
+                receive 3% of their purchase in USDC — for as long as they play. No limits, no expiry.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  href="/app"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm text-[#0A0A0F] hover:opacity-90 transition-all"
+                  style={{ background: '#C9A84C' }}
+                >
+                  <Gift className="w-4 h-4" />
+                  Get my referral link
+                </Link>
+                <Link
+                  href="/faq"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm text-[#8A8A95] hover:text-[#F5F0E8] transition-all border border-white/10 hover:border-white/20"
+                >
+                  How it works →
+                </Link>
+              </div>
+            </div>
+            <div className="shrink-0 flex flex-col gap-4 w-full md:w-48">
+              {[
+                { label: 'Commission rate', value: '3%', note: 'per ticket sold' },
+                { label: 'Paid in', value: 'USDC', note: 'stable dollar coin' },
+                { label: 'Payout delay', value: '~24h', note: 'daily automatic' },
+              ].map(({ label, value, note }) => (
+                <div key={label} className="rounded-xl p-4 border border-white/[0.06]" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                  <p className="text-[10px] text-[#8A8A95] uppercase tracking-widest mb-1">{label}</p>
+                  <p className="text-xl font-black text-[#C9A84C]">{value}</p>
+                  <p className="text-[11px] text-[#8A8A95]/60 mt-0.5">{note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── About ── */}
+      <section className="py-20 px-6 border-t border-white/[0.04]">
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#C9A84C]/60 mb-3">
+            Our mission
+          </p>
+          <h2 className="text-2xl md:text-3xl font-black text-[#F5F0E8] mb-6">
+            Built to be fair.
+          </h2>
+          <p className="text-[#8A8A95] leading-relaxed text-lg mb-6">
+            Traditional lotteries keep 50% or more of every ticket. Aureus keeps 15%.
+            The rest goes back to players — automatically, on-chain, every night.
+            No trust required. The math is public.
+          </p>
+          <p className="text-[#8A8A95]/70 leading-relaxed">
+            Built on Base network by Coinbase. Randomness guaranteed by Chainlink VRF.
+            All transactions visible on BaseScan. You don&apos;t have to take our word for it.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm text-[#8A8A95]">
+            <a href="https://x.com/AUREUSLottery" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 hover:border-[#C9A84C]/30 hover:text-[#F5F0E8] transition-all">
+              𝕏 @AUREUSLottery
+            </a>
+            <a href="https://instagram.com/aureuslottery" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 hover:border-[#C9A84C]/30 hover:text-[#F5F0E8] transition-all">
+              IG @aureuslottery
+            </a>
+            <a href="mailto:support@aureuslottery.app"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 hover:border-[#C9A84C]/30 hover:text-[#F5F0E8] transition-all">
+              support@aureuslottery.app
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ── Footer ── */}
       <footer className="py-14 px-6 border-t border-white/[0.04]">
         <div className="max-w-5xl mx-auto">
@@ -236,14 +366,12 @@ export default function LandingPage() {
             </span>
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-[#8A8A95]">
               <Link href="/faq" className="hover:text-[#F5F0E8] transition-colors">FAQ</Link>
+              <Link href="/guide" className="hover:text-[#F5F0E8] transition-colors">Beginner Guide</Link>
               <Link href="/terms" className="hover:text-[#F5F0E8] transition-colors">Terms</Link>
               <Link href="/privacy" className="hover:text-[#F5F0E8] transition-colors">Privacy</Link>
-              <a
-                href="mailto:support@aureuslottery.app"
-                className="hover:text-[#F5F0E8] transition-colors"
-              >
-                Support
-              </a>
+              <a href="mailto:support@aureuslottery.app" className="hover:text-[#F5F0E8] transition-colors">Support</a>
+              <a href="https://x.com/AUREUSLottery" target="_blank" rel="noopener noreferrer" className="hover:text-[#F5F0E8] transition-colors">𝕏 Twitter</a>
+              <a href="https://instagram.com/aureuslottery" target="_blank" rel="noopener noreferrer" className="hover:text-[#F5F0E8] transition-colors">Instagram</a>
             </div>
           </div>
 

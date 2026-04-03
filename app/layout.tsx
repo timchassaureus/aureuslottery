@@ -69,10 +69,12 @@ export default function RootLayout({
               <footer className="border-t border-white/5 bg-black/70 text-[11px] text-slate-300/80 px-4 py-4 text-center leading-snug">
                 <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mb-3 text-[#C9A84C]">
                   <a href="/faq" className="hover:text-[#F5F0E8]/80 transition-colors">FAQ</a>
-                  <a href="/terms" className="hover:text-[#F5F0E8]/80 transition-colors">Terms of Service</a>
+                  <a href="/guide" className="hover:text-[#F5F0E8]/80 transition-colors">Guide</a>
+                  <a href="/terms" className="hover:text-[#F5F0E8]/80 transition-colors">Terms</a>
                   <a href="/privacy" className="hover:text-[#F5F0E8]/80 transition-colors">Privacy</a>
-                  <a href="/winner-guide" className="hover:text-[#F5F0E8]/80 transition-colors">Winner Guide</a>
                   <a href="mailto:support@aureuslottery.app" className="hover:text-[#F5F0E8]/80 transition-colors">Support</a>
+                  <a href="https://x.com/AUREUSLottery" target="_blank" rel="noopener noreferrer" className="hover:text-[#F5F0E8]/80 transition-colors">𝕏 Twitter</a>
+                  <a href="https://instagram.com/aureuslottery" target="_blank" rel="noopener noreferrer" className="hover:text-[#F5F0E8]/80 transition-colors">Instagram</a>
                 </div>
                 <p>
                   Aureus is a decentralized lottery application secured by on-chain smart contracts.

@@ -346,7 +346,7 @@ export default function AppPage() {
                   style={isLive ? { boxShadow: '0 0 6px rgba(52,211,153,0.9)', animation: 'pulse 2s infinite' } : {}}
                 />
                 <span className="text-[10px] text-[#8A8A95] uppercase tracking-widest font-medium">
-                  {isSyncing ? 'sync…' : isLive ? 'live' : 'demo'}
+                  {isSyncing ? 'sync…' : isLive ? 'beta' : 'demo'}
                 </span>
               </div>
             </div>
@@ -370,6 +370,14 @@ export default function AppPage() {
                 className="px-4 py-2 rounded-xl text-sm text-[#C9A84C]/80 hover:text-[#C9A84C] hover:bg-[#C9A84C]/5 transition-all"
               >
                 Beginner Guide
+              </a>
+              <a href="https://x.com/AUREUSLottery" target="_blank" rel="noopener noreferrer"
+                className="px-3 py-2 rounded-xl text-sm text-[#8A8A95] hover:text-[#F5F0E8] hover:bg-white/5 transition-all">
+                𝕏
+              </a>
+              <a href="https://instagram.com/aureuslottery" target="_blank" rel="noopener noreferrer"
+                className="px-3 py-2 rounded-xl text-sm text-[#8A8A95] hover:text-[#F5F0E8] hover:bg-white/5 transition-all">
+                IG
               </a>
             </nav>
 

@@ -224,7 +224,7 @@ export default function MobileHome() {
               : 'bg-white/5 border-white/10 text-slate-500'
           }`}>
             <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
-            {isLive ? 'Live' : 'Demo'}
+            {isLive ? 'Beta' : 'Demo'}
           </div>
 
           {/* Logo */}

@@ -40,6 +40,10 @@ const faqs = [
         q: "What fees are there?",
         a: "1 ticket = 1 USDC, no hidden fees. Transactions on Base cost approximately $0.001 in gas. If you buy via MoonPay/Ramp, they charge ~1-3% commission.",
       },
+      {
+        q: "Are there volume discounts?",
+        a: "Yes. Buying more tickets reduces the price per ticket: 1 ticket = $1.00 · 5 tickets = $4.90 ($0.98 each, 2% off) · 10 tickets = $9.50 ($0.95 each, 5% off) · 25 tickets = $22.25 ($0.89 each, 11% off) · 50 tickets = $44.00 ($0.88 each, 12% off). All packs enter both the main draw and the bonus draw.",
+      },
     ],
   },
   {
@@ -77,6 +81,23 @@ const faqs = [
       {
         q: "Is my Aureus account secure?",
         a: "Your password is encrypted (bcrypt) server-side. Your custodial wallet private key is never transmitted to your browser.",
+      },
+    ],
+  },
+  {
+    category: 'Referral Program',
+    items: [
+      {
+        q: "How does the referral program work?",
+        a: "When you invite a friend using your referral link, you automatically earn 3% of every ticket purchase they make — forever. There is no limit, no expiry, and no minimum. Commissions are paid in USDC directly to your wallet within 24 hours.",
+      },
+      {
+        q: "Where do I find my referral link?",
+        a: "Sign in to the app and open the 'Invite & Earn' section in the navigation. Your unique referral link is generated automatically. Share it on social media, WhatsApp, or anywhere else.",
+      },
+      {
+        q: "When do I get paid?",
+        a: "Referral commissions are processed automatically every night. If your pending balance is above $0.50 USDC, it is sent to your wallet. You can track your earnings in real time in the Invite & Earn dashboard.",
       },
     ],
   },
