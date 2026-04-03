@@ -180,7 +180,7 @@ export default function MobileHome() {
   };
 
   const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://aureuslottery.app';
-  const shareText = `Join me on Aureus! $1 tickets · Draw every night at 9PM UTC. Let's push the jackpot to millions! 🏆`;
+  const shareText = `Join me on Aureus! $1 tickets · Draw every night at 9PM UTC. Join the daily draw tonight.`;
 
   const handleCopyLink = async () => {
     try {

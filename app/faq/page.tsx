@@ -13,7 +13,7 @@ const faqs = [
     items: [
       {
         q: "What is Aureus?",
-        a: "Aureus is a 100% decentralized daily lottery on the Base blockchain. Each ticket costs 1 USDC. A draw takes place every day at 9PM UTC. The winner receives 85% of the jackpot, 25 other winners share 5%, and 10% goes to the project treasury.",
+        a: "Aureus is a 100% decentralized daily lottery on the Base blockchain. Each ticket costs 1 USDC. A draw takes place every day at 9PM UTC. The main winner receives 85% of the pot, 25 bonus winners share 5%, 3% goes to referral commissions, and 7% covers platform operations (hosting, payouts, security).",
       },
       {
         q: "Is it legal?",
@@ -68,7 +68,7 @@ const faqs = [
     items: [
       {
         q: "Are my funds safe?",
-        a: "Funds are managed by audited smart contracts, with no possibility of arbitrary withdrawal. The distribution (85% jackpot, 5% bonus, 10% treasury) is hardcoded in the contract and cannot be changed.",
+        a: "Funds are managed by audited smart contracts, with no possibility of arbitrary withdrawal. The distribution (85% main winner, 5% bonus draw, 3% referrals, 7% operations) is hardcoded in the contract and cannot be changed.",
       },
       {
         q: "Can Aureus disappear with my money?",

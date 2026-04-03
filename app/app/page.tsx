@@ -497,13 +497,7 @@ export default function AppPage() {
                       🏆 Main Jackpot
                     </p>
                     <div style={{ textShadow: '0 0 60px rgba(201,168,76,0.2)' }}>
-                      {jackpot > 0 ? (
-                        <JackpotCounter />
-                      ) : (
-                        <p className="text-2xl font-bold text-[#8A8A95] italic">
-                          Jackpot building — be the first to play tonight
-                        </p>
-                      )}
+                      <JackpotCounter />
                     </div>
                     <p className="text-sm text-[#8A8A95] mt-3">1 winner · Daily 9 PM UTC</p>
                   </div>

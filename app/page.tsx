@@ -184,9 +184,9 @@ export default function LandingPage() {
               },
               {
                 Icon: Shield,
-                label: 'Smart Contract',
-                sub: 'Verified on BaseScan',
-                href: contractHref,
+                label: 'How draws work',
+                sub: 'Verifiable · Public · Fair',
+                href: '/faq',
               },
               {
                 Icon: Lock,
@@ -196,8 +196,8 @@ export default function LandingPage() {
               },
               {
                 Icon: ExternalLink,
-                label: 'Open Treasury',
-                sub: 'View all transactions',
+                label: 'Treasury',
+                sub: 'View on BaseScan',
                 href: `${BASESCAN}${TREASURY}`,
               },
             ].map(({ Icon, label, sub, href }) => (

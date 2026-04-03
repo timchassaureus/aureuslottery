@@ -37,22 +37,28 @@ export default function JackpotCounter() {
     }
   }, [jackpot, previousJackpot]);
 
+  if (jackpot === 0) {
+    return (
+      <p className="text-2xl font-bold text-[#8A8A95] italic leading-snug">
+        Jackpot building —<br className="md:hidden" /> be the first to play tonight
+      </p>
+    );
+  }
+
   return (
-    <div className="rounded-xl border border-[#C9A84C]/ bg-gradient-to-b from-[#0A0A0F]/50 to-black/50 p-6 text-center">
-      <p className="text-[#F5F0E8]/ text-sm uppercase tracking-wider mb-1">Jackpot</p>
+    <div className="text-center">
       <div
-        className={`inline-flex items-baseline gap-1 text-4xl font-bold tracking-tight ${
+        className={`inline-flex items-baseline gap-1 text-5xl md:text-7xl font-black tracking-tight ${
           isRising ? 'text-green-400' : 'text-[#C9A84C]'
         }`}
       >
-        <span className="drop-shadow-[0_0_12px_rgba(251,191,36,0.4)]">
+        <span className="drop-shadow-[0_0_40px_rgba(201,168,76,0.25)]">
           $<AnimatedNumber value={jackpot} />
         </span>
       </div>
       {change24h !== 0 && (
         <p className={`mt-2 text-sm ${change24h >= 0 ? 'text-green-400/90' : 'text-red-400/90'}`}>
-          {change24h >= 0 ? '+' : ''}
-          {change24h.toFixed(0)}$ dans les dernières 24h
+          {change24h >= 0 ? '+' : ''}${Math.abs(change24h).toFixed(0)} in the last 24h
         </p>
       )}
     </div>

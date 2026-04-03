@@ -1,16 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useAppStore } from '@/lib/store';
 
 interface Props {
   timeLeft: { hours: number; minutes: number; seconds: number };
 }
 
 export default function UrgencyBanner({ timeLeft }: Props) {
+  const jackpot = useAppStore((s) => s.jackpot);
   const totalMinutes = timeLeft.hours * 60 + timeLeft.minutes;
-  
-  // Show only in last 30 minutes
-  if (totalMinutes > 30) return null;
+
+  // Hide if no pot yet (nothing to be urgent about) or more than 30 min left
+  if (jackpot === 0 || totalMinutes > 30) return null;
 
   const isLastMinutes = totalMinutes <= 5;
   const bgColor = isLastMinutes ? 'from-red-600 to-[#e8c97a]' : 'from-[#C9A84C] to-yellow-600';
