@@ -37,7 +37,7 @@ const client = new TwitterApi({
 const rwClient = client.readWrite;
 
 // Bot configuration
-const BOT_USERNAME = process.env.BOT_USERNAME || '@AureusLottery';
+const BOT_USERNAME = process.env.BOT_USERNAME || '@LotteryAureus';
 const SITE_URL = process.env.SITE_URL || 'https://aureuslottery.app';
 const POST_JACKPOT_UPDATES = process.env.POST_JACKPOT_UPDATES === 'true';
 const POST_WINNERS = process.env.POST_WINNERS === 'true';

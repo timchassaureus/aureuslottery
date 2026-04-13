@@ -7,7 +7,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 const TWITTER_TEXT =
-  'I play @AureusLottery and the jackpot is growing! Join me — we can win together 🎰💰 #Aureus #Crypto';
+  'I play @LotteryAureus and the jackpot is growing! Join me — we can win together 🎰💰 #Aureus #Crypto';
 const APP_URL = typeof window !== 'undefined' ? window.location.origin : 'https://aureuslottery.app';
 
 export default function ReferralDashboard() {

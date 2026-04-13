@@ -239,7 +239,7 @@ export default function WheelAnimation({ participants: propParticipants, winner,
 
 A new crypto app just launched and I won $${prize.toLocaleString('en-US')}! 🤯💰
 
-@AureusLottery this is INSANE! Daily draw at 9PM UTC, tickets only $1!
+@LotteryAureus this is INSANE! Daily draw at 9PM UTC, tickets only $1!
 
 Thank you Aureus! 🙏✨
 

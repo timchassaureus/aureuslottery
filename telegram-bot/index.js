@@ -45,7 +45,7 @@ bot.help(async (ctx) => {
     `/winners - Recent winners\n` +
     `/help - Show this help message\n\n` +
     `🌐 Website: ${process.env.SITE_URL || 'https://aureuslottery.app'}\n` +
-    `📢 Channel: @${process.env.CHANNEL_USERNAME || 'AureusLottery'}`,
+    `📢 Channel: @${process.env.CHANNEL_USERNAME || 'LotteryAureus'}`,
     { parse_mode: 'Markdown' }
   );
 });
@@ -209,7 +209,7 @@ bot.command('link', async (ctx) => {
 
 // This function can be called from your Next.js API when a draw happens
 async function notifyChannel(drawInfo) {
-  const channelId = process.env.CHANNEL_ID || '@AureusLottery';
+  const channelId = process.env.CHANNEL_ID || '@LotteryAureus';
   
   await bot.telegram.sendMessage(
     channelId,

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { getStoredReferralCodeForPurchase } from '@/hooks/useReferral';
 
 const TWITTER_TEXT = (amount: number) =>
-  `I just won $${amount} on @AureusLottery 🎰🏆 Join me!`;
+  `I just won $${amount} on @LotteryAureus 🎰🏆 Join me!`;
 
 const PURCHASE_TEXT = `I just bought AUREUS Lottery tickets 🎰 Join me!`;
 

@@ -23,7 +23,7 @@
 ### 2. Récupérer le Channel ID
 
 Si ton canal est public (username) :
-- Le Channel ID est juste le username (ex: `@AureusLottery`)
+- Le Channel ID est juste le username (ex: `@LotteryAureus`)
 
 Si ton canal est privé :
 - Utilise un bot comme @userinfobot pour obtenir l'ID numérique
@@ -38,10 +38,10 @@ CHANNEL_ID=@TonNomDeCanal
 CHANNEL_USERNAME=TonNomDeCanal
 ```
 
-**Exemple si ton canal est @AureusLottery :**
+**Exemple si ton canal est @LotteryAureus :**
 ```env
-CHANNEL_ID=@AureusLottery
-CHANNEL_USERNAME=AureusLottery
+CHANNEL_ID=@LotteryAureus
+CHANNEL_USERNAME=LotteryAureus
 ```
 
 ### 4. Redémarrer le Bot

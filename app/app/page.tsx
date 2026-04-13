@@ -371,7 +371,7 @@ export default function AppPage() {
               >
                 Beginner Guide
               </a>
-              <a href="https://x.com/AUREUSLottery" target="_blank" rel="noopener noreferrer"
+              <a href="https://x.com/LotteryAureus" target="_blank" rel="noopener noreferrer"
                 className="px-3 py-2 rounded-xl text-sm text-[#8A8A95] hover:text-[#F5F0E8] hover:bg-white/5 transition-all">
                 𝕏
               </a>

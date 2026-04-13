@@ -26,7 +26,7 @@ export default function LandingPage() {
             AUREUS
           </span>
           <div className="flex items-center gap-4">
-            <a href="https://x.com/AUREUSLottery" target="_blank" rel="noopener noreferrer"
+            <a href="https://x.com/LotteryAureus" target="_blank" rel="noopener noreferrer"
               className="text-xs text-[#8A8A95] hover:text-[#F5F0E8] transition-colors hidden sm:block">
               𝕏
             </a>
@@ -338,9 +338,9 @@ export default function LandingPage() {
             All transactions visible on BaseScan. You don&apos;t have to take our word for it.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm text-[#8A8A95]">
-            <a href="https://x.com/AUREUSLottery" target="_blank" rel="noopener noreferrer"
+            <a href="https://x.com/LotteryAureus" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 hover:border-[#C9A84C]/30 hover:text-[#F5F0E8] transition-all">
-              𝕏 @AUREUSLottery
+              𝕏 @LotteryAureus
             </a>
             <a href="https://instagram.com/aureuslottery" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 hover:border-[#C9A84C]/30 hover:text-[#F5F0E8] transition-all">
@@ -370,7 +370,7 @@ export default function LandingPage() {
               <Link href="/terms" className="hover:text-[#F5F0E8] transition-colors">Terms</Link>
               <Link href="/privacy" className="hover:text-[#F5F0E8] transition-colors">Privacy</Link>
               <a href="mailto:support@aureuslottery.app" className="hover:text-[#F5F0E8] transition-colors">Support</a>
-              <a href="https://x.com/AUREUSLottery" target="_blank" rel="noopener noreferrer" className="hover:text-[#F5F0E8] transition-colors">𝕏 Twitter</a>
+              <a href="https://x.com/LotteryAureus" target="_blank" rel="noopener noreferrer" className="hover:text-[#F5F0E8] transition-colors">𝕏 Twitter</a>
               <a href="https://instagram.com/aureuslottery" target="_blank" rel="noopener noreferrer" className="hover:text-[#F5F0E8] transition-colors">Instagram</a>
             </div>
           </div>

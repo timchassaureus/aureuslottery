@@ -12,8 +12,8 @@ Crée un fichier `.env` dans le dossier `telegram-bot/` avec ce contenu :
 TELEGRAM_BOT_TOKEN=8322249733:AAHibNf3EIH-nvEnI5D4HF-5UdfjLjHLbAY
 SITE_URL=https://aureuslottery.app
 API_URL=https://aureuslottery.app
-CHANNEL_ID=@AureusLottery
-CHANNEL_USERNAME=AureusLottery
+CHANNEL_ID=@LotteryAureus
+CHANNEL_USERNAME=LotteryAureus
 ```
 
 ## 📝 Prochaines Étapes
@@ -64,7 +64,7 @@ Website: https://aureuslottery.app
 1. Dans Telegram, clique "New Channel"
 2. Nom : **"AUREUS Lottery"**
 3. Choisis **Public**
-4. Username : **@AureusLottery** (ou celui que tu veux)
+4. Username : **@LotteryAureus** (ou celui que tu veux)
 5. Ajoute ton bot comme **Administrateur** :
    - Settings → Administrators → Add Administrator
    - Sélectionne **@Aureuslotterybot**

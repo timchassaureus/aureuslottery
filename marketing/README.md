@@ -56,7 +56,7 @@ Le système génère 3 variations de vidéos avec des textes optimisés :
 Une fois la vidéo générée, poste-la sur X avec :
 - Hashtags : #CryptoLottery #Web3 #Aureus #Lottery
 - Timing optimal : 9h-12h ou 15h-18h EST
-- Mention : @AureusLottery
+- Mention : @LotteryAureus
 
 
 

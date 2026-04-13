@@ -6,7 +6,7 @@
 2. Send command: `/newbot`
 3. Follow instructions:
    - **Display name**: "AUREUS Lottery Bot" (or any name you want)
-   - **Username**: Must end with "bot" (e.g., "AureusLotteryBot" → @AureusLotteryBot)
+  - **Username**: Must end with "bot" (e.g., "LotteryAureusBot" → @LotteryAureusBot)
    - ⚠️ **IMPORTANT**: Username MUST end with "bot" (Telegram requirement)
 4. Copy the **bot token** (looks like: `123456789:ABCdefGHIjklMNOpqrsTUVwxyz`)
 
@@ -15,7 +15,7 @@
 1. In Telegram, click **"New Channel"**
 2. Name it: **"AUREUS Lottery"**
 3. Set it as **Public**
-4. Choose username: **@AureusLottery** (or your choice)
+4. Choose username: **@LotteryAureus** (or your choice)
 5. Add your bot as **Administrator** (so it can post):
    - Go to channel settings → Administrators → Add Administrator
    - Select your bot → Grant permission to "Post Messages"
@@ -28,8 +28,8 @@ Create a `.env` file in the `telegram-bot` folder:
 TELEGRAM_BOT_TOKEN=your_bot_token_here
 SITE_URL=https://aureuslottery.app
 API_URL=https://aureuslottery.app
-CHANNEL_ID=@AureusLottery
-CHANNEL_USERNAME=AureusLottery
+CHANNEL_ID=@LotteryAureus
+CHANNEL_USERNAME=LotteryAureus
 ```
 
 **Replace:**

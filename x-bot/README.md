@@ -42,7 +42,7 @@ X_ACCESS_TOKEN=your_access_token_here
 X_ACCESS_TOKEN_SECRET=your_access_token_secret_here
 X_BEARER_TOKEN=your_bearer_token_here
 
-BOT_USERNAME=@AureusLottery
+BOT_USERNAME=@LotteryAureus
 SITE_URL=https://aureuslottery.app
 POST_JACKPOT_UPDATES=true
 POST_WINNERS=true

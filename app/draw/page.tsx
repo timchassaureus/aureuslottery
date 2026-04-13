@@ -308,7 +308,7 @@ export default function DrawPage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={() => {
-                  const text = `🏆 Just watched the LIVE @AureusLottery draw!\n${winner.address.slice(0, 10)}... won $${winner.prize.toLocaleString('en-US')} USDC!\n\n$1 per ticket · Daily at 9PM UTC\naureulottery.app`;
+                  const text = `🏆 Just watched the LIVE @LotteryAureus draw!\n${winner.address.slice(0, 10)}... won $${winner.prize.toLocaleString('en-US')} USDC!\n\n$1 per ticket · Daily at 9PM UTC\naureulottery.app`;
                   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
                 }}
                 className="flex items-center justify-center gap-2 px-6 py-3 bg-black hover:bg-gray-900 text-white font-bold rounded-xl border border-white/20 transition-all"

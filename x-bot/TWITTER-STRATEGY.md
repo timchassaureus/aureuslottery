@@ -8,14 +8,14 @@ Guide complet pour créer et optimiser votre compte Twitter/X AUREUS.
 
 **Recommandation principale :**
 ```
-@AureusLottery
+@LotteryAureus
 ```
 
 **Alternatives si non disponible :**
-- `@AureusLotteryApp`
-- `@AureusLotteryX`
-- `@AureusLotteryWeb3`
-- `@AureusLotteryCrypto`
+- `@LotteryAureusApp`
+- `@LotteryAureusX`
+- `@LotteryAureusWeb3`
+- `@LotteryAureusCrypto`
 - `@AureusOfficial`
 - `@AureusLotto`
 
@@ -268,7 +268,7 @@ Jackpot just hit $200,000! 🚀💰
 **Toujours répondre :**
 - Questions des utilisateurs
 - Commentaires positifs
-- Mentions @AureusLottery
+- Mentions @LotteryAureus
 
 **Exemple de réponse :**
 ```
@@ -312,7 +312,7 @@ Jackpot just hit $200,000! 🚀💰
 🎰 Win 50 FREE TICKETS!
 
 To enter:
-1️⃣ Follow @AureusLottery
+1️⃣ Follow @LotteryAureus
 2️⃣ Retweet this tweet
 3️⃣ Tag 3 friends
 
@@ -376,7 +376,7 @@ Let me explain how it works...
 ## 🎯 Résumé : Compte Parfait
 
 ```
-Username: @AureusLottery
+Username: @LotteryAureus
 Name: AUREUS Lottery 🎰
 
 Bio:
@@ -397,7 +397,7 @@ Hashtags: #AureusLottery #CryptoLottery #Web3
 
 ## 🚀 Prochaines Étapes
 
-1. ✅ Créer le compte avec @AureusLottery
+1. ✅ Créer le compte avec @LotteryAureus
 2. ✅ Configurer bio, photo, bannière
 3. ✅ Publier les 10 premiers tweets
 4. ✅ Configurer le bot X pour automatisation

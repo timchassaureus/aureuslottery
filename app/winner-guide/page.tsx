@@ -35,7 +35,7 @@ function WinnerGuideContent() {
   }, []);
 
   const shareText = useMemo(
-    () => `I just won $${amount.toFixed(2)} on @AureusLottery 🎰🏆 Join me!`,
+    () => `I just won $${amount.toFixed(2)} on @LotteryAureus 🎰🏆 Join me!`,
     [amount]
   );
 

@@ -73,7 +73,7 @@ export default function RootLayout({
                   <a href="/terms" className="hover:text-[#F5F0E8]/80 transition-colors">Terms</a>
                   <a href="/privacy" className="hover:text-[#F5F0E8]/80 transition-colors">Privacy</a>
                   <a href="mailto:support@aureuslottery.app" className="hover:text-[#F5F0E8]/80 transition-colors">Support</a>
-                  <a href="https://x.com/AUREUSLottery" target="_blank" rel="noopener noreferrer" className="hover:text-[#F5F0E8]/80 transition-colors">𝕏 Twitter</a>
+                  <a href="https://x.com/LotteryAureus" target="_blank" rel="noopener noreferrer" className="hover:text-[#F5F0E8]/80 transition-colors">𝕏 Twitter</a>
                   <a href="https://instagram.com/aureuslottery" target="_blank" rel="noopener noreferrer" className="hover:text-[#F5F0E8]/80 transition-colors">Instagram</a>
                 </div>
                 <p>

@@ -26,7 +26,7 @@ X_BEARER_TOKEN=your_bearer_token_here  # For read-only operations
 ### Bot Settings
 
 ```env
-BOT_USERNAME=@AureusLottery           # Your bot's X username
+BOT_USERNAME=@LotteryAureus           # Your bot's X username
 SITE_URL=https://aureuslottery.app    # Your site URL for tweets
 ```
 
